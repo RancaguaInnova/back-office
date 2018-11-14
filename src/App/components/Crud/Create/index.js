@@ -28,7 +28,7 @@ export default class CreateItem extends React.Component {
 
   @autobind
   onSuccess({_id: itemId}) {
-    this.props.showMessage(`El ${this.props.singular} fue creado exitosamente`)
+    this.props.showMessage(`The ${this.props.singular} profile was saved`)
     this.props.history.push(`${this.props.basePath}/${itemId}`)
   }
 

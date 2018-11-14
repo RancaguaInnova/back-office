@@ -1,9 +1,14 @@
 import React from 'react'
+import Loading from 'orionsoft-parts/lib/components/Loading'
 
-export default class Loading extends React.Component {
+export default class PaginatedLoading extends React.Component {
   static propTypes = {}
 
   render() {
-    return <div className="paginated-loading">Loading...</div>
+    return (
+      <div className="paginated-loading">
+        <Loading color="#ccc" />
+      </div>
+    )
   }
 }

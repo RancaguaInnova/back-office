@@ -14,7 +14,7 @@ export default class Filter extends React.Component {
       <Form
         state={this.props.variables}
         onChange={({filter}) => this.props.setVariable('filter', filter)}>
-        <Field fieldName="filter" type={Text} placeholder="Search" />
+        <Field fieldName="filter" type={Text} placeholder="Buscar" />
       </Form>
     )
   }

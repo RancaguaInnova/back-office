@@ -31,7 +31,7 @@ export default class Delete extends React.Component {
   async delete(mutate) {
     try {
       await mutate(this.props.itemId)
-      this.props.showMessage(`${this.props.singular} eliminado`)
+      this.props.showMessage(`${this.props.singular} deleted`)
       this.props.history.push(this.props.basePath)
     } catch (error) {
       this.props.showMessage(error)
@@ -44,7 +44,7 @@ export default class Delete extends React.Component {
         <div className="content">
           <div className={styles.title}>{this.props.title}</div>
           <div className={styles.text}>
-            Está seguro de querer eliminar este {this.props.singular}
+            Are you sure you want to delete this {this.props.singular}
           </div>
           <br />
           <WithParams name={this.props.name}>
@@ -63,7 +63,7 @@ export default class Delete extends React.Component {
                       Back
                     </Button>
                     <Button icon={DeleteIcon} danger onClick={() => this.delete(mutate)}>
-                      Eliminar {this.props.singular}
+                      Delete {this.props.singular}
                     </Button>
                   </div>
                 )}

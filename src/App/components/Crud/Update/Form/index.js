@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './styles.css'
 import PropTypes from 'prop-types'
 import AutoForm from 'App/components/AutoForm'
-import WithParams from 'App/components/AutoForm/WithParams'
+import WithParams from '../../List/WithParams'
 import Button from 'orionsoft-parts/lib/components/Button'
 import {withRouter} from 'react-router'
 import BackIcon from 'react-icons/lib/md/arrow-back'
@@ -30,6 +30,7 @@ export default class UpdateForm extends React.Component {
       [docField]: this.props.item
     }
   }
+
   getIdField({params}) {
     const keys = Object.keys(params)
     return keys.find(key => key.includes('Id'))
@@ -43,7 +44,7 @@ export default class UpdateForm extends React.Component {
   render() {
     return (
       <div className={styles.container}>
-        <WithParams name={this.props.name}>
+        <WithParams name={this.props.name} mutation>
           {queryInfo => (
             <div>
               <AutoForm
@@ -56,7 +57,7 @@ export default class UpdateForm extends React.Component {
               />
               <br />
               <Button icon={BackIcon} onClick={() => this.props.history.push(this.props.basePath)}>
-                Volver
+                Back
               </Button>
               <Button
                 icon={DeleteIcon}
@@ -64,10 +65,10 @@ export default class UpdateForm extends React.Component {
                 onClick={() =>
                   this.props.history.push(`${this.props.basePath}/${this.props.itemId}/delete`)
                 }>
-                Eliminar
+                Delete
               </Button>
               <Button icon={SaveIcon} onClick={() => this.form.submit()} primary>
-                Guardar {this.props.singular}
+                Save {this.props.singular}
               </Button>
             </div>
           )}

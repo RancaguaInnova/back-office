@@ -4,8 +4,8 @@ import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import gql from 'graphql-tag'
 
 @withGraphQL(gql`
-  query getParams($name: ID) {
-    params(name: $name, mutation: false) {
+  query getParams($name: ID, $mutation: Boolean) {
+    params(name: $name, mutation: $mutation) {
       params
     }
   }

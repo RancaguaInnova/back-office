@@ -12,11 +12,14 @@
 
 :local(.title) {
   margin-bottom: 10px;
-  font-size: 30px;
 }
 
 :local(.description) {
   color: #7d7d7d;
+}
+
+:local(.childrenNoBorder) {
+  margin-top: 40px;
 }
 
 :local(.children) {

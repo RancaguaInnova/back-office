@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 import styles from './styles.css'
 import Button from 'orionsoft-parts/lib/components/Button'
 import autobind from 'autobind-decorator'
-import WithParams from 'App/components/AutoForm/WithParams'
-import WithMutation from 'App/components/AutoForm/WithMutation'
-import getFragment from 'App/components/AutoForm/getFragment'
+import WithParams from 'orionjs-react-autoform/lib/WithParams'
+import WithMutation from 'orionjs-react-autoform/lib/WithMutation'
+import getFragment from 'orionjs-react-autoform/lib/getFragment'
 
 @withModal
 export default class FormModal extends React.Component {
@@ -63,7 +63,7 @@ export default class FormModal extends React.Component {
       confirm: this.submit,
       confirmText: this.props.confirmText,
       render: renderChildren || this.renderContent,
-      cancelText: 'Cancelar'
+      cancelText: 'Cancel'
     })
   }
 

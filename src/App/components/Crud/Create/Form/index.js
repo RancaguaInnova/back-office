@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './styles.css'
 import PropTypes from 'prop-types'
 import AutoForm from 'App/components/AutoForm'
-import WithParams from 'App/components/AutoForm/WithParams'
+import WithParams from '../../List/WithParams'
 import Button from 'orionsoft-parts/lib/components/Button'
 import {withRouter} from 'react-router'
 import BackIcon from 'react-icons/lib/md/arrow-back'
@@ -36,7 +36,7 @@ export default class UpdateForm extends React.Component {
   render() {
     return (
       <div className={styles.container}>
-        <WithParams name={this.props.name}>
+        <WithParams name={this.props.name} mutation>
           {queryInfo => (
             <div>
               <AutoForm
@@ -49,10 +49,10 @@ export default class UpdateForm extends React.Component {
               />
               <br />
               <Button icon={BackIcon} onClick={() => this.props.history.push(this.props.basePath)}>
-                Volver
+                Back
               </Button>
               <Button icon={SaveIcon} onClick={() => this.form.submit()} primary>
-                Crear {this.props.singular}
+                Create {this.props.singular}
               </Button>
             </div>
           )}
