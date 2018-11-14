@@ -1,0 +1,100 @@
+:local(.container) {
+  width: 100%;
+  position: relative;
+  margin: 8px 0;
+}
+
+:local(.border) {
+  border-bottom: 2px solid #111;
+  display: flex;
+  cursor: text;
+  width: 100%;
+}
+
+:local(.otherOptions) {
+  position: absolute;
+  margin-top: 3px;
+  right: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 5;
+}
+
+:local(.option) {
+  display: inline-block;
+  font-size: 14px;
+  margin-right: 6px;
+  border-bottom: 1px solid #111;
+  cursor: pointer;
+}
+
+:local(.inputContainer) {
+  position: relative;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:local(.input) {
+  width: 100%;
+  outline: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 6px;
+  z-index: 2;
+  position: relative;
+  background: transparent;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+:local(.suggestion) {
+  position: absolute;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 6px;
+  color: red;
+  z-index: 1;
+  color: #999;
+}
+
+:local(.icon) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 36px;
+}
+
+.dynamicSelectFade-enter,
+.dynamicSelectFade-leave.dynamicSelectFade-leave-active {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  transition: all 100ms ease;
+}
+
+.dynamicSelectFade-enter.dynamicSelectFade-enter-active,
+.dynamicSelectFade-leave {
+  opacity: 1;
+  transition: all 100ms ease;
+}
+
+.optionAnimation-enter,
+.optionAnimation-leave.optionAnimation-leave-active {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  transition: all 200ms ease;
+}
+
+.optionAnimation-enter.optionAnimation-enter-active,
+.optionAnimation-leave {
+  opacity: 1;
+  transition: all 200ms ease;
+}

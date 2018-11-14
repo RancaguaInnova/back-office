@@ -1,0 +1,35 @@
+:local(.container) {
+  margin-left: -10px;
+  display: flex;
+  align-items: center;
+  padding-top: 20px;
+}
+
+:local(.content) {
+  flex: 1;
+  font-size: 25px;
+  color: #000;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+:local(.content) a {
+  color: #111;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+:local(.content) .last {
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+:local(.content) a:hover {
+  background: #f3f3f3;
+}
+
+:local(.right) {
+  display: flex;
+  align-items: center;
+}

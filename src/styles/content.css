@@ -1,0 +1,52 @@
+.shadow {
+  box-shadow: 0 4px 35px rgba(50, 50, 93, 0.1), 0 8px 15px rgba(0, 0, 0, 0.07);
+}
+
+.smallShadow {
+  box-shadow: 0 2px 4px rgba(50, 50, 93, 0.1);
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+.content {
+  box-shadow: 0 2px 4px rgba(50, 50, 93, 0.1);
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.divider {
+  background: #eee;
+  height: 1px;
+  width: 100%;
+  margin: 40px 0;
+}
+
+.loadingGlow {
+  opacity: 0.4;
+  animation: loadingGlow 0.9s infinite;
+}
+
+@keyframes loadingGlow {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
