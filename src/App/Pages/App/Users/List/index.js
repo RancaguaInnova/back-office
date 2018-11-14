@@ -8,19 +8,19 @@ export default class ListUsers extends React.Component {
         name: 'name',
         title: 'Nombre',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.name} </span>)
+        render: (value, doc, index) => <span>{value.name} </span>
       },
       {
         name: 'lastName',
         title: 'Apellido',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.lastName} </span>)
+        render: (value, doc, index) => <span>{value.lastName} </span>
       },
       {
         name: 'identifier',
         title: 'RUT',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.identifier} </span>)
+        render: (value, doc, index) => <span>{value.identifier} </span>
       }
     ]
   }
@@ -30,7 +30,7 @@ export default class ListUsers extends React.Component {
       <PaginatedList
         title='Usuarios'
         name='users'
-        basePath={this.getBasePath()}
+        basePath='/usuarios'
         fields={this.getFields()}
         canCreate
         canUpdate

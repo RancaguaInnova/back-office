@@ -7,7 +7,7 @@
       {
         "root": ["./"],
         "alias": {
-          "app": "./app"
+          "App": "./src/App"
         }
       }
     ]
