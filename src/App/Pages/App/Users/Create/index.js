@@ -20,7 +20,7 @@ export default class CreateUser extends React.Component {
           onSuccess={user => this.props.history.push(`/${user._id}`)}
         />
         <br />
-        <Button to="/usuarion/lista" style={{ marginRight: 10 }}>
+        <Button to="/usuarios/lista" style={{ marginRight: 10 }}>
           Cancelar
         </Button>
         <Button onClick={() => this.refs.form.submit()} primary>
