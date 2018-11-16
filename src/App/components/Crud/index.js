@@ -2,7 +2,7 @@ import React from 'react'
 import Create from './Create'
 import Update from './Update'
 import List from './List'
-import {Route, Switch} from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import Delete from './Delete'
 
@@ -25,7 +25,7 @@ export default class CrudComponent extends React.Component {
     omit: []
   }
 
-  renderList() {
+  renderList () {
     if (this.props.omit.includes('list')) return <span />
     return (
       <List
@@ -41,37 +41,41 @@ export default class CrudComponent extends React.Component {
     )
   }
 
-  renderUpdate({match}) {
+  renderUpdate ({ match }) {
     if (this.props.omit.includes('update')) return <span />
     return (
       <Update
-        title={`Update ${this.props.singular}`}
+        title={`Editar ${this.props.singular}`}
         name={this.props.itemQuery || this.props.singular.toLowerCase()}
         basePath={this.props.path}
         itemId={match.params.itemId}
         singular={this.props.singular}
-        updateMutation={this.props.updateMutation || `update${this.props.singular}`}
+        updateMutation={
+          this.props.updateMutation || `update${this.props.singular}`
+        }
       />
     )
   }
 
-  renderCreate() {
+  renderCreate () {
     if (this.props.omit.includes('create')) return <span />
     return (
       <Create
-        title={`Create ${this.props.singular}`}
+        title={`Crear ${this.props.singular}`}
         basePath={this.props.path}
         singular={this.props.singular}
-        createMutation={this.props.createMutation || `create${this.props.singular}`}
+        createMutation={
+          this.props.createMutation || `create${this.props.singular}`
+        }
       />
     )
   }
 
-  renderDelete({match}) {
+  renderDelete ({ match }) {
     if (this.props.omit.includes('delete')) return <span />
     return (
       <Delete
-        title={`Delete ${this.props.singular}`}
+        title={`Eliminar ${this.props.singular}`}
         basePath={this.props.path}
         itemId={match.params.itemId}
         singular={this.props.singular}
@@ -80,22 +84,26 @@ export default class CrudComponent extends React.Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <div>
         <Switch>
-          <Route path={this.props.path} exact component={params => this.renderList(params)} />
           <Route
-            path={this.props.path + '/create'}
+            path={this.props.path}
+            exact
+            component={params => this.renderList(params)}
+          />
+          <Route
+            path={this.props.path + '/crear'}
             component={params => this.renderCreate(params)}
           />
           <Route
-            path={this.props.path + '/:itemId'}
+            path={this.props.path + 'editar/:itemId'}
             exact
             component={params => this.renderUpdate(params)}
           />
           <Route
-            path={this.props.path + '/:itemId/delete'}
+            path={this.props.path + 'eliminar/:itemId'}
             exact
             component={params => this.renderDelete(params)}
           />

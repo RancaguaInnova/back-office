@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Button from 'orionsoft-parts/lib/components/Button'
 import BackIcon from 'react-icons/lib/md/arrow-back'
 import DeleteIcon from 'react-icons/lib/md/delete'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import WithMutation from './WithMutation'
 import WithParams from './WithParams'
 import getFragment from '../getFragment'
@@ -31,7 +31,7 @@ export default class Delete extends React.Component {
   async delete(mutate) {
     try {
       await mutate(this.props.itemId)
-      this.props.showMessage(`${this.props.singular} deleted`)
+      this.props.showMessage(`${this.props.singular} eliminado`)
       this.props.history.push(this.props.basePath)
     } catch (error) {
       this.props.showMessage(error)
@@ -44,7 +44,7 @@ export default class Delete extends React.Component {
         <div className="content">
           <div className={styles.title}>{this.props.title}</div>
           <div className={styles.text}>
-            Are you sure you want to delete this {this.props.singular}
+            Está seguro de eliminar este {this.props.singular}
           </div>
           <br />
           <WithParams name={this.props.name}>
@@ -52,18 +52,26 @@ export default class Delete extends React.Component {
               <WithMutation
                 mutation={this.props.name}
                 params={queryInfo.params}
-                fragment={this.getFragment(queryInfo)}>
+                fragment={this.getFragment(queryInfo)}
+              >
                 {mutate => (
                   <div>
                     <Button
                       icon={BackIcon}
                       onClick={() =>
-                        this.props.history.push(`${this.props.basePath}/${this.props.itemId}`)
-                      }>
+                        this.props.history.push(
+                          `${this.props.basePath}/${this.props.itemId}`
+                        )
+                      }
+                    >
                       Back
                     </Button>
-                    <Button icon={DeleteIcon} danger onClick={() => this.delete(mutate)}>
-                      Delete {this.props.singular}
+                    <Button
+                      icon={DeleteIcon}
+                      danger
+                      onClick={() => this.delete(mutate)}
+                    >
+                      Eliminar {this.props.singular}
                     </Button>
                   </div>
                 )}
