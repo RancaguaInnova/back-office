@@ -13,62 +13,27 @@ import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import omit from 'lodash/omit'
+import UserFragments from 'App/fragments/User'
+
+console.log('UserFragments:', UserFragments)
 
 @withRouter
 @withMessage
 @withGraphQL(gql`
   query user($userId: ID!) {
     user(userId: $userId) {
-      _id
-      email
-      profile {
-        firstName
-        lastName
-        identifier
-        address {
-          streetName
-          streetNumber
-          departmentNumber
-          city
-        }
-        phone {
-          areaCode
-          number
-          mobilePhone
-        }
-        educationalLevel
-      }
-      active
-      roles
+      ...FullUser
     }
   }
+  ${UserFragments.FullUser}
 `)
 @withMutation(gql`
   mutation updateUser($user: UserInput!) {
     updateUser(user: $user) {
-      _id
-      email
-      profile {
-        firstName
-        lastName
-        identifier
-        address {
-          streetName
-          streetNumber
-          departmentNumber
-          city
-        }
-        phone {
-          areaCode
-          number
-          mobilePhone
-        }
-        educationalLevel
-      }
-      active
-      roles
+      ...FullUser
     }
   }
+  ${UserFragments.FullUser}
 `)
 export default class UpdateUser extends React.Component {
   static propTypes = {
