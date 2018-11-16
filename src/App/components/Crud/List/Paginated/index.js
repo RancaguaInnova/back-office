@@ -1,18 +1,18 @@
 import React from 'react'
 import Data from './Data'
-import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 import getQueryFields from './getQueryFields'
 import {getArguments, getParams} from './getParams'
 import Head from './Head'
 import autobind from 'autobind-decorator'
-import debounce from './debounce'
 import isEqual from 'lodash/isEqual'
 import PropTypes from 'prop-types'
 import LoadingIndicator from './LoadingIndicator'
+import {Query} from 'react-apollo'
 
 export default class Fetch extends React.Component {
   static propTypes = {
+    footer: PropTypes.any,
     /**
      * Head title
      */
@@ -37,6 +37,7 @@ export default class Fetch extends React.Component {
      * Name of the query. Ex: backendEvents, producers
      */
     queryName: PropTypes.string.isRequired,
+    queryFunctionName: PropTypes.string,
     /**
      * Fields to display
      */
@@ -74,7 +75,7 @@ export default class Fetch extends React.Component {
      */
     params: PropTypes.object,
     /**
-     * Triggered when an item is chosen
+     * When use choose the item
      */
     onPress: PropTypes.func,
     /**
@@ -82,7 +83,7 @@ export default class Fetch extends React.Component {
      */
     pollInterval: PropTypes.number,
     /**
-     * Pass the id of the selected item to highlight them in the table
+     * Pass the id of the selected item to highlight then in the table
      */
     selectedItemId: PropTypes.string,
     /**
@@ -92,7 +93,11 @@ export default class Fetch extends React.Component {
     /**
      * Loading component
      */
-    loadingComponent: PropTypes.any
+    loadingComponent: PropTypes.any,
+    /**
+     * Variables
+     */
+    variables: PropTypes.object
   }
 
   static defaultProps = {
@@ -111,7 +116,6 @@ export default class Fetch extends React.Component {
       limit: this.props.defaultLimit,
       variables: {}
     }
-    this.createChild(props)
   }
 
   // public reload function
@@ -120,12 +124,6 @@ export default class Fetch extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const newQuery = this.getQuery(nextProps)
-    const currentQuery = this.getQuery(this.props)
-    if (newQuery !== currentQuery) {
-      this.createChild(nextProps)
-    }
-
     const newVariables = this.getVariables(nextProps)
     const currentVariables = this.getVariables(this.props)
     if (!isEqual(newVariables, currentVariables) && this.state.page !== 1) {
@@ -133,22 +131,10 @@ export default class Fetch extends React.Component {
     }
   }
 
-  createChild(props) {
-    const queryContainer = graphql(gql([this.getQuery(props)]), {
-      options: ({variables}) => {
-        return {
-          variables,
-          fetchPolicy: 'network-only',
-          pollInterval: this.props.pollInterval ? this.props.pollInterval : null
-        }
-      }
-    })
-    const child = queryContainer(Data)
-    this.Child = debounce(child)
-  }
-
   getQuery(props) {
-    return `query paginated_${props.queryName} (${getArguments(props.params)}) {
+    return `query ${props.queryFunctionName || 'paginated_' + props.queryName} (${getArguments(
+      props.params
+    )}) {
       result: ${props.queryName} (
         ${getParams(props.params)}
       ) {
@@ -181,7 +167,8 @@ export default class Fetch extends React.Component {
       page: this.state.page,
       sortBy: this.state.sortBy || defaultSort.sortBy,
       sortType: this.state.sortType || defaultSort.sortType,
-      ...this.state.variables
+      ...this.state.variables,
+      ...this.props.variables
     }
     return variables
   }
@@ -212,21 +199,30 @@ export default class Fetch extends React.Component {
           variables={variables}
           setVariable={this.setVariable}
         />
-        <this.Child
-          ref="child"
-          selectedItemId={this.props.selectedItemId}
+        <Query
+          fetchPolicy="network-only"
+          query={gql([this.getQuery(this.props)])}
           variables={variables}
-          onPress={this.props.onPress}
-          fields={this.props.fields}
-          sortBy={variables.sortBy}
-          sortType={variables.sortType}
-          setSort={this.setSort}
-          page={variables.page}
-          setPage={page => this.setState({page})}
-          limit={variables.limit}
-          setLimit={limit => this.setState({limit})}
-          loadingComponent={this.props.loadingComponent}
-        />
+          pollInterval={this.props.pollInterval}>
+          {data => (
+            <Data
+              ref="child"
+              data={data}
+              selectedItemId={this.props.selectedItemId}
+              onPress={this.props.onPress}
+              fields={this.props.fields}
+              sortBy={variables.sortBy}
+              sortType={variables.sortType}
+              setSort={this.setSort}
+              page={variables.page}
+              setPage={page => this.setState({page})}
+              limit={variables.limit}
+              setLimit={limit => this.setState({limit})}
+              loadingComponent={this.props.loadingComponent}
+              footer={this.props.footer}
+            />
+          )}
+        </Query>
       </div>
     )
   }

@@ -2,9 +2,9 @@ import React from 'react'
 import styles from './styles.css'
 import PropTypes from 'prop-types'
 import AutoForm from 'App/components/AutoForm'
-import WithParams from 'App/components/AutoForm/WithParams'
+import WithParams from '../../List/WithParams'
 import Button from 'orionsoft-parts/lib/components/Button'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import BackIcon from 'react-icons/lib/md/arrow-back'
 import SaveIcon from 'react-icons/lib/md/save'
 
@@ -21,14 +21,14 @@ export default class UpdateForm extends React.Component {
     basePath: PropTypes.string
   }
 
-  getDoc({params}) {
-    const docField = this.getItemField({params})
+  getDoc({ params }) {
+    const docField = this.getItemField({ params })
     return {
       [docField]: {}
     }
   }
 
-  getItemField({params}) {
+  getItemField({ params }) {
     const keys = Object.keys(params)
     return keys.find(key => !key.includes('Id'))
   }
@@ -36,7 +36,7 @@ export default class UpdateForm extends React.Component {
   render() {
     return (
       <div className={styles.container}>
-        <WithParams name={this.props.name}>
+        <WithParams name={this.props.name} mutation>
           {queryInfo => (
             <div>
               <AutoForm
@@ -48,10 +48,17 @@ export default class UpdateForm extends React.Component {
                 fragment={this.props.fragment}
               />
               <br />
-              <Button icon={BackIcon} onClick={() => this.props.history.push(this.props.basePath)}>
+              <Button
+                icon={BackIcon}
+                onClick={() => this.props.history.push(this.props.basePath)}
+              >
                 Volver
               </Button>
-              <Button icon={SaveIcon} onClick={() => this.form.submit()} primary>
+              <Button
+                icon={SaveIcon}
+                onClick={() => this.form.submit()}
+                primary
+              >
                 Crear {this.props.singular}
               </Button>
             </div>

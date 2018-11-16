@@ -1,9 +1,9 @@
 import React from 'react'
 import styles from './styles.css'
 import PropTypes from 'prop-types'
-import {Async} from 'react-select'
+import { Async } from 'react-select'
 import autobind from 'autobind-decorator'
-import {withApollo} from 'react-apollo'
+import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
 @withApollo
@@ -26,7 +26,9 @@ export default class DynamicSelect extends React.Component {
   }
 
   async getItems(filter) {
-    const queryString = `query dynamicSelectSearch_${this.props.searchQuery} ($filter: String) {
+    const queryString = `query dynamicSelectSearch_${
+      this.props.searchQuery
+    } ($filter: String) {
         result: ${this.props.searchQuery} (filter: $filter, page: 1, limit: 6) {
           items {
             ${this.props.valueKey}
@@ -35,9 +37,9 @@ export default class DynamicSelect extends React.Component {
         }
     }`
     const query = gql([queryString])
-    const {data: {result: {items}}} = await this.props.client.query({
+    const { data: { result: { items } } } = await this.props.client.query({
       query,
-      variables: {filter}
+      variables: { filter }
     })
     return items
   }
@@ -51,7 +53,7 @@ export default class DynamicSelect extends React.Component {
         value: item[this.props.valueKey]
       }
     })
-    callback(null, {options})
+    callback(null, { options })
     return options
   }
 

@@ -1,0 +1,6 @@
+:local(.iconTooltip) {
+  text-transform: none !important;
+}
+:local(.footerText) {
+  white-space: pre-line;
+}

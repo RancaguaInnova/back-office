@@ -5,7 +5,7 @@ import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import getFragment from '../getFragment'
 import autobind from 'autobind-decorator'
 import Form from './Form'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 
 @withMessage
 @withRouter
@@ -27,8 +27,8 @@ export default class CreateItem extends React.Component {
   }
 
   @autobind
-  onSuccess({_id: itemId}) {
-    this.props.showMessage(`El ${this.props.singular} fue creado exitosamente`)
+  onSuccess({ _id: itemId }) {
+    this.props.showMessage(`Cambios en ${this.props.singular} guardados`)
     this.props.history.push(`${this.props.basePath}/${itemId}`)
   }
 

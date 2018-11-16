@@ -27,7 +27,7 @@ export default class Update extends React.Component {
 
   @autobind
   onSuccess() {
-    this.props.showMessage(`${this.props.singular} guardado`)
+    this.props.showMessage(`Cambios en ${this.props.singular} guardados`)
   }
 
   render() {
@@ -41,7 +41,8 @@ export default class Update extends React.Component {
               <WithItem
                 queryInfo={queryInfo}
                 fragment={this.getFragment(queryInfo)}
-                itemId={this.props.itemId}>
+                itemId={this.props.itemId}
+              >
                 {item => (
                   <Form
                     name={this.props.updateMutation}
