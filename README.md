@@ -1,7 +1,7 @@
 # RancaguaInnova
-Repositorio de aplicaciones de la Corporación de Desarrollo e Innovación de Rancagua.
+Repositorio de sitio web administrativo (back-office) de la aplicación municipal desarrollada por la Corporación de Desarrollo e Innovación de Rancagua.
 
-Este repositorio contiene el código fuente de la aplicación móvil municipal de Rancagua, aplicación web administrativa (backoffice) y servidor para las anteriores.
+Este repositorio contiene el código fuente de la aplicación web administrativa (backoffice).
 
 El código aquí contenido es de __código abierto__ y tiene como objetivo principal formar una __comunidad de desarrollo__ en torno a la mejora de los servicios entregados por las municipalidades.
 Además, buscamos potenciar a emprendedores que sean capaces de generar soluciones informáticas para los problemas  de los distintos servicios municipales, integrándolos a la aplicación municipal.
@@ -19,12 +19,6 @@ Además, buscamos potenciar a emprendedores que sean capaces de generar solucion
   - **Features:** Para nuevos features, la rama tendrá como nombre: "feature-<pivotal-tracker-id>"
   - **Bugs:** Para resolución de bugs, la rama tendrá como nombre: "bugfix-<pivotal-tracker-id>"
 
-## App
-Aplicación móvil de Rancagua.
-
-## Server
-Servidor para aplicación móvil y backoffice.
-
-## Web
-Backoffice y sitio administrativo para app móvil.
+## Información para desarrolladores:
+__Visitar__ [Página de documentación](https://rancaguainnova.github.io/)
 
