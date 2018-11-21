@@ -8,7 +8,7 @@ export default class Departments extends React.Component {
         name: 'name',
         title: 'Nombre',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.name} </span>)
+        render: (value, doc, index) => <span>{value.name} </span>
       }
     ]
   }

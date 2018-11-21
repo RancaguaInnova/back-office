@@ -1,14 +1,14 @@
 import React from 'react'
 import Crud from 'App/components/Crud'
 
-export default class Apps extends React.Component {
+export default class Users extends React.Component {
   getFields () {
     return [
       {
         name: 'name',
         title: 'Nombre',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.name} </span>)
+        render: (value, doc, index) => <span>{value.name} </span>
       }
     ]
   }

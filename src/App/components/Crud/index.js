@@ -98,12 +98,12 @@ export default class CrudComponent extends React.Component {
             component={params => this.renderCreate(params)}
           />
           <Route
-            path={this.props.path + 'editar/:itemId'}
+            path={this.props.path + '/editar/:itemId'}
             exact
             component={params => this.renderUpdate(params)}
           />
           <Route
-            path={this.props.path + 'eliminar/:itemId'}
+            path={this.props.path + '/eliminar/:itemId'}
             exact
             component={params => this.renderDelete(params)}
           />
