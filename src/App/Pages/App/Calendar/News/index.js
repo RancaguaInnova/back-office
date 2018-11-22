@@ -9,12 +9,12 @@ export default class Events extends React.Component {
         name: 'date',
         title: 'Fecha publicación',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{formatDate(value.date)} </span>)
+        render: (value, doc, index) => <span>{formatDate(value.date)} </span>
       },
       {
         name: 'title',
         title: 'Título',
-        render: (value, doc, index) => (<span>{value.title} </span>)
+        render: (value, doc, index) => <span>{value.title} </span>
       }
     ]
   }
