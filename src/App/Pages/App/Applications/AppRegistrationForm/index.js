@@ -10,13 +10,18 @@ import PropTypes from 'prop-types'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
+import AppFragments from 'App/fragments/Apps'
+import styles from './styles.css'
 
 @withRouter
 @withMessage
 @withMutation(gql`
   mutation createApplication($application: ApplicationInput!) {
-    createApplication(application: $application)
+    createApplication(application: $application) {
+      ...AppRegistrationForm
+    }
   }
+  ${AppFragments.AppRegistrationForm}
 `)
 export default class AppRegistrationForm extends React.Component {
   static propTypes = {
@@ -30,7 +35,8 @@ export default class AppRegistrationForm extends React.Component {
 
   async onSubmit() {
     try {
-      await this.props.createApplication(this.state)
+      let application = Object.assign({}, this.state)
+      await this.props.createApplication({ application })
       this.props.showMessage(
         'Aplicación registrada. Recibirás un correo cuando sea aprobada'
       )
@@ -50,97 +56,111 @@ export default class AppRegistrationForm extends React.Component {
         top
       >
         <Form state={this.state} onChange={changes => this.setState(changes)}>
-          <div className="headerLabel">Información de la aplicación:</div>
-          <div className="label">Nombre:</div>
-          <Field fieldName="name" type={Text} />
-          <div className="label">Descripción:</div>
-          <Field fieldName="description" type={Textarea} />
-          <div className="label">URL de redirección:</div>
-          <Field fieldName="applicationURL" type={Text} />
-          <div className="label">Datos de usuario:</div>
-          <Field
-            fieldName="userFields"
-            type={Select}
-            multi
-            options={[
-              {
-                label: 'Rut',
-                value: 'identifier'
-              },
-              {
-                label: 'Nombre',
-                value: 'firstName'
-              },
-              {
-                label: 'Apellido',
-                value: 'lastName'
-              },
-              {
-                label: 'Dirección',
-                value: 'address'
-              },
-              {
-                label: 'Teléfono',
-                value: 'phone'
-              },
-              {
-                label: 'Nivel Educacional',
-                value: 'educationalLevel'
-              }
-            ]}
-          />
-          <div className="headerLabel">Información del desarrollador:</div>
-          <div className="label">Nombre:</div>
-          <Field fieldName="developerInfo.firstName" type={Text} />
-          <div className="label">Apellido:</div>
-          <Field fieldName="developerInfo.lastName" type={Text} />
-          <div className="headerLabel">Información de contacto:</div>
-          <div className="label">Dirección:</div>
-          <div className="label">Nombre de calle:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.address.streetName"
-            type={Text}
-          />
-          <div className="label">Numeración:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.address.streetNumber"
-            type={Text}
-          />
-          <div className="label">
-            Número de oficina/casa/departamento (opcional):
+          <div className={styles.headerLabel}>
+            Información de la aplicación:
           </div>
-          <Field
-            fieldName="developerInfo.contactInformation.address.departmentNumber"
-            type={Text}
-          />
-          <div className="label">Ciudad:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.address.city"
-            type={Text}
-          />
-          <div className="label">Código Postal:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.address.postalCode"
-            type={Text}
-          />
-          <div className="label">Teléfono:</div>
-          <div className="label">Código de área:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.phone.areaCode"
-            type={Text}
-          />
-          <div className="label">Número fijo:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.phone.number"
-            type={Text}
-          />
-          <div className="label">Celular:</div>
-          <Field
-            fieldName="developerInfo.contactInformation.phone.mobilePhone"
-            type={Text}
-          />
-          <div className="label">Pagina Web:</div>
-          <Field fieldName="developerInfo.url" type={Text} />
+          <div className={styles.fieldGroup}>
+            <div className={styles.label}>Nombre:</div>
+            <Field fieldName="name" type={Text} />
+            <div className={styles.label}>Descripción:</div>
+            <Field fieldName="description" type={Textarea} />
+            <div className={styles.label}>URL de redirección:</div>
+            <Field fieldName="applicationURL" type={Text} />
+            <div className={styles.label}>Datos de usuario:</div>
+            <Field
+              fieldName="userFields"
+              type={Select}
+              multi
+              options={[
+                {
+                  label: 'Rut',
+                  value: 'identifier'
+                },
+                {
+                  label: 'Nombre',
+                  value: 'firstName'
+                },
+                {
+                  label: 'Apellido',
+                  value: 'lastName'
+                },
+                {
+                  label: 'Dirección',
+                  value: 'address'
+                },
+                {
+                  label: 'Teléfono',
+                  value: 'phone'
+                },
+                {
+                  label: 'Nivel Educacional',
+                  value: 'educationalLevel'
+                }
+              ]}
+            />
+          </div>
+          <div className={styles.headerLabel}>
+            Información del desarrollador:
+          </div>
+          <div className={styles.fieldGroup}>
+            <div className={styles.label}>Nombre:</div>
+            <Field fieldName="developerInfo.firstName" type={Text} />
+            <div className={styles.label}>Apellido:</div>
+            <Field fieldName="developerInfo.lastName" type={Text} />
+            <div className={styles.label}>Pagina Web:</div>
+            <Field fieldName="developerInfo.url" type={Text} />
+            <div className={styles.headerLabel}>Información de contacto:</div>
+            <div className={styles.fieldGroup}>
+              <div className={styles.subheaderLabel}>Dirección:</div>
+              <div className={styles.fieldGroup}>
+                <div className={styles.label}>Nombre de calle:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.streetName"
+                  type={Text}
+                />
+                <div className={styles.label}>Numeración:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.streetNumber"
+                  type={Text}
+                />
+                <div className={styles.label}>
+                  Número de oficina/casa/departamento (opcional):
+                </div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.departmentNumber"
+                  type={Text}
+                />
+                <div className={styles.label}>Ciudad:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.city"
+                  type={Text}
+                />
+                <div className={styles.label}>Código Postal:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.postalCode"
+                  type={Text}
+                />
+              </div>
+              <div className={styles.subheaderLabel}>Teléfono:</div>
+              <div className={styles.fieldGroup}>
+                <div className={styles.label}>Código de área:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.phone.areaCode"
+                  type={Text}
+                />
+                <div className={styles.label}>Número fijo:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.phone.number"
+                  type={Text}
+                />
+                <div className={styles.label}>Celular:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.phone.mobilePhone"
+                  type={Text}
+                />
+              </div>
+            </div>
+          </div>
         </Form>
         <br />
         <Button to="/" style={{ marginRight: 10 }}>

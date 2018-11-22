@@ -15,8 +15,6 @@ import gql from 'graphql-tag'
 import omit from 'lodash/omit'
 import UserFragments from 'App/fragments/User'
 
-console.log('UserFragments:', UserFragments)
-
 @withRouter
 @withMessage
 @withGraphQL(gql`
