@@ -7,6 +7,7 @@ import Checkbox from 'orionsoft-parts/lib/components/fields/Checkbox'
 import ObjectField from './ObjectField'
 import SixDigitInput from './SixDigitInput'
 import Rut from 'orionsoft-parts/lib/components/fields/Rut'
+import Relation from 'App/components/fields/Relation'
 
 export default {
   string: Text,
@@ -19,5 +20,6 @@ export default {
   select: Select,
   rut: Rut,
   email: Text,
-  ID: Text
+  ID: Text,
+  relation: Relation
 }

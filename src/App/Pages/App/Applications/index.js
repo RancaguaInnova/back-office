@@ -3,10 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 import styles from './styles.css'
 import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
+import DynamicComponent from 'App/components/DynamicComponent'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
-import AppsHome from './Home'
-import Apps from './Apps'
-import AppRegistrationForm from './AppRegistrationForm'
 
 export default class ApplicationsRoutes extends React.Component {
   render () {
@@ -30,10 +28,29 @@ export default class ApplicationsRoutes extends React.Component {
         </div>
         <Container>
           <Switch>
-            <Route path='/apps/lista' component={Apps} />
-            <Route path='/apps/editar/:itemId' component={Apps} />
-            <Route exact path='/apps' component={AppsHome} />
-            <Route path='/apps/registro' component={AppRegistrationForm} />
+            <Route
+              path='/apps/lista'
+              component={DynamicComponent(() => import('./List'))}
+            />
+            <Route
+              path='/apps/crear'
+              component={DynamicComponent(() => import('./Create'))}
+            />
+            <Route
+              path='/apps/editar/:itemId'
+              component={DynamicComponent(() => import('./Update'))}
+            />
+            <Route
+              path='/apps/registro'
+              component={DynamicComponent(() =>
+                import('./AppRegistrationForm')
+              )}
+            />
+            <Route
+              exact
+              path='/apps'
+              component={DynamicComponent(() => import('./Home'))}
+            />
           </Switch>
         </Container>
       </div>
