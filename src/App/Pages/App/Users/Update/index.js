@@ -1,5 +1,6 @@
 import React from 'react'
 import Section from 'App/components/Section'
+import WarningFrame from 'App/components/WarningFrame'
 import Button from 'orionsoft-parts/lib/components/Button'
 import { Form, Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
@@ -12,8 +13,8 @@ import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
-import omit from 'lodash/omit'
 import UserFragments from 'App/fragments/User'
+import omit from 'lodash/omit'
 
 @withRouter
 @withMessage
@@ -104,8 +105,10 @@ export default class UpdateUser extends React.Component {
               { label: 'Educación Superior', value: 'superior' }
             ]}
           />
-          <div className="label">Usuario Activo:</div>
-          <Field fieldName="active" type={Toggle} />
+          <WarningFrame warningMessage="Un usuario desactivado no podrá ingresar a la aplicación">
+            <div className="label">Usuario Activo:</div>
+            <Field fieldName="active" type={Toggle} />
+          </WarningFrame>
         </Form>
         <br />
         <Button to="/usuarios/lista" style={{ marginRight: 10 }}>
