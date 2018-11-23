@@ -8,9 +8,7 @@ export default {
       description
       departmentId
       approved
-      userFields {
-        fieldName
-      }
+      userFields
       applicationURL
       developerInfo {
         firstName
@@ -30,8 +28,9 @@ export default {
           }
         }
       }
-      appToken
-      tags
+      tags {
+        tag
+      }
     }
   `,
   AppRegistrationForm: gql`

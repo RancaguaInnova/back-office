@@ -4,108 +4,191 @@ import Button from 'orionsoft-parts/lib/components/Button'
 import { Form, Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
 import Toggle from 'orionsoft-parts/lib/components/fields/Toggle'
-import Rut from 'orionsoft-parts/lib/components/fields/Rut'
 import Select from 'orionsoft-parts/lib/components/fields/Select'
+import Textarea from 'orionsoft-parts/lib/components/fields/Textarea'
+import Relation from 'App/components/fields/Relation'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
-import omit from 'lodash/omit'
-import UserFragments from 'App/fragments/User'
+import AppFragments from 'App/fragments/Apps'
+import autobind from 'autobind-decorator'
+
+import styles from './styles.css'
 
 @withRouter
 @withMessage
 @withGraphQL(gql`
-  query user($userId: ID!) {
-    user(userId: $userId) {
-      ...FullUser
+  query application($applicationId: ID!) {
+    application(applicationId: $applicationId) {
+      ...FullApp
     }
   }
-  ${UserFragments.FullUser}
+  ${AppFragments.FullApp}
 `)
 @withMutation(gql`
-  mutation updateUser($user: UserInput!) {
-    updateUser(user: $user) {
-      ...FullUser
+  mutation updateApplication($application: ApplicationInput!) {
+    updateApplication(application: $application) {
+      ...Fullapplication
     }
   }
-  ${UserFragments.FullUser}
+  ${AppFragments.FullApp}
 `)
-export default class UpdateUser extends React.Component {
+export default class UpdateApplication extends React.Component {
   static propTypes = {
     history: PropTypes.object,
     showMessage: PropTypes.func,
-    user: PropTypes.object,
-    updateUser: PropTypes.func
+    application: PropTypes.object,
+    updateApplication: PropTypes.func
   }
 
   state = {}
 
   componentDidMount() {
-    this.setState({ ...this.props.user })
+    let { userFields } = this.props.application
+    this.setState({ ...this.props.application })
   }
 
+  onSuccess() {
+    this.props.showMessage('Aplicación guardada')
+    this.props.history.push(`/apps`)
+  }
+
+  @autobind
   async onSubmit() {
-    const { email } = this.state
-    const user = Object.assign(
-      { emails: [{ address: email, verified: false }] },
-      omit(this.state, ['email'])
-    )
     try {
-      await this.props.updateUser({ user })
-      this.props.showMessage('Usuario actualizado')
+      await this.props.createApplication({ application: this.state })
+      this.onSuccess()
     } catch (error) {
-      this.props.showMessage('Hubo un error al guardar los datos')
-      console.log('error:', error, '\n')
+      this.props.showMessage('Ocurrió un error al intentar crear la aplicación')
+      console.log('Error creating application:', error)
     }
   }
 
   render() {
+    console.log('this.state:', this.state)
     return (
-      <Section title="Editar Usuario" description="Editar un usuario" top>
+      <Section title="Editar Apliación" description="Editar aplicación" top>
         <Form state={this.state} onChange={changes => this.setState(changes)}>
-          <div className="label">Email:</div>
-          <Field fieldName="email" type={Text} />
-          <div className="label">Nombre:</div>
-          <Field fieldName="profile.firstName" type={Text} />
-          <div className="label">Apellido:</div>
-          <Field fieldName="profile.lastName" type={Text} />
-          <div className="label">RUT:</div>
-          <Field fieldName="profile.identifier" type={Rut} />
-          <div className="label">
-            DIRECCIÓN:
-            <div className="label">Nombre de Calle:</div>
-            <Field fieldName="profile.address.streetName" type={Text} />
-            <div className="label">Numeración:</div>
-            <Field fieldName="profile.address.streetNumber" type={Text} />
-            <div className="label">Número de departamento o casa:</div>
-            <Field fieldName="profile.address.departmentNumber" type={Text} />
+          <div className={styles.headerLabel}>
+            Información de la aplicación:
           </div>
-          <div className="label">
-            TELÉFONO:
-            <div className="label">Celular:</div>
-            <Field fieldName="profile.phone.mobilePhone" type={Text} />
-            <div className="label">Código de área:</div>
-            <Field fieldName="profile.phone.areaCode" type={Text} />
-            <div className="label">Numero:</div>
-            <Field fieldName="profile.phone.number" type={Text} />
+          <div className={styles.fieldGroup}>
+            <div className={styles.label}>Nombre:</div>
+            <Field fieldName="name" type={Text} />
+            <div className={styles.label}>Descripción:</div>
+            <Field fieldName="description" type={Textarea} />
+            <div className={styles.label}>URL de redirección:</div>
+            <Field fieldName="applicationURL" type={Text} />
+            <div className={styles.label}>Departamento al cual pertenece:</div>
+            <Field
+              fieldName="departmentId"
+              type={Relation}
+              optionsQueryName="departments"
+              onChange={value => this.setState({ departmentId: value })}
+              value={this.state.departmentId || ''}
+            />
+            <div className={styles.label}>Datos de usuario:</div>
+            <Field
+              fieldName="userFields"
+              type={Select}
+              multi
+              options={[
+                {
+                  label: 'Rut',
+                  value: 'identifier'
+                },
+                {
+                  label: 'Nombre',
+                  value: 'firstName'
+                },
+                {
+                  label: 'Apellido',
+                  value: 'lastName'
+                },
+                {
+                  label: 'Dirección',
+                  value: 'address'
+                },
+                {
+                  label: 'Teléfono',
+                  value: 'phone'
+                },
+                {
+                  label: 'Nivel Educacional',
+                  value: 'educationalLevel'
+                }
+              ]}
+            />
           </div>
-          <div className="label">Nivel Educacional:</div>
-          <Field
-            fieldName="profile.educationalLevel"
-            name="Nivel Educacional"
-            type={Select}
-            placeholder="Seleccionar:"
-            options={[
-              { label: 'Educación Básica', value: 'basica' },
-              { label: 'Educación Media', value: 'media' },
-              { label: 'Educación Superior', value: 'superior' }
-            ]}
-          />
-          <div className="label">Usuario Activo:</div>
-          <Field fieldName="active" type={Toggle} />
+          <div className={styles.headerLabel}>
+            Información del desarrollador:
+          </div>
+          <div className={styles.fieldGroup}>
+            <div className={styles.label}>Nombre:</div>
+            <Field fieldName="developerInfo.firstName" type={Text} />
+            <div className={styles.label}>Apellido:</div>
+            <Field fieldName="developerInfo.lastName" type={Text} />
+            <div className={styles.label}>Pagina Web:</div>
+            <Field fieldName="developerInfo.url" type={Text} />
+            <div className={styles.headerLabel}>Información de contacto:</div>
+            <div className={styles.fieldGroup}>
+              <div className={styles.subheaderLabel}>Dirección:</div>
+              <div className={styles.fieldGroup}>
+                <div className={styles.label}>Nombre de calle:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.streetName"
+                  type={Text}
+                />
+                <div className={styles.label}>Numeración:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.streetNumber"
+                  type={Text}
+                />
+                <div className={styles.label}>
+                  Número de oficina/casa/departamento (opcional):
+                </div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.departmentNumber"
+                  type={Text}
+                />
+                <div className={styles.label}>Ciudad:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.city"
+                  type={Text}
+                />
+                <div className={styles.label}>Código Postal:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.address.postalCode"
+                  type={Text}
+                />
+              </div>
+              <div className={styles.subheaderLabel}>Teléfono:</div>
+              <div className={styles.fieldGroup}>
+                <div className={styles.label}>Código de área:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.phone.areaCode"
+                  type={Text}
+                />
+                <div className={styles.label}>Número fijo:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.phone.number"
+                  type={Text}
+                />
+                <div className={styles.label}>Celular:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.phone.mobilePhone"
+                  type={Text}
+                />
+              </div>
+            </div>
+            <div className={styles.headerLabel}>Aplicación Aprobada:</div>
+            <div className={styles.fieldGroup}>
+              <Field fieldName="approved" type={Toggle} />
+            </div>
+          </div>
         </Form>
         <br />
         <Button to="/usuarios/lista" style={{ marginRight: 10 }}>

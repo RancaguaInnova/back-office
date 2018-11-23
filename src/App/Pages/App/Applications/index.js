@@ -21,6 +21,7 @@ export default class ApplicationsRoutes extends React.Component {
           <br />
           <Tabs
             items={[
+              { title: 'Home', path: '/apps' },
               { title: 'Aplicaciones', path: '/apps/lista' },
               { title: 'Registro', path: '/apps/registro' }
             ]}
@@ -37,7 +38,7 @@ export default class ApplicationsRoutes extends React.Component {
               component={DynamicComponent(() => import('./Create'))}
             />
             <Route
-              path='/apps/editar/:itemId'
+              path='/apps/editar/:applicationId'
               component={DynamicComponent(() => import('./Update'))}
             />
             <Route
