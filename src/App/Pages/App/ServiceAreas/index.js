@@ -22,6 +22,7 @@ export default class ServiceAreasRoutes extends React.Component {
           <br />
           <Tabs
             items={[
+              {title: 'Home', path: '/areas'}
               {title: 'Areas de Servicio', path: '/areas/lista'}
             ]}
           />

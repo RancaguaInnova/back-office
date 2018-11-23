@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Switch} from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styles from './styles.css'
 import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
@@ -23,8 +23,9 @@ export default class DirectoryRoutes extends React.Component {
           <br />
           <Tabs
             items={[
-              {title: 'Eventos', path: '/calendario/eventos'},
-              {title: 'Noticias', path: '/calendario/noticias'}
+              { title: 'Home', path: '/calendario' },
+              { title: 'Eventos', path: '/calendario/eventos' },
+              { title: 'Noticias', path: '/calendario/noticias' }
             ]}
           />
         </div>
