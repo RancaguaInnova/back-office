@@ -16,7 +16,7 @@ export default class CreateUser extends React.Component {
 
   onSuccess(user) {
     this.props.showMessage('Usuario creado')
-    this.props.history.push(`/usuarios/editar/${user._id}`)
+    this.props.history.push(`/usuarios/lista`)
   }
 
   render() {

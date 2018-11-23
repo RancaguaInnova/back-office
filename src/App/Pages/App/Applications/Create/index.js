@@ -11,20 +11,10 @@ import Relation from 'App/components/fields/Relation'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
-import withMutation from 'react-apollo-decorators/lib/withMutation'
-import gql from 'graphql-tag'
-import autobind from 'autobind-decorator'
 import styles from './styles.css'
 
 @withRouter
 @withMessage
-@withMutation(gql`
-  mutation createApplication($application: ApplicationInput!) {
-    createApplication(application: $application) {
-      _id
-    }
-  }
-`)
 export default class CreateApplication extends React.Component {
   static propTypes = {
     history: PropTypes.object,
@@ -39,17 +29,6 @@ export default class CreateApplication extends React.Component {
     this.props.history.push(`/apps`)
   }
 
-  @autobind
-  async onSubmit() {
-    try {
-      await this.props.createApplication({ application: this.state })
-      this.onSuccess()
-    } catch (error) {
-      this.props.showMessage('Ocurrió un error al intentar crear la aplicación')
-      console.log('Error creating application:', error)
-    }
-  }
-
   render() {
     return (
       <Section
@@ -58,9 +37,9 @@ export default class CreateApplication extends React.Component {
         top
       >
         <AutoForm
+          ref="form"
           mutation="createApplication"
           onSuccess={this.onSuccess}
-          ref="form"
         >
           <div className={styles.headerLabel}>
             Información de la aplicación:
@@ -184,7 +163,7 @@ export default class CreateApplication extends React.Component {
         <Button to="/apps/lista" style={{ marginRight: 10 }}>
           Cancelar
         </Button>
-        <Button onClick={this.onSubmit} primary>
+        <Button onClick={() => this.refs.form.submit()} primary>
           Crear Aplicación
         </Button>
       </Section>

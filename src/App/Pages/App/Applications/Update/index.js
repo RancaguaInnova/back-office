@@ -31,10 +31,9 @@ import styles from './styles.css'
 @withMutation(gql`
   mutation updateApplication($application: ApplicationInput!) {
     updateApplication(application: $application) {
-      ...Fullapplication
+      _id
     }
   }
-  ${AppFragments.FullApp}
 `)
 export default class UpdateApplication extends React.Component {
   static propTypes = {
@@ -47,7 +46,6 @@ export default class UpdateApplication extends React.Component {
   state = {}
 
   componentDidMount() {
-    let { userFields } = this.props.application
     this.setState({ ...this.props.application })
   }
 
@@ -59,16 +57,17 @@ export default class UpdateApplication extends React.Component {
   @autobind
   async onSubmit() {
     try {
-      await this.props.createApplication({ application: this.state })
+      await this.props.updateApplication({ application: this.state })
       this.onSuccess()
     } catch (error) {
-      this.props.showMessage('Ocurrió un error al intentar crear la aplicación')
+      this.props.showMessage(
+        'Ocurrió un error al editar la aplicación: Complete todos los campos'
+      )
       console.log('Error creating application:', error)
     }
   }
 
   render() {
-    console.log('this.state:', this.state)
     return (
       <Section title="Editar Apliación" description="Editar aplicación" top>
         <Form state={this.state} onChange={changes => this.setState(changes)}>
