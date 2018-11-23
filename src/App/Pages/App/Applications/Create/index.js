@@ -18,14 +18,15 @@ import styles from './styles.css'
 export default class CreateApplication extends React.Component {
   static propTypes = {
     history: PropTypes.object,
-    showMessage: PropTypes.func
+    showMessage: PropTypes.func,
+    createApplication: PropTypes.func
   }
 
   state = {}
 
-  onSuccess(user) {
+  onSuccess() {
     this.props.showMessage('Aplicación creada')
-    this.props.history.push(`/apps/editar/${user._id}`)
+    this.props.history.push(`/apps`)
   }
 
   render() {
@@ -35,7 +36,11 @@ export default class CreateApplication extends React.Component {
         description="Crear una nueva integración"
         top
       >
-        <AutoForm mutation="createApplication" onSuccess={this.onSuccess}>
+        <AutoForm
+          ref="form"
+          mutation="createApplication"
+          onSuccess={this.onSuccess}
+        >
           <div className={styles.headerLabel}>
             Información de la aplicación:
           </div>

@@ -26,7 +26,6 @@ export default class Applications extends React.Component {
         name='applications'
         basePath='/apps'
         fields={this.getFields()}
-        canCreate
         canUpdate
         allowSearch
       />
