@@ -19,7 +19,12 @@ export default class UserRoutes extends React.Component {
             Usuarios
           </Breadcrumbs>
           <br />
-          <Tabs items={[{ title: 'Usuarios', path: '/usuarios/lista' }]} />
+          <Tabs
+            items={[
+              { title: 'Home', path: '/usuarios' },
+              { title: 'Usuarios', path: '/usuarios/lista' }
+            ]}
+          />
         </div>
         <Container>
           <Switch>
