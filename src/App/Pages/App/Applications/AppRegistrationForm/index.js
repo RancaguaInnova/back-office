@@ -159,6 +159,14 @@ export default class AppRegistrationForm extends React.Component {
                   type={Text}
                 />
               </div>
+              <div className={styles.subheaderLabel}>Email:</div>
+              <div className={styles.fieldGroup}>
+                <div className={styles.label}>Email:</div>
+                <Field
+                  fieldName="developerInfo.contactInformation.email"
+                  type={Text}
+                />
+              </div>
             </div>
           </div>
         </Form>

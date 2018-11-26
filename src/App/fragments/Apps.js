@@ -38,9 +38,7 @@ export default {
       _id
       name
       description
-      userFields {
-        fieldName
-      }
+      userFields
       applicationURL
       developerInfo {
         firstName
