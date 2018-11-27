@@ -42,12 +42,6 @@ export default class ApplicationsRoutes extends React.Component {
               component={DynamicComponent(() => import('./Update'))}
             />
             <Route
-              path='/apps/registro'
-              component={DynamicComponent(() =>
-                import('./AppRegistrationForm')
-              )}
-            />
-            <Route
               exact
               path='/apps'
               component={DynamicComponent(() => import('./Home'))}

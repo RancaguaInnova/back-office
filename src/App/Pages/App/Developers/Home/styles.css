@@ -1,0 +1,7 @@
+:local(.bottomPadded) {
+  padding-bottom: 10px;
+}
+
+:local(.leftPadded) {
+  padding-left: 10px;
+}
