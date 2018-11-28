@@ -4,10 +4,7 @@ import styles from './styles.css'
 import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
-import DirectoryHome from './Home'
-import Departments from './Departments'
-import Officials from './Officials'
-import ServiceAreas from './ServiceAreas'
+import DynamicComponent from 'App/components/DynamicComponent'
 
 export default class DirectoryRoutes extends React.Component {
   render () {
@@ -33,10 +30,23 @@ export default class DirectoryRoutes extends React.Component {
         </div>
         <Container>
           <Switch>
-            <Route path='/directorio/areas' component={ServiceAreas} />
-            <Route path='/directorio/departamentos' component={Departments} />
-            <Route path='/directorio/funcionarios' component={Officials} />
-            <Route exact path='/directorio' component={DirectoryHome} />
+            <Route
+              path='/directorio/areas'
+              component={DynamicComponent(() => import('./ServiceAreas'))}
+            />
+            <Route
+              path='/directorio/departamentos'
+              component={DynamicComponent(() => import('./Departments'))}
+            />
+            <Route
+              path='/directorio/funcionarios'
+              component={DynamicComponent(() => import('./Officials'))}
+            />
+            <Route
+              exact
+              path='/directorio'
+              component={DynamicComponent(() => import('./Home'))}
+            />
           </Switch>
         </Container>
       </div>

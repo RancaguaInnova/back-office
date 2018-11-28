@@ -1,0 +1,19 @@
+:local(.fieldGroup) {
+  padding-left: 10px;
+}
+
+:local(.headerLabel) {
+  font-weight: 900;
+  font-size: 1.3em;
+}
+
+:local(.subheaderLabel) {
+  font-weight: 900;
+  font-size: 1.1em;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+:local(.label) {
+  font-weigth: 900;
+}

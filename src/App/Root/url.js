@@ -3,10 +3,8 @@ import getEnv from './getEnv'
 const urls = {
   local: `http://${window.location.hostname}:3000`,
   dev: `http://${window.location.hostname}:3000`,
-  prod: ''
+  prod: 'http://api.smartrancagua.com'
 }
-
-console.log('fill dev and production urls here')
 
 const env = getEnv()
 
