@@ -25,5 +25,26 @@ export default {
       active
       roles
     }
+  `,
+  Profile: gql`
+    fragment Profile on User {
+      profile {
+        firstName
+        lastName
+        identifier
+        address {
+          streetName
+          streetNumber
+          departmentNumber
+          city
+        }
+        phone {
+          areaCode
+          number
+          mobilePhone
+        }
+        educationalLevel
+      }
+    }
   `
 }

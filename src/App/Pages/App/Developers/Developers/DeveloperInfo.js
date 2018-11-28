@@ -2,7 +2,6 @@ import React from 'react'
 import Button from 'orionsoft-parts/lib/components/Button'
 import { Form, Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
-import Rut from 'orionsoft-parts/lib/components/fields/Rut'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import PropTypes from 'prop-types'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
@@ -71,8 +70,6 @@ export default class DeveloperInfo extends React.Component {
             <Field fieldName="profile.firstName" type={Text} />
             <div className={styles.label}>Apellido:</div>
             <Field fieldName="profile.lastName" type={Text} />
-            <div className={styles.label}>RUT:</div>
-            <Field fieldName="profile.identifier" type={Rut} />
             <div className={styles.headerLabel}>Datos de contacto:</div>
             <div className={styles.fieldGroup}>
               <div className={styles.subheaderLabel}>Dirección:</div>
@@ -80,8 +77,20 @@ export default class DeveloperInfo extends React.Component {
               <Field fieldName="profile.address.streetName" type={Text} />
               <div className={styles.label}>Numeración:</div>
               <Field fieldName="profile.address.streetNumber" type={Text} />
-              <div className={styles.label}>Número de departamento o casa:</div>
+              <div className={styles.label}>
+                Número de departamento o casa (opcional):
+              </div>
               <Field fieldName="profile.address.departmentNumber" type={Text} />
+              <div className={styles.label}>Ciudad:</div>
+              <Field
+                fieldName="developerInfo.contactInformation.address.city"
+                type={Text}
+              />
+              <div className={styles.label}>Código Postal:</div>
+              <Field
+                fieldName="developerInfo.contactInformation.address.postalCode"
+                type={Text}
+              />
               <div className={styles.subheaderLabel}>Teléfono:</div>
               <div className={styles.label}>Celular:</div>
               <Field fieldName="profile.phone.mobilePhone" type={Text} />

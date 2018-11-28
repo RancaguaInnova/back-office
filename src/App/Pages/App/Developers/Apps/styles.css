@@ -17,3 +17,8 @@
 :local(.label) {
   font-weigth: 900;
 }
+
+:local(.linkButton) {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
