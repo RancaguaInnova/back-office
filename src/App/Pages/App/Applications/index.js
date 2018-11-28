@@ -22,8 +22,7 @@ export default class ApplicationsRoutes extends React.Component {
           <Tabs
             items={[
               { title: 'Home', path: '/apps' },
-              { title: 'Aplicaciones', path: '/apps/lista' },
-              { title: 'Registro', path: '/apps/registro' }
+              { title: 'Aplicaciones', path: '/apps/lista' }
             ]}
           />
         </div>
