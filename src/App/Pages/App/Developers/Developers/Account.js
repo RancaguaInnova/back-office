@@ -3,7 +3,6 @@ import Button from 'orionsoft-parts/lib/components/Button'
 import { Form, Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
 import Rut from 'orionsoft-parts/lib/components/fields/Rut'
-import Password from 'App/components/fields/Password'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import PropTypes from 'prop-types'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
@@ -80,9 +79,13 @@ export default class CreateDeveloperAccount extends React.Component {
             <div className={styles.label}>
               Contraseña (mínimo 8 caracteres):
             </div>
-            <Field fieldName="password" type={Password} />
+            <Field fieldName="password" type={Text} fieldType="password" />
             <div className={styles.label}>Repetir Contraseña:</div>
-            <Field fieldName="repeatPassword" type={Password} />
+            <Field
+              fieldName="repeatPassword"
+              type={Text}
+              fieldType="password"
+            />
           </div>
         </Form>
         <br />
