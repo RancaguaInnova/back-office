@@ -5,9 +5,11 @@ import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
 import DynamicComponent from 'App/components/DynamicComponent'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
+import forceLogin from 'App/helpers/auth/forceLogin'
 
+@forceLogin
 export default class ApplicationsRoutes extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <div className={styles.header}>
@@ -29,20 +31,20 @@ export default class ApplicationsRoutes extends React.Component {
         <Container>
           <Switch>
             <Route
-              path='/apps/lista'
+              path="/apps/lista"
               component={DynamicComponent(() => import('./List'))}
             />
             <Route
-              path='/apps/crear'
+              path="/apps/crear"
               component={DynamicComponent(() => import('./Create'))}
             />
             <Route
-              path='/apps/editar/:applicationId'
+              path="/apps/editar/:applicationId"
               component={DynamicComponent(() => import('./Update'))}
             />
             <Route
               exact
-              path='/apps'
+              path="/apps"
               component={DynamicComponent(() => import('./Home'))}
             />
           </Switch>

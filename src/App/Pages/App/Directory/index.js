@@ -5,9 +5,11 @@ import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import DynamicComponent from 'App/components/DynamicComponent'
+import forceLogin from 'App/helpers/auth/forceLogin'
 
+@forceLogin
 export default class DirectoryRoutes extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <div className={styles.header}>
@@ -31,20 +33,20 @@ export default class DirectoryRoutes extends React.Component {
         <Container>
           <Switch>
             <Route
-              path='/directorio/areas'
+              path="/directorio/areas"
               component={DynamicComponent(() => import('./ServiceAreas'))}
             />
             <Route
-              path='/directorio/departamentos'
+              path="/directorio/departamentos"
               component={DynamicComponent(() => import('./Departments'))}
             />
             <Route
-              path='/directorio/funcionarios'
+              path="/directorio/funcionarios"
               component={DynamicComponent(() => import('./Officials'))}
             />
             <Route
               exact
-              path='/directorio'
+              path="/directorio"
               component={DynamicComponent(() => import('./Home'))}
             />
           </Switch>

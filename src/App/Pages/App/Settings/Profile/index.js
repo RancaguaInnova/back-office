@@ -37,15 +37,14 @@ export default class Profile extends React.Component {
   state = {}
 
   render() {
-    console.log('this.props:', this.props, '\n')
-    if (!this.props.me) return
+    if (!this.props.me) return null
     return (
       <div className={styles.container}>
         <Section top title="Perfil" description="Edita tus datos personales">
           <AutoForm
             mutation="setUserProfile"
             ref="form"
-            doc={{userId: this.props.me._id, profile: this.props.me.profile}}
+            doc={{ userId: this.props.me._id, profile: this.props.me.profile }}
             onSuccess={() => this.props.showMessage('Tu perfil fue guardado')}
             fragment={fragment}
             omit={['userId']}

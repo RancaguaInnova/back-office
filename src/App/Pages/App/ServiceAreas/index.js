@@ -6,7 +6,9 @@ import Container from 'orionsoft-parts/lib/components/Container'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import AreasHome from './Home'
 import Areas from './Areas'
+import forceLogin from 'App/helpers/auth/forceLogin'
 
+@forceLogin
 export default class ServiceAreasRoutes extends React.Component {
   render () {
     return (

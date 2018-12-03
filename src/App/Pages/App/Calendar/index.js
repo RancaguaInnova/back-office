@@ -7,9 +7,11 @@ import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import CalendarHome from './Home'
 import Events from './Events'
 import News from './News'
+import forceLogin from 'App/helpers/auth/forceLogin'
 
+@forceLogin
 export default class DirectoryRoutes extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <div className={styles.header}>
@@ -31,9 +33,9 @@ export default class DirectoryRoutes extends React.Component {
         </div>
         <Container>
           <Switch>
-            <Route path='/calendario/eventos' component={Events} />
-            <Route path='/calendario/noticias' component={News} />
-            <Route exact path='/calendario' component={CalendarHome} />
+            <Route path="/calendario/eventos" component={Events} />
+            <Route path="/calendario/noticias" component={News} />
+            <Route exact path="/calendario" component={CalendarHome} />
           </Switch>
         </Container>
       </div>

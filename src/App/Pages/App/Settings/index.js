@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Switch} from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Profile from './Profile'
 import Password from './Password'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
@@ -7,8 +7,10 @@ import PropTypes from 'prop-types'
 import styles from './styles.css'
 import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
+import forceLogin from 'App/helpers/auth/forceLogin'
 
-export default class Layout extends React.Component {
+@forceLogin
+export default class Settings extends React.Component {
   static propTypes = {
     children: PropTypes.node
   }
@@ -21,8 +23,8 @@ export default class Layout extends React.Component {
           <br />
           <Tabs
             items={[
-              {title: 'Profile', path: '/settings'},
-              {title: 'Password', path: '/settings/password'}
+              { title: 'Profile', path: '/settings' },
+              { title: 'Password', path: '/settings/password' }
             ]}
           />
         </div>
