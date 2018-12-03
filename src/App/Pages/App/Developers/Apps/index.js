@@ -44,7 +44,9 @@ export default class AppRegistrationForm extends React.Component {
   static propTypes = {
     history: PropTypes.object,
     showMessage: PropTypes.func,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    user: PropTypes.object,
+    createApplication: PropTypes.func
   }
 
   state = {
@@ -73,7 +75,6 @@ export default class AppRegistrationForm extends React.Component {
       this.props.showMessage(
         `Debes estar logueado en una cuenta de tipo "Desarrollador"`
       )
-      return
     } else {
       this.props.showMessage(
         `Enlazando aplicación con cuenta ${this.props.user.email}`

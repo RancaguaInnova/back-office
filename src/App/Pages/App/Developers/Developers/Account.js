@@ -25,7 +25,8 @@ import styles from './styles.css'
 export default class CreateDeveloperAccount extends React.Component {
   static propTypes = {
     createUser: PropTypes.func,
-    setUserId: PropTypes.func
+    setUserId: PropTypes.func,
+    showMessage: PropTypes.func
   }
 
   state = {}

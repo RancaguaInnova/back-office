@@ -33,7 +33,7 @@ export default class Relation extends React.Component {
     `
     const { data } = await this.props.client.query({ query })
     this.setState({ options: data[optionsQueryName].items })
-  } 
+  }
 
   @autobind
   onChange(value) {

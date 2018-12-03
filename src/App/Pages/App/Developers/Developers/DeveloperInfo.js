@@ -36,7 +36,8 @@ export default class DeveloperInfo extends React.Component {
   static propTypes = {
     userId: PropTypes.string,
     user: PropTypes.object,
-    updateUser: PropTypes.func
+    updateUser: PropTypes.func,
+    showMessage: PropTypes.func
   }
 
   state = {}
