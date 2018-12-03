@@ -6,8 +6,8 @@ import 'numeral/locales/es'
 import 'moment/locale/es'
 */
 
-moment.locale('en')
-numeral.locale('en')
+moment.locale('es')
+numeral.locale('es')
 
 global.numeral = numeral
 global.moment = moment
