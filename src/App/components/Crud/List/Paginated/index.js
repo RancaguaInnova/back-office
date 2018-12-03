@@ -2,13 +2,13 @@ import React from 'react'
 import Data from './Data'
 import gql from 'graphql-tag'
 import getQueryFields from './getQueryFields'
-import {getArguments, getParams} from './getParams'
+import { getArguments, getParams } from './getParams'
 import Head from './Head'
 import autobind from 'autobind-decorator'
 import isEqual from 'lodash/isEqual'
 import PropTypes from 'prop-types'
 import LoadingIndicator from './LoadingIndicator'
-import {Query} from 'react-apollo'
+import { Query } from 'react-apollo'
 
 export default class Fetch extends React.Component {
   static propTypes = {
@@ -109,7 +109,7 @@ export default class Fetch extends React.Component {
     loadingComponent: LoadingIndicator
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       page: 1,
@@ -119,22 +119,21 @@ export default class Fetch extends React.Component {
   }
 
   // public reload function
-  async reload() {
+  async reload () {
     return this.refs.child.refs.child.queryObservable.refetch()
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     const newVariables = this.getVariables(nextProps)
     const currentVariables = this.getVariables(this.props)
     if (!isEqual(newVariables, currentVariables) && this.state.page !== 1) {
-      this.setState({page: 1})
+      this.setState({ page: 1 })
     }
   }
 
-  getQuery(props) {
-    return `query ${props.queryFunctionName || 'paginated_' + props.queryName} (${getArguments(
-      props.params
-    )}) {
+  getQuery (props) {
+    return `query ${props.queryFunctionName ||
+      'paginated_' + props.queryName} (${getArguments(props.params)}) {
       result: ${props.queryName} (
         ${getParams(props.params)}
       ) {
@@ -148,7 +147,7 @@ export default class Fetch extends React.Component {
     }`
   }
 
-  getDefaultSort() {
+  getDefaultSort () {
     for (const field of this.props.fields) {
       if (field.defaultSort) {
         return {
@@ -160,7 +159,7 @@ export default class Fetch extends React.Component {
     return {}
   }
 
-  getVariables(props) {
+  getVariables (props) {
     const defaultSort = this.getDefaultSort()
     const variables = {
       limit: this.state.limit,
@@ -174,23 +173,23 @@ export default class Fetch extends React.Component {
   }
 
   @autobind
-  setVariable(key, value) {
+  setVariable (key, value) {
     const variables = this.state.variables
     variables[key] = value
-    this.setState({variables, page: 1})
+    this.setState({ variables, page: 1 })
   }
 
   @autobind
-  setSort(sortBy, sortType) {
-    this.setState({sortBy, sortType})
+  setSort (sortBy, sortType) {
+    this.setState({ sortBy, sortType })
   }
 
-  render() {
+  render () {
     const variables = this.getVariables(this.props)
     return (
-      <div className="paginated-root">
+      <div className='paginated-root'>
         <Head
-          ref="head"
+          ref='head'
           title={this.props.headTitle}
           bottomComponent={this.props.headBottomComponent}
           leftComponent={this.props.headLeftComponent}
@@ -200,13 +199,14 @@ export default class Fetch extends React.Component {
           setVariable={this.setVariable}
         />
         <Query
-          fetchPolicy="network-only"
+          fetchPolicy='network-only'
           query={gql([this.getQuery(this.props)])}
           variables={variables}
-          pollInterval={this.props.pollInterval}>
+          pollInterval={this.props.pollInterval}
+        >
           {data => (
             <Data
-              ref="child"
+              ref='child'
               data={data}
               selectedItemId={this.props.selectedItemId}
               onPress={this.props.onPress}
@@ -215,9 +215,9 @@ export default class Fetch extends React.Component {
               sortType={variables.sortType}
               setSort={this.setSort}
               page={variables.page}
-              setPage={page => this.setState({page})}
+              setPage={page => this.setState({ page })}
               limit={variables.limit}
-              setLimit={limit => this.setState({limit})}
+              setLimit={limit => this.setState({ limit })}
               loadingComponent={this.props.loadingComponent}
               footer={this.props.footer}
             />

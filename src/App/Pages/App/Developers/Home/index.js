@@ -15,11 +15,11 @@ export default class DevelopersHome extends React.Component {
           <ol>
             <li>
               Regístrate como desarrollador clickeando en la pestaña
-              "Desarrolladores"
+              <i>Desarrolladores</i>
             </li>
             <li>
               Registra tu aplicación o integración clickeando en la pestaña
-              "Aplicaciones"
+              <i>Aplicaciones</i>
             </li>
           </ol>
         </div>
