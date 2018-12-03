@@ -1,7 +1,6 @@
 import React from 'react'
 import styles from './styles.css'
 import { Route, Switch } from 'react-router-dom'
-import Home from './Home'
 // import ServiceAreas from './ServiceAreas'
 import DynamicComponent from 'App/components/DynamicComponent'
 
