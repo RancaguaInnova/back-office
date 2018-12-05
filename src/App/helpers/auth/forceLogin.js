@@ -1,9 +1,9 @@
 import React from 'react'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withUserId from './withUserId'
 
-export default function(ComposedComponent) {
+export default function (ComposedComponent) {
   @withRouter
   @withUserId
   class ForceLogin extends React.Component {
@@ -12,15 +12,15 @@ export default function(ComposedComponent) {
       userId: PropTypes.string
     }
 
-    redirect() {
+    redirect () {
       this.props.history.replace({
         pathname: '/login',
-        state: {nextPathname: window.location.pathname}
+        state: { nextPathname: window.location.pathname }
       })
       return null
     }
 
-    render() {
+    render () {
       if (!this.props.userId) return this.redirect()
       return <ComposedComponent {...this.props} />
     }
