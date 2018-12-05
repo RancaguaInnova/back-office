@@ -34,7 +34,14 @@ export default class MainHome extends React.Component {
             component={DynamicComponent(() => import('./Developers'))}
           />
           <Route
+            path='/no-autorizado'
+            component={DynamicComponent(() =>
+              import('../../components/NotAuthorized')
+            )}
+          />
+          <Route
             path='/'
+            exact
             component={DynamicComponent(() => import('./Home'))}
           />
         </Switch>

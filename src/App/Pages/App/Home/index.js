@@ -1,20 +1,14 @@
 import React from 'react'
-import {Route, Switch} from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styles from './styles.css'
 import Breadcrumbs from 'App/components/Breadcrumbs'
 import Container from 'orionsoft-parts/lib/components/Container'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
-import Directory from '../Directory'
-import Calendar from '../Calendar'
-import Users from '../Users'
-import Applications from '../Applications'
-// import ServiceAreas from '../ServiceAreas'
+import DynamicComponent from 'App/components/DynamicComponent'
 
 export default class DirectoryRoutes extends React.Component {
   renderBody () {
-    return (
-      <h2>Backoffice Rancagua</h2>
-    )
+    return <h2>Backoffice Rancagua</h2>
   }
 
   render () {
@@ -25,19 +19,31 @@ export default class DirectoryRoutes extends React.Component {
           <br />
           <Tabs
             items={[
-              {title: 'Directorio', path: '/directorio'},
-              {title: 'Calendario', path: '/calendario'},
-              {title: 'Usuarios', path: '/usuarios'},
-              {title: 'Aplicaciones', path: '/apps'}
+              { title: 'Directorio', path: '/directorio' },
+              { title: 'Calendario', path: '/calendario' },
+              { title: 'Usuarios', path: '/usuarios' },
+              { title: 'Aplicaciones', path: '/apps' }
             ]}
           />
         </div>
         <Container>
           <Switch>
-            <Route path='/directorio' component={Directory} />
-            <Route path='/calendario' component={Calendar} />
-            <Route path='/usuarios' component={Users} />
-            <Route path='/apps' component={Applications} />
+            <Route
+              path='/directorio'
+              component={DynamicComponent(() => import('../Directory'))}
+            />
+            <Route
+              path='/calendario'
+              component={DynamicComponent(() => import('../Calendar'))}
+            />
+            <Route
+              path='/usuarios'
+              component={DynamicComponent(() => import('../Users'))}
+            />
+            <Route
+              path='/apps'
+              component={DynamicComponent(() => import('../Applications'))}
+            />
           </Switch>
           {this.renderBody()}
         </Container>
