@@ -9,11 +9,11 @@ import VerifyEmail from './VerifyEmail'
 import Forgot from './Forgot'
 import Reset from './Reset'
 import Enroll from './Enroll'
-import {Route, Switch, withRouter} from 'react-router-dom'
+import { Route, Switch, withRouter } from 'react-router-dom'
 
 @withRouter
 export default class Auth extends React.Component {
-  state = {isLoading: false, error: null}
+  state = { isLoading: false, error: null }
 
   static propTypes = {
     children: PropTypes.any,
@@ -25,7 +25,7 @@ export default class Auth extends React.Component {
 
   @autobind
   onLogin() {
-    const {location} = this.props
+    const { location } = this.props
     if (location.state && location.state.nextPathname) {
       this.props.history.replace(location.state.nextPathname)
     } else {
@@ -42,26 +42,38 @@ export default class Auth extends React.Component {
   }
 
   render() {
-    const otherProps = {onLogin: this.onLogin}
+    const otherProps = { onLogin: this.onLogin }
     return (
-      <div className={styles.container} style={{minHeight: window.innerHeight}}>
+      <div
+        className={styles.container}
+        style={{ minHeight: window.innerHeight }}
+      >
         <div className={styles.content}>
           {this.renderLogo()}
           <Switch>
             <Route path="/login" render={() => <Login {...otherProps} />} />
-            <Route path="/register" render={() => <Register {...otherProps} />} />
+            <Route
+              path="/register"
+              render={() => <Register {...otherProps} />}
+            />
             <Route
               path="/verify-email/:token"
-              render={({match}) => <VerifyEmail token={match.params.token} {...otherProps} />}
+              render={({ match }) => (
+                <VerifyEmail token={match.params.token} {...otherProps} />
+              )}
             />
             <Route path="/forgot" render={() => <Forgot {...otherProps} />} />
             <Route
               path="/reset/:token"
-              render={({match}) => <Reset token={match.params.token} {...otherProps} />}
+              render={({ match }) => (
+                <Reset token={match.params.token} {...otherProps} />
+              )}
             />
             <Route
               path="/enroll/:token"
-              render={({match}) => <Enroll token={match.params.token} {...otherProps} />}
+              render={({ match }) => (
+                <Enroll token={match.params.token} {...otherProps} />
+              )}
             />
           </Switch>
         </div>

@@ -8,9 +8,11 @@ import CalendarHome from './Home'
 import Events from './Events'
 import News from './News'
 import forceLogin from 'App/helpers/auth/forceLogin'
+import withAuthorization from 'App/helpers/auth/withAuthorization'
 
 @forceLogin
-export default class DirectoryRoutes extends React.Component {
+@withAuthorization(['admin'])
+export default class CalendarRoutes extends React.Component {
   render() {
     return (
       <div>

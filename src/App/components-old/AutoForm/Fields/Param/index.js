@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import isArray from 'lodash/isArray'
 import isPlainObject from 'lodash/isPlainObject'
-import {Field} from 'simple-react-form'
+import { Field } from 'simple-react-form'
 import getInLocale from 'App/i18n/getInLocale'
 
 export default class AutoFormField extends React.Component {
@@ -13,10 +13,8 @@ export default class AutoFormField extends React.Component {
     only: PropTypes.string
   }
 
-  renderObjectFields(fields) {
-    console.log('fields:', fields, '\n')
+  renderObjectFields (fields) {
     return Object.keys(fields).map(key => {
-      console.log('fields[key]:', fields[key], '\n')
       return (
         <AutoFormField
           key={key}
@@ -28,8 +26,8 @@ export default class AutoFormField extends React.Component {
     })
   }
 
-  renderField(field) {
-    const {type, relation, optionsQueryName} = field
+  renderField (field) {
+    const { type, relation, optionsQueryName } = field
     if (isArray(type) && isPlainObject(type[0])) {
       const Component = this.props.schemaToField('array')
       return (
@@ -58,20 +56,24 @@ export default class AutoFormField extends React.Component {
     }
   }
 
-  renderLabel() {
+  renderLabel () {
     if (this.props.only === this.props.fieldName) return
     if (!this.props.field.label) return
-    return <div className="label">{getInLocale(this.props.field.label)}</div>
+    return <div className='label'>{getInLocale(this.props.field.label)}</div>
   }
 
-  renderDescription() {
+  renderDescription () {
     if (!this.props.field.description) return
-    return <div className="description">{getInLocale(this.props.field.description)}</div>
+    return (
+      <div className='description'>
+        {getInLocale(this.props.field.description)}
+      </div>
+    )
   }
 
-  render() {
+  render () {
     return (
-      <div className="autoform-field">
+      <div className='autoform-field'>
         {this.renderLabel()}
         {this.renderField(this.props.field, this.props.fieldName)}
         {this.renderDescription()}

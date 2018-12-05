@@ -7,8 +7,10 @@ import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import AreasHome from './Home'
 import Areas from './Areas'
 import forceLogin from 'App/helpers/auth/forceLogin'
+import withAuthorization from 'App/helpers/auth/withAuthorization'
 
 @forceLogin
+@withAuthorization(['admin'])
 export default class ServiceAreasRoutes extends React.Component {
   render () {
     return (
