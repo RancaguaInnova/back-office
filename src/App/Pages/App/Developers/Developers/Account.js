@@ -7,6 +7,7 @@ import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import PropTypes from 'prop-types'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
+import setSession from 'App/helpers/auth/setSession'
 
 import styles from './styles.css'
 
@@ -18,6 +19,23 @@ import styles from './styles.css'
     $profile: UserProfileInput
   ) {
     createUser(email: $email, password: $password, profile: $profile) {
+      _id
+      publicKey
+      secretKey
+      userId
+      createdAt
+      nonce
+      lastCall
+      locale
+      roles
+      emailVerified
+      options
+    }
+  }
+`)
+@withMutation(gql`
+  mutation loginWithPassword($email: String!, $password: String!) {
+    loginWithPassword(email: $email, password: $password) {
       _id
     }
   }
@@ -55,12 +73,13 @@ export default class CreateDeveloperAccount extends React.Component {
 
     let profile = { identifier }
     try {
-      const { createUser: { _id } } = await this.props.createUser({
+      const { createUser } = await this.props.createUser({
         email,
         password,
         profile
       })
-      this.props.setUserId(_id, 'info')
+      setSession(createUser)
+      this.props.setUserId(createUser.userId, 'info')
     } catch (error) {
       this.props.showMessage('Hubo un error al crear la cuenta')
       console.log('error:', error)

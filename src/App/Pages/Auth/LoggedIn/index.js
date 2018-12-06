@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './styles.css'
 import Button from 'orionsoft-parts/lib/components/Button'
 import logout from 'App/helpers/auth/logout'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 
 @withRouter
@@ -18,10 +18,10 @@ export default class Logout extends React.Component {
   render() {
     return (
       <div className={styles.container}>
-        <p>You are already logged in, please log out first</p>
-        <Button onClick={() => this.props.history.push('/')}>Go Home</Button>
+        <p>Ya tienes tu sesión iniciada, quieres cerrar tu sesión?</p>
+        <Button onClick={() => this.props.history.push('/')}>Home</Button>
         <Button onClick={this.logout} danger>
-          Sign out
+          Cerrar Sesión
         </Button>
       </div>
     )
