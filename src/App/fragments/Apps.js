@@ -13,19 +13,18 @@ export default {
       developerInfo {
         firstName
         lastName
+        email
         url
-        contactInformation {
-          address {
-            streetName
-            streetNumber
-            departmentNumber
-            postalCode
-          }
-          phone {
-            areaCode
-            number
-            mobilePhone
-          }
+        address {
+          streetName
+          streetNumber
+          departmentNumber
+          postalCode
+        }
+        phone {
+          areaCode
+          number
+          mobilePhone
         }
       }
       tags {
@@ -44,18 +43,17 @@ export default {
         firstName
         lastName
         url
-        contactInformation {
-          address {
-            streetName
-            streetNumber
-            departmentNumber
-            postalCode
-          }
-          phone {
-            areaCode
-            number
-            mobilePhone
-          }
+        email
+        address {
+          streetName
+          streetNumber
+          departmentNumber
+          postalCode
+        }
+        phone {
+          areaCode
+          number
+          mobilePhone
         }
       }
     }

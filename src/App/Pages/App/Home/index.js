@@ -22,7 +22,8 @@ export default class DirectoryRoutes extends React.Component {
               { title: 'Directorio', path: '/directorio' },
               { title: 'Calendario', path: '/calendario' },
               { title: 'Usuarios', path: '/usuarios' },
-              { title: 'Aplicaciones', path: '/apps' }
+              { title: 'Aplicaciones', path: '/apps' },
+              { title: 'Indicadores', path: '/informacion' }
             ]}
           />
         </div>
@@ -43,6 +44,10 @@ export default class DirectoryRoutes extends React.Component {
             <Route
               path='/apps'
               component={DynamicComponent(() => import('../Applications'))}
+            />
+            <Route
+              path='/informacion'
+              component={DynamicComponent(() => import('../AppInformation'))}
             />
           </Switch>
           {this.renderBody()}

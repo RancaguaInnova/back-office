@@ -6,10 +6,12 @@ import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import PropTypes from 'prop-types'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
+import { withRouter } from 'react-router'
 import gql from 'graphql-tag'
 
 import styles from './styles.css'
 
+@withRouter
 @withMessage
 @withGraphQL(gql`
   query user($userId: ID!) {
@@ -55,6 +57,7 @@ export default class DeveloperInfo extends React.Component {
       this.props.showMessage(
         'Información Guardada. Ahora puedes registrar tu aplicación'
       )
+      this.props.history.push('/devs/apps')
     } catch (error) {
       this.props.showMessage('Hubo un error al guardar los datos')
       console.log('error:', error)
@@ -83,15 +86,9 @@ export default class DeveloperInfo extends React.Component {
               </div>
               <Field fieldName="profile.address.departmentNumber" type={Text} />
               <div className={styles.label}>Ciudad:</div>
-              <Field
-                fieldName="developerInfo.contactInformation.address.city"
-                type={Text}
-              />
+              <Field fieldName="profile.address.city" type={Text} />
               <div className={styles.label}>Código Postal:</div>
-              <Field
-                fieldName="developerInfo.contactInformation.address.postalCode"
-                type={Text}
-              />
+              <Field fieldName="profile.address.postalCode" type={Text} />
               <div className={styles.subheaderLabel}>Teléfono:</div>
               <div className={styles.label}>Celular:</div>
               <Field fieldName="profile.phone.mobilePhone" type={Text} />

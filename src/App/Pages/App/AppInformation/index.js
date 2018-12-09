@@ -10,7 +10,7 @@ import withAuthorization from 'App/helpers/auth/withAuthorization'
 
 @forceLogin
 @withAuthorization(['admin'])
-export default class CalendarRoutes extends React.Component {
+export default class InformationRoutes extends React.Component {
   render() {
     return (
       <div>
@@ -20,32 +20,20 @@ export default class CalendarRoutes extends React.Component {
               '/': 'Inicio'
             }}
           >
-            Calendario
+            Información
           </Breadcrumbs>
           <br />
           <Tabs
             items={[
-              { title: 'Home', path: '/calendario' },
-              { title: 'Eventos', path: '/calendario/eventos' },
-              { title: 'Noticias', path: '/calendario/noticias' }
+              { title: 'Home', path: '/informacion' },
+              { title: 'Tarjetas', path: '/informacion/tarjetas' }
             ]}
           />
         </div>
         <Container>
           <Switch>
-            <Route
-              path="/calendario/eventos"
-              component={DynamicComponent(() => import('./Events'))}
-            />
-            <Route
-              path="/calendario/noticias"
-              component={DynamicComponent(() => import('./News'))}
-            />
-            <Route
-              exact
-              path="/calendario"
-              component={DynamicComponent(() => import('./Home'))}
-            />
+            <Route path="/informacion/tarjetas" component={DynamicComponent(() => import('./Cards'))} />
+            <Route path="/informacion" component={DynamicComponent(() => import('./Home'))} />
           </Switch>
         </Container>
       </div>

@@ -19,6 +19,7 @@ export default {
           areaCode
           number
           mobilePhone
+          postalCode
         }
         educationalLevel
       }
@@ -37,6 +38,7 @@ export default {
           streetNumber
           departmentNumber
           city
+          postalCode
         }
         phone {
           areaCode

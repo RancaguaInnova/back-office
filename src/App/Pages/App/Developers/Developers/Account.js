@@ -30,6 +30,10 @@ import styles from './styles.css'
       roles
       emailVerified
       options
+      user {
+        _id
+        roles
+      }
     }
   }
 `)
@@ -79,7 +83,8 @@ export default class CreateDeveloperAccount extends React.Component {
         profile
       })
       setSession(createUser)
-      this.props.setUserId(createUser.userId, 'info')
+      this.props.loginWithPassword({ email, password })
+      this.props.setUserId(createUser.user._id, 'info')
     } catch (error) {
       this.props.showMessage('Hubo un error al crear la cuenta')
       console.log('error:', error)
