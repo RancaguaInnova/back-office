@@ -24,7 +24,8 @@ export default class LinkToAccount extends React.Component {
   static propTypes = {
     userId: PropTypes.string,
     user: PropTypes.object,
-    showMessage: PropTypes.func
+    showMessage: PropTypes.func,
+    linkAccountData: PropTypes.func
   }
 
   @autobind
@@ -39,9 +40,10 @@ export default class LinkToAccount extends React.Component {
       this.props.showMessage(
         `Enlazando aplicación con cuenta ${this.props.user.email}`
       )
-      let developerInfo = Object.assign({}, user.profile)
-      developerInfo.contactInformation = { email: user.email }
-      this.setState({ developerInfo })
+      let developerInfo = Object.assign({}, user.profile, { email: user.email })
+      delete developerInfo.identifier
+      delete developerInfo.educationalLevel
+      this.props.linkAccountData(developerInfo)
     }
   }
 
