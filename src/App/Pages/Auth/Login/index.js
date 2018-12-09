@@ -42,7 +42,7 @@ export default class Login extends React.Component {
             placeholder="Password"
           />
           <div className="description">
-            <Link to="/forgot">Forgot my password</Link>
+            <Link to="/forgot">Olvidé mi contraseña</Link>
           </div>
         </AutoForm>
         <br />
