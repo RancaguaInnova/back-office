@@ -7,12 +7,14 @@ import UserFragments from 'App/fragments/User'
 import includes from 'lodash/includes'
 import Button from 'orionsoft-parts/lib/components/Button'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
+import LoadingSection from 'App/components/LoadingSection'
 import styles from './styles.css'
 
 @withMessage
 @withGraphQL(gql`
   query getUser($userId: ID!) {
     user(userId: $userId) {
+      _id
       email
       roles
       ...Profile
@@ -48,6 +50,11 @@ export default class LinkToAccount extends React.Component {
   }
 
   render() {
+    let { userId } = this.props
+    console.log('this.props.userId:', this.props.userId)
+    if (!userId || this.props.loading) {
+      return <LoadingSection top="asdf" />
+    }
     return (
       <Button
         className={styles.linkButton}
