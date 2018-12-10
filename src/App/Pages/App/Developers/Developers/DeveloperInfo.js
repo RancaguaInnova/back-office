@@ -8,6 +8,7 @@ import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import { withRouter } from 'react-router'
 import gql from 'graphql-tag'
+import UserFragments from 'App/fragments/User'
 
 import styles from './styles.css'
 
@@ -21,11 +22,10 @@ import styles from './styles.css'
         address
         verified
       }
-      profile {
-        identifier
-      }
+      ...Profile
     }
   }
+  ${UserFragments.Profile}
 `)
 @withMutation(gql`
   mutation updateUser($user: UserInput!) {
@@ -42,7 +42,7 @@ export default class DeveloperInfo extends React.Component {
     showMessage: PropTypes.func
   }
 
-  state = {}
+  state = { ...this.props.user }
 
   async onSubmit() {
     let user = Object.assign({}, this.props.user)

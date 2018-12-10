@@ -55,16 +55,12 @@ export default class AppRegistrationForm extends React.Component {
   }
 
   renderLinkToAccountButton() {
-    let { userId } = this.props
-    if (userId) {
-      return (
-        <LinkToAccount
-          userId={userId}
-          linkAccountData={developerInfo => this.setState({ developerInfo })}
-        />
-      )
-    }
-    return null
+    return (
+      <LinkToAccount
+        userId={this.props.userId}
+        linkAccountData={developerInfo => this.setState({ developerInfo })}
+      />
+    )
   }
 
   renderDeveloperInfo() {
@@ -141,6 +137,7 @@ export default class AppRegistrationForm extends React.Component {
   }
 
   render() {
+    console.log('this.props.userId:', this.props.userId)
     return (
       <Section
         title="Registro de integraciones"
