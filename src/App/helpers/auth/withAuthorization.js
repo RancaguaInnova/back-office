@@ -22,11 +22,14 @@ export default function (allowedRoles) {
         return null
       }
 
+      isAuthorized () {
+        if (intersection(allowedRoles, this.props.roles).length) return true
+        return false
+      }
+
       render () {
-        if (!intersection(allowedRoles, this.props.roles).length) {
-          return this.redirect()
-        }
-        return <ComposedComponent {...this.props} />
+        if (this.isAuthorized()) return <ComposedComponent {...this.props} />
+        return this.redirect()
       }
     }
 

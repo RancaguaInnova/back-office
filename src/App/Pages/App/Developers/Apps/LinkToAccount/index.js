@@ -27,7 +27,8 @@ export default class LinkToAccount extends React.Component {
     userId: PropTypes.string,
     user: PropTypes.object,
     showMessage: PropTypes.func,
-    linkAccountData: PropTypes.func
+    linkAccountData: PropTypes.func,
+    loading: PropTypes.boolean
   }
 
   @autobind

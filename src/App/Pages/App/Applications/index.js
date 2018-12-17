@@ -9,7 +9,7 @@ import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
 
 @forceLogin
-@withAuthorization(['notMyRol'])
+@withAuthorization(['admin'])
 export default class ApplicationsRoutes extends React.Component {
   render() {
     return (

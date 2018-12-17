@@ -39,7 +39,8 @@ export default class DeveloperInfo extends React.Component {
     userId: PropTypes.string,
     user: PropTypes.object,
     updateUser: PropTypes.func,
-    showMessage: PropTypes.func
+    showMessage: PropTypes.func,
+    history: PropTypes.object
   }
 
   state = { ...this.props.user }
