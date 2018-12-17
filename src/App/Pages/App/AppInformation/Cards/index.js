@@ -1,6 +1,5 @@
 import React from 'react'
 import Crud from 'App/components/Crud'
-import formatDate from 'App/helpers/format/formatDate'
 
 export default class Cards extends React.Component {
   getFields () {

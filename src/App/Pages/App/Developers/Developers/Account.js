@@ -48,7 +48,8 @@ export default class CreateDeveloperAccount extends React.Component {
   static propTypes = {
     createUser: PropTypes.func,
     setUserId: PropTypes.func,
-    showMessage: PropTypes.func
+    showMessage: PropTypes.func,
+    loginWithPassword: PropTypes.func
   }
 
   state = {}
