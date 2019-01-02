@@ -14,12 +14,12 @@ export default {
           streetNumber
           departmentNumber
           city
+          postalCode
         }
         phone {
           areaCode
           number
           mobilePhone
-          postalCode
         }
         educationalLevel
       }

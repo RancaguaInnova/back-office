@@ -137,7 +137,6 @@ export default class AppRegistrationForm extends React.Component {
   }
 
   render() {
-    console.log('this.props.userId:', this.props.userId)
     return (
       <Section
         title="Registro de integraciones"
@@ -162,6 +161,10 @@ export default class AppRegistrationForm extends React.Component {
               type={Select}
               multi
               options={[
+                {
+                  label: 'Email',
+                  value: 'email'
+                },
                 {
                   label: 'Rut',
                   value: 'identifier'
