@@ -6,8 +6,10 @@ import DynamicComponent from 'App/components/DynamicComponent'
 import Container from 'orionsoft-parts/lib/components/Container'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import forceLogin from 'App/helpers/auth/forceLogin'
+import withAuthorization from 'App/helpers/auth/withAuthorization'
 
 @forceLogin
+@withAuthorization(['admin'])
 export default class UserRoutes extends React.Component {
   render() {
     return (
