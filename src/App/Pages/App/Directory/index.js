@@ -9,7 +9,7 @@ import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
 
 @forceLogin
-@withAuthorization(['admin'])
+@withAuthorization(['admin', 'directory'])
 export default class DirectoryRoutes extends React.Component {
   render() {
     return (
