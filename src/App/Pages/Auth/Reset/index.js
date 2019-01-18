@@ -1,6 +1,6 @@
 import React from 'react'
 import AutoForm from 'App/components/AutoForm'
-import {Field} from 'simple-react-form'
+import { Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
 import Button from 'orionsoft-parts/lib/components/Button'
 import autobind from 'autobind-decorator'
@@ -27,14 +27,9 @@ export default class ResetPassword extends React.Component {
     },
     confirm: {
       type: String,
-      custom(
-        confirm,
-        {
-          doc: {password}
-        }
-      ) {
+      custom(confirm, { doc: { password } }) {
         if (confirm !== password) {
-          return 'passwordsDontMatch'
+          return 'Contraseñas no coinciden'
         }
       }
     },
@@ -46,14 +41,14 @@ export default class ResetPassword extends React.Component {
   @autobind
   onSuccess(session) {
     setSession(session)
-    this.props.showMessage('Your password has been changed')
+    this.props.showMessage('Tu contraseña ha sido cambiada exitosamente!')
     this.props.onLogin()
   }
 
   @autobind
-  onValidationError({token}) {
+  onValidationError({ token }) {
     if (token === 'tokenNotFound') {
-      this.props.showMessage('The reset link is expired, please start again')
+      this.props.showMessage('El link ha expirado. Por favor intenta de nuevo.')
     }
   }
 
@@ -62,21 +57,34 @@ export default class ResetPassword extends React.Component {
     return (
       <div>
         <AutoForm
-          doc={{token: this.props.token}}
+          doc={{ token: this.props.token }}
           mutation="resetPassword"
           ref="form"
           schema={this.schema}
           onSuccess={this.onSuccess}
-          onValidationError={this.onValidationError}>
-          <div className="label">New password</div>
-          <Field fieldName="password" fieldType="password" placeholder="New Password" type={Text} />
-          <div className="description">Your password must be at least 8 characters long</div>
-          <div className="label">Confirm password</div>
-          <Field fieldName="confirm" fieldType="password" placeholder="Confirm" type={Text} />
+          onValidationError={this.onValidationError}
+        >
+          <div className="label">Nueva Contraseña</div>
+          <Field
+            fieldName="password"
+            fieldType="password"
+            placeholder="Nueva contraseña"
+            type={Text}
+          />
+          <div className="description">
+            Tu contraseña debe tener al menos 8 caracteres de largo
+          </div>
+          <div className="label">Confirmar nueva contraseña</div>
+          <Field
+            fieldName="confirm"
+            fieldType="password"
+            placeholder="Confirmar"
+            type={Text}
+          />
         </AutoForm>
         <br />
         <Button onClick={() => this.refs.form.submit()} primary>
-          Reset Password
+          Reestablecer Contraseña
         </Button>
         <br />
         <br />

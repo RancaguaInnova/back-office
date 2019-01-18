@@ -1,6 +1,6 @@
 import React from 'react'
 import AutoForm from 'App/components/AutoForm'
-import {Field} from 'simple-react-form'
+import { Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
 import Button from 'orionsoft-parts/lib/components/Button'
 import autobind from 'autobind-decorator'
@@ -19,14 +19,18 @@ export default class ForgotPassword extends React.Component {
 
   @autobind
   onSuccess() {
-    this.props.showMessage('Please follow the instructions in your email')
+    this.props.showMessage('Te hemos enviado instrucciones a tu email!')
   }
 
   render() {
     if (this.props.userId) return <LoggedIn />
     return (
       <div>
-        <AutoForm mutation="forgotPassword" ref="form" onSuccess={this.onSuccess}>
+        <AutoForm
+          mutation="forgotPassword"
+          ref="form"
+          onSuccess={this.onSuccess}
+        >
           <div className="label">Email</div>
           <Field
             fieldName="email"
