@@ -75,6 +75,17 @@ export default class UpdateUser extends React.Component {
           <Field fieldName="profile.lastName" type={Text} />
           <div className="label">RUT:</div>
           <Field fieldName="profile.identifier" type={Rut} />
+          <div className="label">Género:</div>
+          <Field
+            fieldName="profile.gender"
+            name="Género"
+            type={Select}
+            placeholder="Seleccionar:"
+            options={[
+              { label: 'Hombre', value: 'hombre' },
+              { label: 'Mujer', value: 'mujer' }
+            ]}
+          />
           <div className="label">
             DIRECCIÓN:
             <div className="label">Nombre de Calle:</div>
