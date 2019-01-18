@@ -178,6 +178,14 @@ export default class AppRegistrationForm extends React.Component {
                   value: 'lastName'
                 },
                 {
+                  label: 'Género',
+                  value: 'gender'
+                },
+                {
+                  label: 'Fecha de nacimiento',
+                  value: 'birthdate'
+                },
+                {
                   label: 'Dirección',
                   value: 'address'
                 },
