@@ -2,48 +2,50 @@ import React from 'react'
 import styles from './styles.css'
 import { Route, Switch } from 'react-router-dom'
 import DynamicComponent from 'App/components/DynamicComponent'
+import forceLogin from 'App/helpers/auth/forceLogin'
 
+@forceLogin
 export default class MainHome extends React.Component {
-  render () {
+  render() {
     return (
       <div className={styles.container}>
         <Switch>
           <Route
-            path='/settings'
+            path="/settings"
             component={DynamicComponent(() => import('./Settings'))}
           />
           <Route
-            path='/directorio'
+            path="/directorio"
             component={DynamicComponent(() => import('./Directory'))}
           />
           <Route
-            path='/calendario'
+            path="/calendario"
             component={DynamicComponent(() => import('./Calendar'))}
           />
           <Route
-            path='/usuarios'
+            path="/usuarios"
             component={DynamicComponent(() => import('./Users'))}
           />
           <Route
-            path='/apps'
+            path="/apps"
             component={DynamicComponent(() => import('./Applications'))}
           />
           <Route
-            path='/devs'
+            path="/devs"
             component={DynamicComponent(() => import('./Developers'))}
           />
           <Route
-            path='/informacion'
+            path="/informacion"
             component={DynamicComponent(() => import('./AppInformation'))}
           />
           <Route
-            path='/no-autorizado'
+            path="/no-autorizado"
             component={DynamicComponent(() =>
               import('../../components/NotAuthorized')
             )}
           />
           <Route
-            path='/'
+            path="/"
             exact
             component={DynamicComponent(() => import('./Home'))}
           />
