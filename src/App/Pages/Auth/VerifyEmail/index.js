@@ -37,7 +37,6 @@ export default class VerifyEmail extends React.Component {
   async verify() {
     await sleep(2000)
     try {
-      const {session} = await this.props.verifyEmail({
       const { session } = await this.props.verifyEmail({
         token: this.props.token
       })
