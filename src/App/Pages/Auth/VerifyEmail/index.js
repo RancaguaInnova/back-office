@@ -25,7 +25,9 @@ export default class VerifyEmail extends React.Component {
     onLogin: PropTypes.func
   }
 
-  state = {}
+  state = {
+    verified: false
+  }
 
   componentDidMount() {
     this.verify()
@@ -36,16 +38,36 @@ export default class VerifyEmail extends React.Component {
     await sleep(2000)
     try {
       const {session} = await this.props.verifyEmail({
+      const { session } = await this.props.verifyEmail({
         token: this.props.token
       })
       setSession(session)
-      this.props.onLogin()
+      // this.props.onLogin()
+      this.setState({ verified: true })
     } catch (error) {
       if (error.message.includes('Validation Error')) {
-        this.setState({errorMessage: 'El código de verificación expiró'})
+        this.setState({ errorMessage: 'El código de verificación expiró' })
       } else {
-        this.setState({errorMessage: error.message})
+        this.setState({ errorMessage: error.message })
       }
+    }
+  }
+
+  @autobind
+  renderStatus() {
+    if (!this.state.verified) {
+      return (
+        <div className={styles.loading}>
+          <Loading size={40} />
+          <p>Se esta verificando tu email</p>
+        </div>
+      )
+    } else {
+      return (
+        <div className={styles.loading}>
+          <p>Tu cuenta ha sido verificada!</p>
+        </div>
+      )
     }
   }
 
@@ -53,11 +75,6 @@ export default class VerifyEmail extends React.Component {
     if (this.state.errorMessage) {
       return <div className={styles.error}>{this.state.errorMessage}</div>
     }
-    return (
-      <div className={styles.loading}>
-        <Loading size={40} />
-        <p>Se esta verificando tu email</p>
-      </div>
-    )
+    return <div>{this.renderStatus()}</div>
   }
 }
