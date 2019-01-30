@@ -60,7 +60,7 @@ export default class UpdateForm extends React.Component {
                 icon={BackIcon}
                 onClick={() => this.props.history.push(this.props.basePath)}
               >
-                Back
+                Volver
               </Button>
               <Button
                 icon={DeleteIcon}
@@ -71,14 +71,14 @@ export default class UpdateForm extends React.Component {
                   )
                 }
               >
-                Delete
+                Eliminar
               </Button>
               <Button
                 icon={SaveIcon}
                 onClick={() => this.form.submit()}
                 primary
               >
-                Save {this.props.singular}
+                Guardar {this.props.singular}
               </Button>
             </div>
           )}

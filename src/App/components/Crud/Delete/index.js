@@ -64,7 +64,7 @@ export default class Delete extends React.Component {
                         )
                       }
                     >
-                      Back
+                      Volver
                     </Button>
                     <Button
                       icon={DeleteIcon}
