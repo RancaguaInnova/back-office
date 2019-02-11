@@ -5,13 +5,15 @@ import gql from 'graphql-tag'
 import { Field } from 'simple-react-form'
 import Select from 'orionsoft-parts/lib/components/fields/Select'
 import autobind from 'autobind-decorator'
+import includes from 'lodash/includes'
 
 @withApollo
 export default class Relation extends React.Component {
   static propTypes = {
     client: PropTypes.object,
     fieldName: PropTypes.string,
-    optionsQueryName: PropTypes.string
+    optionsQueryName: PropTypes.string,
+    value: PropTypes.string
   }
 
   state = {
@@ -20,7 +22,8 @@ export default class Relation extends React.Component {
   }
 
   async componentDidMount() {
-    const { optionsQueryName } = this.props
+    let { optionsQueryName } = this.props
+    if (!optionsQueryName) optionsQueryName = this.getQueryName()
     const query = gql`
       {
         ${optionsQueryName} {
@@ -35,18 +38,38 @@ export default class Relation extends React.Component {
     this.setState({ options: data[optionsQueryName].items })
   }
 
+  getQueryName() {
+    const { fieldName, optionsQueryName } = this.props
+    if (includes(fieldName, 'managerId')) {
+      return 'officials'
+    } else {
+      return optionsQueryName
+    }
+  }
+
   @autobind
   onChange(value) {
     this.setState({ value })
+    this.props.onChange(value)
+  }
+
+  renderLabel() {
+    if (!this.props.label) return
+    return <div>{this.props.label}</div>
   }
 
   render() {
     return (
-      <Field
-        fieldName={this.props.fieldName}
-        type={Select}
-        options={this.state.options}
-      />
+      <div>
+        {this.renderLabel()}
+        <Field
+          fieldName={this.props.fieldName}
+          type={Select}
+          options={this.state.options}
+          onChange={this.onChange}
+          value={this.props.value || this.state.value}
+        />
+      </div>
     )
   }
 }
