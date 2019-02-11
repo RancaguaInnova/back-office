@@ -8,13 +8,13 @@ export default class Officials extends React.Component {
         name: 'firstname',
         title: 'Nombre',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.firstname} </span>)
+        render: (value, doc, index) => <span>{value.firstname} </span>
       },
       {
         name: 'lastname',
         title: 'Apellido',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.lastname} </span>)
+        render: (value, doc, index) => <span>{value.lastname} </span>
       }
     ]
   }

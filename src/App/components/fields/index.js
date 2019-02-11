@@ -20,6 +20,6 @@ export default {
   select: Select,
   rut: Rut,
   email: Text,
-  ID: Text,
+  ID: Relation,
   relation: Relation
 }
