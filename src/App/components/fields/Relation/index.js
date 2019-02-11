@@ -13,7 +13,8 @@ export default class Relation extends React.Component {
     client: PropTypes.object,
     fieldName: PropTypes.string,
     optionsQueryName: PropTypes.string,
-    value: PropTypes.string
+    value: PropTypes.string,
+    onChange: PropTypes.func
   }
 
   state = {
