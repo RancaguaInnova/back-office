@@ -29,7 +29,7 @@ export default class CreateItem extends React.Component {
   @autobind
   onSuccess({ _id: itemId }) {
     this.props.showMessage(`Cambios en ${this.props.singular} guardados`)
-    this.props.history.push(`${this.props.basePath}/${itemId}`)
+    this.props.history.push(`${this.props.basePath}/editar/${itemId}`)
   }
 
   render() {
