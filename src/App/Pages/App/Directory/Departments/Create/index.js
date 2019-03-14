@@ -1,4 +1,4 @@
-import {Component, React} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Section from 'App/components/Section'
 import Button from 'orionsoft-parts/lib/components/Button'
@@ -15,25 +15,21 @@ import styles from './styles.css'
 
 @withRouter
 @withMessage
-class CreateDepartaments extends Component {static propTypes = {
-  history: PropTypes.object,
-  showMessage: PropTypes.func,
-  createApplication: PropTypes.func
-}
-state = {}
+class CreateDepartaments extends React.Component {
+  static propTypes = {
+    history: PropTypes.object,
+    showMessage: PropTypes.func,
+    createApplication: PropTypes.func
+  }
+  state = {}
 
-onSuccess() {
-  this.props.showMessage('departamento creado')
-  this.props.history.push(`/directorio/departamentos`)
-}
+  onSuccess () {
+    this.props.showMessage('departamento creado')
+    this.props.history.push(`/directorio/departamentos`)
+  }
 
-  render() {
-    console.log("llego a crear");
-
-    return (
-
-    <div>Hola</div>
-    )
+  render () {
+    return <div>Hola</div>
   }
 }
 export default CreateDepartaments
