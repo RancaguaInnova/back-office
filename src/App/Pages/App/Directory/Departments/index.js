@@ -1,5 +1,9 @@
 import React from 'react'
-import Crud from 'App/components/Crud'
+import forceLogin from 'App/helpers/auth/forceLogin'
+import withAuthorization from 'App/helpers/auth/withAuthorization'
+import Container from 'orionsoft-parts/lib/components/Container'
+import { Route, Switch } from 'react-router-dom'
+import DynamicComponent from 'App/components/DynamicComponent'
 
 export default class Departments extends React.Component {
   getFields () {
@@ -15,19 +19,28 @@ export default class Departments extends React.Component {
 
   render () {
     return (
-      <Crud
-        path='/directorio/departamentos'
-        singular='Departamento'
-        plural='Departamentos'
-        listQuery='departments'
-        listFields={this.getFields()}
-        itemQuery='department'
-        updateMutation='updateDepartment'
-        deleteMutation='deleteDepartment'
-        relationsMap={{ managerId: 'officials' }}
-        createMutation='createDepartment'
-        allowSearch
-      />
+      <Container>
+        <Switch>
+
+
+         <Route
+            exact
+            path="/directorio/departamentos"
+            component={DynamicComponent(() => import('./List'))}
+          />
+          <Route
+            exact
+            path="/directorio/departamentos/crear"
+            component={DynamicComponent(() => import('./Create'))}
+          />
+          <Route
+            exact
+            path="/directorio/departamentos/editar/:departamentId"
+            component={DynamicComponent(() => import('./Update'))}
+          />
+
+        </Switch>
+      </Container>
     )
   }
 }
