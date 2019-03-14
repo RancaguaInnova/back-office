@@ -4,15 +4,23 @@ import Button from 'orionsoft-parts/lib/components/Button'
 import logout from 'App/helpers/auth/logout'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
+import withMutation from 'react-apollo-decorators/lib/withMutation'
+import gql from 'graphql-tag'
 
 @withRouter
+@withMutation(gql`
+  mutation logout($_id: ID!) {
+    logout(_id: $_id)
+  }
+`)
 export default class Logout extends React.Component {
   static propTypes = {
-    history: PropTypes.object
+    history: PropTypes.object,
+    userId: PropTypes.string
   }
 
   async logout() {
-    await logout()
+    await this.props.logout({ _id: this.props.userId })
   }
 
   render() {
