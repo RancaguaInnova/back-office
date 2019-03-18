@@ -4,6 +4,7 @@ import debounce from 'lodash.debounce'
 import { compose } from './helpers'
 
 // transform snake_case to camelCase
+// eslint-disable-next-line camelcase
 const formattedSuggestion = structured_formatting => ({
   mainText: structured_formatting.main_text,
   secondaryText: structured_formatting.secondary_text
@@ -25,7 +26,6 @@ class PlacesAutocomplete extends React.Component {
       this.props.debounce
     )
   }
-
   componentDidMount() {
     const { googleCallbackName } = this.props
     if (googleCallbackName) {
@@ -392,3 +392,8 @@ PlacesAutocomplete.defaultProps = {
 }
 
 export default PlacesAutocomplete
+/*
+scriptLoader(
+  ["https://maps.googleapis.com/maps/api/js?key=AIzaSyAmQ7APQAvy5cbGkGba-KZNT_VHHlLddeI&libraries=places"]
+)()
+ */

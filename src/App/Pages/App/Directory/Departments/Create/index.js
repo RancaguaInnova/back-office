@@ -12,7 +12,7 @@ import Relation from 'App/components/fields/Relation'
 import { withRouter } from 'react-router'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import styles from './styles.css'
-import SearchBar from '../../../../../helpers/google/GooglePlaces/SearchBar'
+import SearchBar from 'App/components/fields/google/GooglePlaces'
 
 @withRouter
 @withMessage

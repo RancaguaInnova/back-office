@@ -17,9 +17,11 @@
     "standard": "^12.0.1"
   },
   "dependencies": {
+    "@google/maps": "^0.5.5",
     "@material-ui/core": "^3.9.2",
     "@orion-js/graphql-client": "^0.8.0",
     "@orion-js/schema": "^0.8.0",
+    "add": "^2.0.6",
     "apollo-client-preset": "^1.0.8",
     "apollo-link-batch-http": "^1.2.1",
     "apollo-link-error": "^1.0.7",
@@ -44,6 +46,8 @@
     "react-addons-css-transition-group": "^15.6.2",
     "react-apollo": "^2.1.9",
     "react-apollo-decorators": "^2.0.0",
+    "react-async-script-loader": "^0.3.0",
+    "react-dependent-script": "^1.1.0",
     "react-dom": "^16.4.1",
     "react-hot-loader": "4.3.12",
     "react-icons": "^2.2.7",
@@ -55,7 +59,8 @@
     "react-stripe-elements": "^2.0.0",
     "rxjs": "^6.2.1",
     "simple-react-form": "^2.1.5",
-    "unfetch": "^4.0.1"
+    "unfetch": "^4.0.1",
+    "yarn": "^1.13.0"
   },
   "scripts": {
     "start": "./node_modules/orionsoft-react-scripts/bin/react-scripts.js start",

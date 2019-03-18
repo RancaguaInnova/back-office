@@ -22,7 +22,7 @@ class SearchPlaceBar extends React.Component {
         administrative_area_level_1: 'short_name',
         country: 'long_name',
         postal_code: 'short_name',
-        administrative_area_level_2: 'short_name',
+        administrative_area_level_2: 'short_name'
       },
       street_number: '',
       route: '',
@@ -31,7 +31,7 @@ class SearchPlaceBar extends React.Component {
       country: '',
       postal_code: '',
       administrative_area_level_2: '',
-      marker: null,
+      marker: null
     }
   }
 
@@ -40,7 +40,7 @@ class SearchPlaceBar extends React.Component {
       address,
       latitude: null,
       longitude: null,
-      errorMessage: '',
+      errorMessage: ''
     })
   }
 
@@ -71,7 +71,7 @@ class SearchPlaceBar extends React.Component {
           administrative_area_level_1: document.getElementById('administrative_area_level_1').value,
           country: document.getElementById('country').value,
           postal_code: document.getElementById('postal_code').value,
-          administrative_area_level_2: document.getElementById('administrative_area_level_2').value,
+          administrative_area_level_2: document.getElementById('administrative_area_level_2').value
         })
         this.initMap()
         resolve(1)
@@ -109,7 +109,7 @@ class SearchPlaceBar extends React.Component {
       country: '',
       postal_code: '',
       administrative_area_level_2: '',
-      maker: null,
+      maker: null
     })
   }
 
@@ -119,13 +119,14 @@ class SearchPlaceBar extends React.Component {
       clearSuggestions()
     })
   }
-  update() {
+  update=(e) => {
+
     const LatLng = {
-      lat: this.position.lat(),
-      lng: this.position.lng()
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng()
     }
-    geocodeByPlaceLocation(LatLng).then(res =>{
-      this.fillInAddress(res[0])
+    geocodeByPlaceLocation(LatLng).then(res => {
+     this.fillInAddress(res[0])
     }
    )
 
@@ -137,32 +138,32 @@ class SearchPlaceBar extends React.Component {
       zoom: 17,
       mapTypeControl: true,
       mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-        position: google.maps.ControlPosition.TOP_CENTER,
+        style: window.google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: window.google.maps.ControlPosition.TOP_CENTER
       },
       zoomControl: true,
       zoomControlOptions: {
-        position: google.maps.ControlPosition.LEFT_CENTER,
+        position: window.google.maps.ControlPosition.LEFT_CENTER
       },
       scaleControl: true,
       streetViewControl: true,
       streetViewControlOptions: {
-        position: google.maps.ControlPosition.LEFT_TOP,
+        position: window.google.maps.ControlPosition.LEFT_TOP
       },
-      fullscreenControl: true,
+      fullscreenControl: true
     })
     var position = { lat: this.state.latitude, lng: this.state.longitude }
 
-    var marker = new google.maps.Marker({ position: position, map: map, draggable: true })
+    var marker = new window.google.maps.Marker({ position: position, map: map, draggable: true })
 
-    google.maps.event.addListener(marker, 'dragend', this.update)
+    window.google.maps.event.addListener(marker, 'dragend', this.update)
   }
 
   componentDidMount() {
     this.initMap()
   }
   render() {
-    const { address, errorMessage, latitude, longitude, isGeocoding, maker } = this.state
+    const { address, errorMessage } = this.state
 
     return (
       <div>
@@ -193,7 +194,7 @@ class SearchPlaceBar extends React.Component {
                   <div className='autocomplete-container'>
                     {suggestions.map(suggestion => {
                       const className = classnames('suggestion-item', {
-                        'suggestion-item--active': suggestion.active,
+                        'suggestion-item--active': suggestion.active
                       })
 
                       return (
