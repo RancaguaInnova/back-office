@@ -21,10 +21,7 @@ class PlacesAutocomplete extends React.Component {
       ready: !props.googleCallbackName
     }
 
-    this.debouncedFetchPredictions = debounce(
-      this.fetchPredictions,
-      this.props.debounce
-    )
+    this.debouncedFetchPredictions = debounce(this.fetchPredictions, this.props.debounce)
   }
   componentDidMount() {
     const { googleCallbackName } = this.props
@@ -88,7 +85,7 @@ class PlacesAutocomplete extends React.Component {
         matchedSubstrings: p.matched_substrings,
         terms: p.terms,
         types: p.types
-      }))
+      })),
     })
   }
 
@@ -99,7 +96,7 @@ class PlacesAutocomplete extends React.Component {
       this.autocompleteService.getPlacePredictions(
         {
           ...this.props.searchOptions,
-          input: value
+          input: value,
         },
         this.autocompleteCallback
       )
@@ -115,7 +112,7 @@ class PlacesAutocomplete extends React.Component {
       suggestions: this.state.suggestions.map(suggestion => ({
         ...suggestion,
         active: false
-      }))
+      })),
     })
   }
 
@@ -133,9 +130,8 @@ class PlacesAutocomplete extends React.Component {
   }
 
   selectActiveAtIndex = index => {
-    const activeName = this.state.suggestions.find(
-      suggestion => suggestion.index === index
-    ).description
+    const activeName = this.state.suggestions.find(suggestion => suggestion.index === index)
+      .description
     this.setActiveAtIndex(index)
     this.props.onChange(activeName)
   }
@@ -214,7 +210,7 @@ class PlacesAutocomplete extends React.Component {
         } else {
           return { ...suggestion, active: false }
         }
-      })
+      }),
     })
   }
 
@@ -274,43 +270,58 @@ class PlacesAutocomplete extends React.Component {
     return {
       ...defaultInputProps,
       ...options,
-      onKeyDown: compose(this.handleInputKeyDown, options.onKeyDown),
-      onBlur: compose(this.handleInputOnBlur, options.onBlur),
+      onKeyDown: compose(
+        this.handleInputKeyDown,
+        options.onKeyDown
+      ),
+      onBlur: compose(
+        this.handleInputOnBlur,
+        options.onBlur
+      ),
       value: this.props.value,
       onChange: event => {
         this.handleInputChange(event)
-      }
+      },
     }
   }
 
   getSuggestionItemProps = (suggestion, options = {}) => {
-    const handleSuggestionMouseEnter = this.handleSuggestionMouseEnter.bind(
-      this,
-      suggestion.index
-    )
-    const handleSuggestionClick = this.handleSuggestionClick.bind(
-      this,
-      suggestion
-    )
+    const handleSuggestionMouseEnter = this.handleSuggestionMouseEnter.bind(this, suggestion.index)
+    const handleSuggestionClick = this.handleSuggestionClick.bind(this, suggestion)
 
     return {
       ...options,
       key: suggestion.id,
       id: this.getActiveSuggestionId(),
       role: 'option',
-      onMouseEnter: compose(handleSuggestionMouseEnter, options.onMouseEnter),
+      onMouseEnter: compose(
+        handleSuggestionMouseEnter,
+        options.onMouseEnter
+      ),
       onMouseLeave: compose(
         this.handleSuggestionMouseLeave,
         options.onMouseLeave
       ),
-      onMouseDown: compose(this.handleSuggestionMouseDown, options.onMouseDown),
-      onMouseUp: compose(this.handleSuggestionMouseUp, options.onMouseUp),
+      onMouseDown: compose(
+        this.handleSuggestionMouseDown,
+        options.onMouseDown
+      ),
+      onMouseUp: compose(
+        this.handleSuggestionMouseUp,
+        options.onMouseUp
+      ),
       onTouchStart: compose(
         this.handleSuggestionTouchStart,
         options.onTouchStart
       ),
-      onTouchEnd: compose(this.handleSuggestionMouseUp, options.onTouchEnd),
-      onClick: compose(handleSuggestionClick, options.onClick)
+      onTouchEnd: compose(
+        this.handleSuggestionMouseUp,
+        options.onTouchEnd
+      ),
+      onClick: compose(
+        handleSuggestionClick,
+        options.onClick
+      )
     }
   }
 
@@ -392,8 +403,3 @@ PlacesAutocomplete.defaultProps = {
 }
 
 export default PlacesAutocomplete
-/*
-scriptLoader(
-  ["https://maps.googleapis.com/maps/api/js?key=AIzaSyAmQ7APQAvy5cbGkGba-KZNT_VHHlLddeI&libraries=places"]
-)()
- */

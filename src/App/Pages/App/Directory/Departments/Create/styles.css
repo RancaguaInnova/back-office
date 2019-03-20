@@ -17,3 +17,9 @@
 :local(.label) {
   font-weigth: 900;
 }
+.help-block{
+  color: red;
+  margin-bottom: 10px;
+  
+
+}

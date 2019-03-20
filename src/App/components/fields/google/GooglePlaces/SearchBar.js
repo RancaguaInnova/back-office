@@ -5,7 +5,12 @@ import { classnames } from './helpers'
 import styles from './styles.css'
 import { Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
+import PropTypes from 'prop-types'
+
 class SearchPlaceBar extends React.Component {
+  static propTypes = {
+    handleChangeAddress: PropTypes.func
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -31,7 +36,17 @@ class SearchPlaceBar extends React.Component {
       country: '',
       postal_code: '',
       administrative_area_level_2: '',
-      marker: null
+      marker: null,
+      contactInformationAddress: {
+        streetName: '',
+        streetNumber: '',
+        departmentNumber: '',
+        city: '',
+        postalCode: '',
+        administrativeAreaLevel1: '',
+        administrativeAreaLevel2: ''
+      }
+
     }
   }
 
@@ -44,7 +59,7 @@ class SearchPlaceBar extends React.Component {
     })
   }
 
-   fillInAddress = place => {
+  fillInAddress = place => {
     return new Promise((resolve, reject) => {
       try {
         console.log(place)
@@ -56,10 +71,25 @@ class SearchPlaceBar extends React.Component {
 
         for (var i = 0; i < place.address_components.length; i++) {
           var addressType = place.address_components[i].types[0]
+          console.log(addressType)
 
           if (this.state.componentForm[addressType]) {
-            var val = place.address_components[i][this.state.componentForm[addressType]]
-            document.getElementById(addressType).value = val
+           let cadena = place.address_components[i][this.state.componentForm[addressType]]
+          if (addressType === 'street_number') {
+           let aux = cadena.split(',')
+           console.log(aux[0])
+           document.getElementById('').value
+           document.getElementById('').value
+           departmentNumber
+          } else {
+                  var val = place.address_components[i][this.state.componentForm[addressType]]
+                  document.getElementById(addressType).value = val
+          }
+
+
+
+
+
           }
         }
         this.setState({
@@ -71,8 +101,24 @@ class SearchPlaceBar extends React.Component {
           administrative_area_level_1: document.getElementById('administrative_area_level_1').value,
           country: document.getElementById('country').value,
           postal_code: document.getElementById('postal_code').value,
-          administrative_area_level_2: document.getElementById('administrative_area_level_2').value
+          administrative_area_level_2: document.getElementById('administrative_area_level_2').value,
+          address: place.formatted_address,
+          contactInformationAddress: {
+            streetName: document.getElementById('route').value,
+            streetNumber:document.getElementById('street_number').value,
+            departmentNumber: '',
+            city: '',
+            postalCode: '',
+            administrativeAreaLevel1: '',
+            administrativeAreaLevel2: ''
+          }
+
         })
+
+
+        this.props.handleChangeAddress(this.state.contactInformationAddress)
+
+
         this.initMap()
         resolve(1)
       } catch (e) {
@@ -119,21 +165,18 @@ class SearchPlaceBar extends React.Component {
       clearSuggestions()
     })
   }
-  update=(e) => {
-
+  update = e => {
     const LatLng = {
       lat: e.latLng.lat(),
-      lng: e.latLng.lng()
+      lng: e.latLng.lng(),
     }
     geocodeByPlaceLocation(LatLng).then(res => {
-     this.fillInAddress(res[0])
-    }
-   )
-
+      this.fillInAddress(res[0])
+    })
   }
 
   initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+    var map = new window.google.maps.Map(document.getElementById('map'), {
       center: { lat: this.state.latitude, lng: this.state.longitude },
       zoom: 17,
       mapTypeControl: true,
@@ -182,6 +225,7 @@ class SearchPlaceBar extends React.Component {
                     {...getInputProps({
                       placeholder: 'Buscar Dirección...',
                       className: 'search-input',
+                      id: 'addressSearchPlace'
                     })}
                   />
                   {this.state.address.length > 0 && (
@@ -226,40 +270,43 @@ class SearchPlaceBar extends React.Component {
           </div>
 
           <div className={styles.label}>Calle</div>
-          <Field fieldName='route' id='route' type={Text} value={this.state.route} />
+          <Field fieldName='contactInformation.address.streetName' id='route' type={Text} value={this.state.route} />
           <div className={styles.label}>Numero</div>
           <Field
-            fieldName='street_number'
+            fieldName='contactInformation.address.streetNumber'
             id='street_number'
             type={Text}
             value={this.state.street_number}
           />
-          <div className={styles.label}>Ciudad</div>
-          <Field fieldName='locality' id='locality' type={Text} value={this.state.locality} />
-          <div className={styles.label}>Región</div>
-          <Field
-            fieldName='administrative_area_level_1'
+       <Field
+            fieldName='contactInformation.address.departmentNumber'
+            id='departmentNumber'
             type={Text}
-            id='administrative_area_level_1'
-            value={this.state.administrative_area_level_1}
+            value={this.state.departmentNumber}
           />
+          <div className={styles.label}>Ciudad</div>
+          <Field fieldName='contactInformation.address.city' id='locality' type={Text} value={this.state.locality} />
+
           <div className={styles.label}>Provincia</div>
           <Field
-            fieldName='administrative_area_level_2'
+            fieldName='contactInformation.address.administrativeAreaLevel2'
             type={Text}
             id='administrative_area_level_2'
             value={this.state.administrative_area_level_2}
           />
-          <div className={styles.label}>Zip code</div>
+          <div className={styles.label}>Región</div>
           <Field
-            fieldName='postal_code'
+            fieldName='contactInformation.address.administrativeAreaLevel1'
             type={Text}
-            value={this.state.postal_code}
-            id='postal_code'
+            id='administrative_area_level_1'
+            value={this.state.administrative_area_level_1}
           />
           <div className={styles.label}>País</div>
-          <Field fieldName='country' type={Text} value={this.state.country} id='country' />
+          <Field fieldName='contactInformation.address.country' type={Text} value={this.state.country} id='country' />
         </div>
+
+        <div className={styles.label}>Código Postal</div>
+        <Field fieldName='contactInformation.address.postalCode' type={Text} value={this.state.postal_code} id='postal_code' />
       </div>
     )
   }
