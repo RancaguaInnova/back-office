@@ -25,7 +25,7 @@ export default class Departments extends React.Component {
           />
           <Route
             exact
-            path="/directorio/departamentos/editar/:departamentId"
+            path="/directorio/departamentos/editar/:departmentId"
             component={DynamicComponent(() => import('./Update'))}
           />
 

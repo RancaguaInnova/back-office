@@ -85,7 +85,7 @@ class PlacesAutocomplete extends React.Component {
         matchedSubstrings: p.matched_substrings,
         terms: p.terms,
         types: p.types
-      })),
+      }))
     })
   }
 
@@ -96,7 +96,7 @@ class PlacesAutocomplete extends React.Component {
       this.autocompleteService.getPlacePredictions(
         {
           ...this.props.searchOptions,
-          input: value,
+          input: value
         },
         this.autocompleteCallback
       )
@@ -112,7 +112,7 @@ class PlacesAutocomplete extends React.Component {
       suggestions: this.state.suggestions.map(suggestion => ({
         ...suggestion,
         active: false
-      })),
+      }))
     })
   }
 
@@ -210,7 +210,7 @@ class PlacesAutocomplete extends React.Component {
         } else {
           return { ...suggestion, active: false }
         }
-      }),
+      })
     })
   }
 
@@ -281,7 +281,7 @@ class PlacesAutocomplete extends React.Component {
       value: this.props.value,
       onChange: event => {
         this.handleInputChange(event)
-      },
+      }
     }
   }
 

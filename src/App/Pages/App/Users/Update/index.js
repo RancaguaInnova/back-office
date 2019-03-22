@@ -64,6 +64,7 @@ export default class UpdateUser extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <Section title="Editar Usuario" description="Editar un usuario" top>
         <Form state={this.state} onChange={changes => this.setState(changes)}>

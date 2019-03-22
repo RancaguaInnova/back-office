@@ -18,8 +18,7 @@ export const getLatLng = result => {
 
       const latLng = {
         lat: result.geometry.location.lat(),
-        lng: result.geometry.location.lng(),
-       // locality:result.locality.location.locality()
+        lng: result.geometry.location.lng()
       }
       resolve(latLng)
     } catch (e) {
@@ -42,7 +41,6 @@ export const geocodeByPlaceId = placeId => {
   })
 }
 
-
 export const geocodeByPlaceLocation = LatLng => {
   const geocoder = new window.google.maps.Geocoder()
   const OK = window.google.maps.GeocoderStatus.OK
@@ -57,4 +55,3 @@ export const geocodeByPlaceLocation = LatLng => {
     })
   })
 }
-

@@ -6,7 +6,7 @@ export default class SearchGoogle extends Component {
   // Define Constructor
 
 static propTypes={
-  handleChangeAddress:PropTypes.func
+  handleChangeAddress: PropTypes.func
 }
 
  render() {

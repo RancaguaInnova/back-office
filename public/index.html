@@ -18,6 +18,45 @@
     <meta property="og:title" content="Orionjs app" />
     <meta property="og:description" content="" />
     <meta property="og:image" content="" />
+   
+     <script type="text/javascript">
+      //es6
+      window.REACT_INPUTS_VALIDATION = {
+        customErrorMessage: {
+          "en-US": {
+            textbox: {
+              empty: name => `${name} no puede ser vacío`,
+              invalid: name => `${name} formato no válido`,
+              invalidFormat: name => `${name} no es un número`,
+              inBetween: name => min => max => `${name} must be ${min}-${max}`,
+              lessThan: name => min => `${name} cannot less than ${min}`,
+              greaterThan: name => max => `${name} cannot greater than ${max}`,
+              lengthEqual: name => length => `${name} length must be ${length}`,
+              twoInputsNotEqual: () => `two inputs are not equal`
+            },
+            radiobox: {
+              empty: name => `Please choose one ${name}`
+            },
+            checkbox: {
+              unchecked: name => `${name} must be checked`
+            },
+            select: {
+              empty: name => `Please select a ${name}`
+            },
+            textarea: {
+              empty: name => `${name} cannot be empty`,
+              invalid: name => `${name} invalid format`,
+              invalidFormat: name => `${name} is not a number`,
+              inBetween: name => min => max => `${name} must be ${min}-${max}`,
+              lessThan: name => min => `${name} cannot less than ${min}`,
+              greaterThan: name => max => `${name} cannot greater than ${max}`,
+              lengthEqual: name => length => `${name} length must be ${length}`,
+              twoInputsNotEqual: () => `two inputs are not equal`
+            }
+          }
+        }
+      };
+    </script>  
   </head>
   <body>
     <div id="root"></div>

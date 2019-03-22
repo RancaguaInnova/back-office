@@ -31,6 +31,7 @@ export default class CreateApplication extends React.Component {
 
   render() {
     return (
+
       <Section
         title="Crear Aplicación"
         description="Crear una nueva integración"
@@ -164,7 +165,7 @@ export default class CreateApplication extends React.Component {
         <Button to="/apps/lista" style={{ marginRight: 10 }}>
           Cancelar
         </Button>
-        <Button onClick={() => { console.log('state:', this.state); this.refs.form.submit() } }  primary>
+        <Button onClick={() => { console.log('state:', this.state); this.refs.form.submit() } } primary>
           Crear Aplicación
         </Button>
       </Section>

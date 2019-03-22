@@ -3,8 +3,7 @@ import PlacesAutocomplete from './PlacesAutocomplete'
 import { geocodeByAddress, geocodeByPlaceLocation } from './utils'
 import { classnames } from './helpers'
 import styles from './styles.css'
-import { Field } from 'simple-react-form'
-import Text from 'orionsoft-parts/lib/components/fields/Text'
+
 import PropTypes from 'prop-types'
 
 class SearchPlaceBar extends React.Component {
@@ -46,7 +45,6 @@ class SearchPlaceBar extends React.Component {
         administrativeAreaLevel1: '',
         administrativeAreaLevel2: ''
       }
-
     }
   }
 
@@ -64,60 +62,81 @@ class SearchPlaceBar extends React.Component {
       try {
         console.log(place)
 
-        for (var component in this.state.componentForm) {
-          document.getElementById(component).value = ''
-          document.getElementById(component).disabled = false
-        }
-
         for (var i = 0; i < place.address_components.length; i++) {
           var addressType = place.address_components[i].types[0]
-          console.log(addressType)
 
           if (this.state.componentForm[addressType]) {
-           let cadena = place.address_components[i][this.state.componentForm[addressType]]
-          if (addressType === 'street_number') {
-           let aux = cadena.split(',')
-           console.log(aux[0])
-           document.getElementById('').value
-           document.getElementById('').value
-           departmentNumber
-          } else {
-                  var val = place.address_components[i][this.state.componentForm[addressType]]
-                  document.getElementById(addressType).value = val
-          }
+            if (addressType === 'street_number') {
+              let cadena = place.address_components[i][this.state.componentForm[addressType]]
+              let aux = cadena.split(',')
+              this.setState({
+                street_number: aux[0]
+              })
+              try {
+                this.setState({
+                  departmentNumber: aux[1]
+                })
+              } catch (e) {
+                this.setState({
+                  departmentNumber: ''
+                })
+              }
+            } else if (addressType === 'route') {
+              let val = place.address_components[i][this.state.componentForm[addressType]]
+              this.setState({
+                streetName: val
+              })
+            } else if (addressType === 'locality') {
+              let val = place.address_components[i][this.state.componentForm[addressType]]
+              this.setState({
+                city: val
+              })
+            } else if (addressType === 'postal_code') {
+              let val = place.address_components[i][this.state.componentForm[addressType]]
+              this.setState({
+                postalCode: val
+              })
+            } else if (addressType === 'administrative_area_level_1') {
+              let val = place.address_components[i][this.state.componentForm[addressType]]
+              this.setState({
+                administrative_area_level_1: val
+              })
 
+            } else if (addressType === 'administrative_area_level_2') {
+              let val = place.address_components[i][this.state.componentForm[addressType]]
+              this.setState({
+                administrative_area_level_2: val
+              })
 
+            } else if (addressType === 'country') {
+              let val = place.address_components[i][this.state.componentForm[addressType]]
+              this.setState({
+                country: val
+              })
 
-
+            }
 
           }
         }
+
         this.setState({
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-          street_number: document.getElementById('street_number').value,
-          route: document.getElementById('route').value,
-          locality: document.getElementById('locality').value,
-          administrative_area_level_1: document.getElementById('administrative_area_level_1').value,
-          country: document.getElementById('country').value,
-          postal_code: document.getElementById('postal_code').value,
-          administrative_area_level_2: document.getElementById('administrative_area_level_2').value,
           address: place.formatted_address,
+          place_id: place.place_id,
           contactInformationAddress: {
-            streetName: document.getElementById('route').value,
-            streetNumber:document.getElementById('street_number').value,
-            departmentNumber: '',
-            city: '',
-            postalCode: '',
-            administrativeAreaLevel1: '',
-            administrativeAreaLevel2: ''
+            streetName: this.state.streetName,
+            streetNumber: this.state.street_number,
+            departmentNumber: this.state.departmentNumber,
+            city: this.state.city,
+            postalCode: this.state.postal_code,
+            administrativeAreaLevel1: this.state.administrative_area_level_1,
+            administrativeAreaLevel2: this.state.administrative_area_level_2,
+            country: this.state.country
           }
-
         })
 
-
         this.props.handleChangeAddress(this.state.contactInformationAddress)
-
 
         this.initMap()
         resolve(1)
@@ -146,7 +165,7 @@ class SearchPlaceBar extends React.Component {
         administrative_area_level_1: 'short_name',
         country: 'long_name',
         postal_code: 'short_name',
-        administrative_area_level_2: 'short_name',
+        administrative_area_level_2: 'short_name'
       },
       street_number: '',
       route: '',
@@ -168,7 +187,7 @@ class SearchPlaceBar extends React.Component {
   update = e => {
     const LatLng = {
       lat: e.latLng.lat(),
-      lng: e.latLng.lng(),
+      lng: e.latLng.lng()
     }
     geocodeByPlaceLocation(LatLng).then(res => {
       this.fillInAddress(res[0])
@@ -268,45 +287,7 @@ class SearchPlaceBar extends React.Component {
             <div id='place-name' className='title' />
             <div id='place-address' />
           </div>
-
-          <div className={styles.label}>Calle</div>
-          <Field fieldName='contactInformation.address.streetName' id='route' type={Text} value={this.state.route} />
-          <div className={styles.label}>Numero</div>
-          <Field
-            fieldName='contactInformation.address.streetNumber'
-            id='street_number'
-            type={Text}
-            value={this.state.street_number}
-          />
-       <Field
-            fieldName='contactInformation.address.departmentNumber'
-            id='departmentNumber'
-            type={Text}
-            value={this.state.departmentNumber}
-          />
-          <div className={styles.label}>Ciudad</div>
-          <Field fieldName='contactInformation.address.city' id='locality' type={Text} value={this.state.locality} />
-
-          <div className={styles.label}>Provincia</div>
-          <Field
-            fieldName='contactInformation.address.administrativeAreaLevel2'
-            type={Text}
-            id='administrative_area_level_2'
-            value={this.state.administrative_area_level_2}
-          />
-          <div className={styles.label}>Región</div>
-          <Field
-            fieldName='contactInformation.address.administrativeAreaLevel1'
-            type={Text}
-            id='administrative_area_level_1'
-            value={this.state.administrative_area_level_1}
-          />
-          <div className={styles.label}>País</div>
-          <Field fieldName='contactInformation.address.country' type={Text} value={this.state.country} id='country' />
         </div>
-
-        <div className={styles.label}>Código Postal</div>
-        <Field fieldName='contactInformation.address.postalCode' type={Text} value={this.state.postal_code} id='postal_code' />
       </div>
     )
   }
