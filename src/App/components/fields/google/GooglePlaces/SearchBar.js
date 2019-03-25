@@ -8,15 +8,29 @@ import PropTypes from 'prop-types'
 
 class SearchPlaceBar extends React.Component {
   static propTypes = {
-    handleChangeAddress: PropTypes.func
+    handleChangeAddress: PropTypes.func,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    address: PropTypes.string,
   }
+
   constructor(props) {
     super(props)
+  
+  let l = -34.1719656
+    if (props.latitude != 0 && props.latitude !== null ){
+       l = props.latitude
+    } 
+    let lg = -34.1719656
+
+    if (props.longitude != 0 && props.longitude !== null  ) {
+      lg=props.longitude
+    }
     this.state = {
-      address: '',
+      address: props.address || '',
       errorMessage: '',
-      latitude: -34.1719656,
-      longitude: -70.7396144,
+      latitude:l,
+      longitude: lg,
       gmapsLoaded: false,
       isGeocoding: false,
       componentForm: {
@@ -60,8 +74,6 @@ class SearchPlaceBar extends React.Component {
   fillInAddress = place => {
     return new Promise((resolve, reject) => {
       try {
-        console.log(place)
-
         for (var i = 0; i < place.address_components.length; i++) {
           var addressType = place.address_components[i].types[0]
 
@@ -122,8 +134,6 @@ class SearchPlaceBar extends React.Component {
         this.setState({
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-          address: place.formatted_address,
-          place_id: place.place_id,
           contactInformationAddress: {
             streetName: this.state.streetName,
             streetNumber: this.state.street_number,
@@ -132,7 +142,11 @@ class SearchPlaceBar extends React.Component {
             postalCode: this.state.postal_code,
             administrativeAreaLevel1: this.state.administrative_area_level_1,
             administrativeAreaLevel2: this.state.administrative_area_level_2,
-            country: this.state.country
+            country: this.state.country,      
+            latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+          formatted_address: place.formatted_address,
+          place_id: place.place_id,
           }
         })
 
@@ -141,14 +155,12 @@ class SearchPlaceBar extends React.Component {
         this.initMap()
         resolve(1)
       } catch (e) {
-        console.log(e)
         reject(e)
       }
     })
   }
 
   handleSelect = selected => {
-    console.log(selected)
     this.setState({ isGeocoding: true, address: selected })
     geocodeByAddress(selected).then(res => this.fillInAddress(res[0]))
   }
@@ -179,7 +191,6 @@ class SearchPlaceBar extends React.Component {
   }
 
   handleError = (status, clearSuggestions) => {
-    console.log('Error from Google Maps API', status) // eslint-disable-line no-console
     this.setState({ errorMessage: status }, () => {
       clearSuggestions()
     })
@@ -222,6 +233,7 @@ class SearchPlaceBar extends React.Component {
   }
 
   componentDidMount() {
+
     this.initMap()
   }
   render() {

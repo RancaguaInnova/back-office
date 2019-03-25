@@ -17,6 +17,11 @@ export default {
           postalCode
           administrativeAreaLevel1
           administrativeAreaLevel2
+          country
+          formatted_address
+          place_id
+          latitude
+          longitude
         }
         phone{
           areaCode

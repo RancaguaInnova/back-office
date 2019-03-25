@@ -8,7 +8,7 @@ import SearchBar from 'App/components/fields/google/GooglePlaces'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import autobind from 'autobind-decorator'
-import {Textbox, Select } from 'react-inputs-validation'
+import { Textbox, Select } from 'react-inputs-validation'
 import 'react-inputs-validation/lib/react-inputs-validation.min.css'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import OfficialsFragments from 'App/fragments/Official'
@@ -16,7 +16,7 @@ import ServiceAreasFragments from 'App/fragments/ServiceArea'
 @withRouter
 @withMessage
 @withMutation(gql`
-  mutation createDepartment($department: CreateDepartmentInput!) {
+  mutation createDepartment($department: DepartmentInput!) {
     createDepartment(department: $department) {
       _id
     }
@@ -29,11 +29,10 @@ import ServiceAreasFragments from 'App/fragments/ServiceArea'
     }
   }
   ${OfficialsFragments.Officials}
-  `)
-
+`)
 @withGraphQL(gql`
-  query serviceAreas{
-    serviceAreas{
+  query serviceAreas {
+    serviceAreas {
       ...SelectServiceArea
     }
   }
@@ -48,59 +47,65 @@ class CreateDepartments extends React.Component {
     serviceAreas: PropTypes.object
   }
 
-  state = {}
-  componentDidMount() {
-    let defaultItem = {
-      name: 'Seleccione una opción',
-      id: ''
-    }
-   this.props.officials.items.unshift(defaultItem)
-   this.props.serviceAreas.items.unshift(defaultItem)
-    this.setState({
-      validate: false,
-      officialsArray: this.props.officials.items,
-      serviceAreasArray: this.props.serviceAreas.items
-
-    })
-  }
+ 
 
   onSuccess() {
     this.props.showMessage('Departamento creado')
-    this.props.history.push(`/directorio/departamento/`)
+    this.props.history.push(`/directorio/departamentos/`)
   }
 
   @autobind
   async onSubmit() {
     try {
-console.log(this.state)
-//       await this.props.createDepartment({ department: this.state.department })
-  //     this.onSuccess()
+          await this.props.createDepartment({ department: this.state.department })
+          this.onSuccess()
     } catch (error) {
       this.props.showMessage('Ocurrió un error al editar la aplicación: Complete todos los campos')
-      console.log('Error creating application:', error)
+      console.log('Error creating department:', error)
     }
   }
 
   handleChangeAddress = contactInformationAddress => {
+
+    let department = this.state.department
+    department.contactInformation.address = contactInformationAddress
+
+
     this.setState({
-      contactInformation: {
-        address: contactInformationAddress
-      },
+      department: department,
       contactInformationAddressStreetName: contactInformationAddress.streetName,
-      contactInformationAddressAdministrativeAreaLevel1: contactInformationAddress.administrativeAreaLevel1,
-      contactInformationAddressAdministrativeAreaLevel2: contactInformationAddress.administrativeAreaLevel2,
+      contactInformationAddressAdministrativeAreaLevel1:
+        contactInformationAddress.administrativeAreaLevel1,
+      contactInformationAddressAdministrativeAreaLevel2:
+        contactInformationAddress.administrativeAreaLevel2,
       contactInformationAddressCity: contactInformationAddress.city,
-      contactInformationAddressDepartmentNumber: contactInformationAddress.departmentNumber,
+      contactInformationAddressDepartmentNumber:
+        contactInformationAddress.departmentNumber,
       contactInformationAddressPostalCode: contactInformationAddress.postalCode,
-      contactInformationAddressStreetNumber: contactInformationAddress.streetNumber,
-      contactInformationAddressCountry: contactInformationAddress.country
+      contactInformationAddressStreetNumber:
+        contactInformationAddress.streetNumber,
+      contactInformationAddressCountry: contactInformationAddress.country,
+      contactInformationAddressFormatted_address: contactInformationAddress.formatted_address || '',
+      contactInformationAddressPlace_id: contactInformationAddress.place_id || '',
+      contactInformationAddressLatitud: contactInformationAddress.latitude || '',
+      contactInformationAddressLongitud: contactInformationAddress.longitude || '',
 
     })
   }
 
   constructor(props) {
     super(props)
+    let defaultItem = {
+      name: 'Seleccione una opción',
+      id: ''
+    }
+    this.props.officials.items.unshift(defaultItem)
+    this.props.serviceAreas.items.unshift(defaultItem)
+   
     this.state = {
+      validate: false,
+      officialsArray: this.props.officials.items,
+      serviceAreasArray: this.props.serviceAreas.items,
       name: '',
       optionLabel: '',
       managerId: '',
@@ -140,10 +145,10 @@ console.log(this.state)
         description: '',
         imageUrl: '',
         address: '',
-        tags: '',
+        tags: null,
         contactInformation: {
           phone: {
-            areaCode: '',
+            areaCode: null,
             number: '',
             mobilePhone: ''
           },
@@ -154,11 +159,15 @@ console.log(this.state)
             city: '',
             postalCode: '',
             administrativeAreaLevel1: '',
-            administrativeAreaLevel2: ''
+            administrativeAreaLevel2: '',
+            country:'',
+            formatted_address:'',
+            place_id:'',
+            latitude:0,
+            longitude:0
           },
-          email: ''
+          email: null
         }
-
       }
     }
     this.validateForm = this.validateForm.bind(this)
@@ -188,7 +197,6 @@ console.log(this.state)
       hascontactInformationAddressAdministrativeAreaLevel2CodeError,
       hasContactInformationAddressDepartmentNumberCodeError,
       hasContactInformationAddressPostalCodeCodeError */
-
     } = this.state
     /*
     && !hasManageIdError && !hascontactInformationPhoneAreaCodeError && !hasContactInformationPhoneNumberError &&
@@ -199,7 +207,6 @@ console.log(this.state)
     */
 
     if (!hasNameError && !hasContactInformationEmailCodeError) {
-
       this.props.showMessage('Campos validados correctamente')
       this.onSubmit()
     } else {
@@ -230,7 +237,6 @@ console.log(this.state)
       contactInformationAddressAdministrativeAreaLevel2,
       contactInformationAddressAdministrativeAreaLevel1,
       contactInformationAddressPostalCode
-
     } = this.state
     return (
       <Section title='Crear Departamento' description='Creación de nuevo departamento' top>
@@ -245,20 +251,17 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res => {
-              console.log(res)
               this.setState({ hasNameError: res, validate: false })
             }}
             onChange={(name, e) => {
-               let department = this.state.department
-               department.name = name
+              let department = this.state.department
+              department.name = name
 
               this.setState({
                 department: department,
                 name: name
-
               })
             }}
-
             validationOption={{
               name: 'Nombre',
               check: true,
@@ -279,15 +282,13 @@ console.log(this.state)
             placeholder=''
             onChange={(optionLabel, e) => {
               let department = this.state.department
-               department.optionLabel = optionLabel
+              department.optionLabel = optionLabel
 
               this.setState({
-                department: optionLabel,
+                department: department,
                 optionLabel: optionLabel
-
               })
             }}
-
             validationOption={{
               name: 'optionLabel',
               check: false,
@@ -303,13 +304,12 @@ console.log(this.state)
             optionList={this.state.officialsArray}
             onChange={(managerId, e) => {
               let department = this.state.department
-               department.managerId = managerId
+              department.managerId = managerId
               this.setState({
                 department: department,
                 managerId: managerId
               })
             }}
-            onBlur={() => { }}
             validate={validate}
             validationCallback={res => this.setState({ hasManageIdError: res, validate: false })}
             customStyleOptionListContainer={{
@@ -332,14 +332,16 @@ console.log(this.state)
             optionList={this.state.serviceAreasArray} // Required.[Array of Object(s)].Default: [].
             onChange={(serviceAreaId, e) => {
               let department = this.state.department
-               department.serviceAreaId = serviceAreaId
+              department.serviceAreaId = serviceAreaId
               this.setState({
                 department: department,
                 serviceAreaId: serviceAreaId
               })
             }}
             validate={validate}
-            validationCallback={res => this.setState({ hasServiceAreaIdError: res, validate: false })}
+            validationCallback={res =>
+              this.setState({ hasServiceAreaIdError: res, validate: false })
+            }
             customStyleOptionListContainer={{
               maxHeight: '200px',
               overflow: 'auto',
@@ -357,7 +359,10 @@ console.log(this.state)
           <b>DIRECCIÓN</b>
         </div>
         <div className={styles.fieldGroup}>
-          <SearchBar handleChangeAddress={this.handleChangeAddress} />
+          <SearchBar 
+          handleChangeAddress={this.handleChangeAddress} 
+    
+            />
           <div className={styles.label}>Calle</div>
           <Textbox
             tabIndex='5'
@@ -370,16 +375,18 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationAddressStreetNameCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationAddressStreetNameCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressStreetName, e) => {
-              this.setState({
-                contactInformationAddressStreetName
-              })
+
               let department = this.state.department
-               department.contactInformation.address.streetName = serviceAreaId
+              department.contactInformation.address.streetName = contactInformationAddressStreetName
               this.setState({
-                department: department
+                department: department,
+                contactInformationAddressStreetName: contactInformationAddressStreetName
               })
             }}
             validationOption={{
@@ -400,19 +407,18 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationAddressStreetNameCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationAddressStreetNameCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressStreetNumber, e) => {
-              this.setState({
-                contactInformationAddressStreetNumber
-              })
-
               let department = this.state.department
-               department.contactInformation.address.streetNumber = contactInformationAddressStreetNumber
+              department.contactInformation.address.streetNumber = contactInformationAddressStreetNumber
               this.setState({
-                department: department
+                department: department,
+                contactInformationAddressStreetNumber: contactInformationAddressStreetNumber
               })
-
             }}
             validationOption={{
               name: 'Calle',
@@ -423,7 +429,7 @@ console.log(this.state)
 
           <div className={styles.label}>Numero Departamento/Otro</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='7'
             id='contactInformation.address.departmentNumber'
             name='contactInformation.address.departmentNumber'
             type='text'
@@ -433,18 +439,18 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationAddressDepartmentNumberCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationAddressDepartmentNumberCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressDepartmentNumber, e) => {
-              this.setState({
-                contactInformationAddressDepartmentNumber
-              })
               let department = this.state.department
-               department.contactInformation.address.departmentNumber = contactInformationAddressDepartmentNumber
+              department.contactInformation.address.departmentNumber = contactInformationAddressDepartmentNumber
               this.setState({
-                department: department
+                department: department,
+                contactInformationAddressDepartmentNumber: contactInformationAddressDepartmentNumber
               })
-
             }}
             validationOption={{
               name: 'Número de departamento',
@@ -455,7 +461,7 @@ console.log(this.state)
 
           <div className={styles.label}>Ciudad</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='8'
             id='contactInformation.address.city'
             name='contactInformation.address.city'
             type='text'
@@ -465,16 +471,17 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationAddressDepartmentNumberCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationAddressDepartmentNumberCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressCity, e) => {
-              this.setState({
-                contactInformationAddressCity
-              })
               let department = this.state.department
-               department.contactInformation.address.city = contactInformationAddressCity
+              department.contactInformation.address.city = contactInformationAddressCity
               this.setState({
-                department: department
+                department: department,
+                contactInformationAddressCity: contactInformationAddressCity
               })
             }}
             validationOption={{
@@ -485,7 +492,7 @@ console.log(this.state)
           />
           <div className={styles.label}>Provincia</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='9'
             id='contactInformation.address.administrativeAreaLevel2'
             name='contactInformation.address.administrativeAreaLevel2'
             type='text'
@@ -495,20 +502,17 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hascontactInformationAddressAdministrativeAreaLevel2CodeError: res, validate: false })
+              this.setState({
+                hascontactInformationAddressAdministrativeAreaLevel2CodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressAdministrativeAreaLevel2, e) => {
+              let department = this.state.department
+              department.contactInformation.address.administrativeAreaLevel2 = contactInformationAddressAdministrativeAreaLevel2
               this.setState({
-                contactInformationAddressAdministrativeAreaLevel2
-              })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    address: {
-                      administrativeAreaLevel2: contactInformationAddressAdministrativeAreaLevel2
-                    }
-                  }
-                }
+                department: department,
+                contactInformationAddressAdministrativeAreaLevel2: contactInformationAddressAdministrativeAreaLevel2
               })
             }}
             validationOption={{
@@ -519,7 +523,7 @@ console.log(this.state)
           />
           <div className={styles.label}>Región</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='10'
             id='contactInformation.address.administrativeAreaLevel1'
             name='contactInformation.address.administrativeAreaLevel1'
             type='text'
@@ -529,20 +533,17 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hascontactInformationAddressAdministrativeAreaLevel1CodeError: res, validate: false })
+              this.setState({
+                hascontactInformationAddressAdministrativeAreaLevel1CodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressAdministrativeAreaLevel1, e) => {
+              let department = this.state.department
+              department.contactInformation.address.contactInformationAddressAdministrativeAreaLevel1 = contactInformationAddressAdministrativeAreaLevel1
               this.setState({
-                contactInformationAddressAdministrativeAreaLevel1
-              })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    address: {
-                      administrativeAreaLevel1: contactInformationAddressAdministrativeAreaLevel1
-                    }
-                  }
-                }
+                department: department,
+                contactInformationAddressAdministrativeAreaLevel1: contactInformationAddressAdministrativeAreaLevel1
               })
             }}
             validationOption={{
@@ -554,7 +555,7 @@ console.log(this.state)
 
           <div className={styles.label}>País</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='11'
             id='contactInformation.address.country'
             name='contactInformation.address.country'
             type='text'
@@ -564,20 +565,16 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationAddressCountryCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationAddressCountryCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressCountry, e) => {
-              this.setState({
-                contactInformationAddressCountry
-              })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    address: {
-                      country: contactInformationAddressCountry
-                    }
-                  }
-                }
+              let department = this.state.department
+              department.contactInformation.address.country = contactInformationAddressCountry
+              this.setState({ department: department,
+                contactInformationAddressCountry: contactInformationAddressCountry
               })
             }}
             validationOption={{
@@ -588,7 +585,7 @@ console.log(this.state)
           />
           <div className={styles.label}>Código Postal</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='12'
             id='contactInformation.address.postalCode'
             name='contactInformation.address.postalCode'
             type='text'
@@ -598,20 +595,17 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationAddressPostalCodeCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationAddressPostalCodeCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationAddressPostalCode, e) => {
+              let department = this.state.department
+              department.contactInformation.address.postalCode = contactInformationAddressPostalCode
               this.setState({
-                contactInformationAddressPostalCode
-              })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    address: {
-                      postalCode: contactInformationAddressPostalCode
-                    }
-                  }
-                }
+                department: department,
+                contactInformationAddressPostalCode: contactInformationAddressPostalCode
               })
             }}
             validationOption={{
@@ -620,7 +614,6 @@ console.log(this.state)
               required: false
             }}
           />
-
         </div>
 
         <div>
@@ -629,7 +622,7 @@ console.log(this.state)
         <div className={styles.fieldGroup}>
           <div className={styles.label}>Código de área</div>
           <Textbox
-            tabIndex='5'
+            tabIndex='13'
             id='contactInformation.Phone.areaCode'
             name='contactInformation.Phone.areaCode'
             type='number'
@@ -639,25 +632,18 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hascontactInformationPhoneAreaCodeError: res, validate: false })
+              this.setState({
+                hascontactInformationPhoneAreaCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationPhoneAreaCode, e) => {
+              let department = this.state.department
+              department.contactInformation.phone.areaCode = contactInformationPhoneAreaCode
               this.setState({
-                contactInformationPhoneAreaCode
+                department: department,
+                contactInformationPhoneAreaCode: contactInformationPhoneAreaCode
               })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    Phone: {
-                      areaCode: contactInformationPhoneAreaCode
-                    }
-                  }
-                }
-              })
-
-            }}
-            onBlur={e => {
-              console.log(e)
             }}
             validationOption={{
               name: 'Código de Área',
@@ -667,7 +653,7 @@ console.log(this.state)
           />
           <div className={styles.label}>Número</div>
           <Textbox
-            tabIndex='6'
+            tabIndex='14'
             id='contactInformation.Phone.number'
             name='contactInformation.Phone.number'
             type='number'
@@ -677,24 +663,21 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationNumberCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationNumberCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationPhoneNumber, e) => {
-              this.setState({
-                contactInformationPhoneNumber
-              })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    Phone: {
-                      number: contactInformationPhoneNumber
-                    }
-                  }
-                }
-              })
 
+              let department = this.state.department
+              department.contactInformation.address.number = contactInformationPhoneNumber
+                
+              this.setState({
+                department: department,
+                contactInformationPhoneNumber:contactInformationPhoneNumber
+              })
             }}
-
             validationOption={{
               name: 'Número de Teléfono',
               check: true,
@@ -703,9 +686,9 @@ console.log(this.state)
           />
           <div className={styles.label}>Celular</div>
           <Textbox
-            tabIndex='7'
-            id='contactInformation.Phone.number'
-            name='contactInformation.Phone.number'
+            tabIndex='15'
+            id='contactInformation.PhoneMobile.number'
+            name='contactInformation.PhoneMobile.number'
             type='number'
             value={contactInformationPhoneMobilePhone}
             disabled={false}
@@ -713,26 +696,22 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationMobilePhoneCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationMobilePhoneCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationPhoneMobilePhone, e) => {
-              this.setState({
-                contactInformationPhoneMobilePhone
-              })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    Phone: {
-                      mobilePhone: contactInformationPhoneMobilePhone
-                    }
-                  }
-                }
-              })
 
+
+              let department = this.state.department
+              department.contactInformation.phone.mobilePhone = contactInformationPhoneMobilePhone
+              this.setState({
+                department: department,
+                contactInformationPhoneMobilePhone: contactInformationPhoneMobilePhone
+              })
             }}
-            onBlur={e => {
-              console.log(e)
-            }}
+
             validationOption={{
               name: 'Número de Celular',
               check: true,
@@ -742,7 +721,7 @@ console.log(this.state)
 
           <div className={styles.label}>Email</div>
           <Textbox
-            tabIndex='8'
+            tabIndex='16'
             id='contactInformation.email'
             name='contactInformation.email'
             type='text'
@@ -752,28 +731,25 @@ console.log(this.state)
             placeholder=''
             validate={validate}
             validationCallback={res =>
-              this.setState({ hasContactInformationEmailCodeError: res, validate: false })
+              this.setState({
+                hasContactInformationEmailCodeError: res,
+                validate: false
+              })
             }
             onChange={(contactInformationEmail, e) => {
+              let department = this.state.department
+              department.contactInformation.address.email = contactInformationEmail
               this.setState({
-                contactInformationEmail
+                department: department,
+                contactInformationEmail: contactInformationEmail
               })
-              this.setState({
-                department: {
-                  contactInformation: {
-                    email: contactInformationEmail
-                  }
-                }
-              })
-
             }}
-
             validationOption={{
               name: 'Email',
               required: false,
               customFunc: contactInformationEmail => {
                 // eslint-disable-next-line no-useless-escape
-                const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                const reg = /^(([^<>()\[\]\\.,:\s@"]+(\.[^<>()\[\]\\.,:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 if (
                   contactInformationEmail === '' ||
                   reg.test(String(contactInformationEmail).toLowerCase())
@@ -789,7 +765,7 @@ console.log(this.state)
             Horarios de atención (Ej: lunes a jueves / 08:30 a 13:30 / Viernes 08:30 a 16:30)
           </div>
           <Textbox
-            tabIndex='9'
+            tabIndex='17'
             id='businessHours'
             name='businessHours'
             type='text'
@@ -802,19 +778,15 @@ console.log(this.state)
               this.setState({ hasBusinessHoursCodeError: res, validate: false })
             }
             onChange={(businessHours, e) => {
-              this.setState({
-                businessHours
-              })
-              this.setState({
-                department: {
-                  businessHours: businessHours
-                }
-              })
 
+              let department = this.state.department
+              department.businessHours = businessHours
+              this.setState({
+                department: department,
+                businessHours: businessHours
+              })
             }}
-            onBlur={e => {
-              console.log(e)
-            }}
+
             validationOption={{
               name: 'Horarios de atención',
               check: true,
@@ -823,7 +795,7 @@ console.log(this.state)
           />
           <div className={styles.label}>Descripción de funciones del departamento</div>
           <Textbox
-            tabIndex='10'
+            tabIndex='18'
             id='description'
             name='description'
             type='text'
@@ -836,18 +808,14 @@ console.log(this.state)
               this.setState({ hasDescriptionCodeError: res, validate: false })
             }
             onChange={(description, e) => {
+
+              let department = this.state.department
+              department.description = description
               this.setState({
-                description
-              })
-              this.setState({
-                department: {
-                  description: description
-                }
+                department: department,
+                description: description
               })
 
-            }}
-            onBlur={e => {
-              console.log(e)
             }}
             validationOption={{
               name: 'Descripción de funciones del departamento',
@@ -858,7 +826,7 @@ console.log(this.state)
 
           <div className={styles.label}>Imagen del edificio donde se encuentra el departamento</div>
           <Textbox
-            tabIndex='11'
+            tabIndex='19'
             id='imageUrl'
             name='imageUrl'
             type='text'
@@ -871,18 +839,12 @@ console.log(this.state)
               this.setState({ hasImageUrlCodeError: res, validate: false })
             }
             onChange={(imageUrl, e) => {
+              let department = this.state.department
+              department.imageUrl = imageUrl
               this.setState({
-                imageUrl
+                department: department,
+                imageUrl: imageUrl
               })
-              this.setState({
-                department: {
-                  imageUrl: imageUrl
-                }
-              })
-
-            }}
-            onBlur={e => {
-              console.log(e)
             }}
             validationOption={{
               name: 'Imagen del edificio',
@@ -892,7 +854,7 @@ console.log(this.state)
           />
           <div className={styles.label}>Dirección del departamento de tránsito</div>
           <Textbox
-            tabIndex='11'
+            tabIndex='20'
             id='address'
             name='address'
             type='text'
@@ -903,18 +865,13 @@ console.log(this.state)
             validate={validate}
             validationCallback={res => this.setState({ hasAddressCodeError: res, validate: false })}
             onChange={(address, e) => {
-              this.setState({
-                address
-              })
-              this.setState({
-                department: {
-                  address: address
-                }
-              })
 
-            }}
-            onBlur={e => {
-              console.log(e)
+              let department = this.state.department
+              department.address = address
+              this.setState({
+                department: department,
+                address: address
+              })
             }}
             validationOption={{
               name: 'Dirección del departamento',
