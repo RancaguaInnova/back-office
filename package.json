@@ -24,7 +24,7 @@
     "apollo-link-batch-http": "^1.2.1",
     "apollo-link-error": "^1.0.7",
     "apollo-link-state": "^0.4.1",
-    "autobind-decorator": "^2.1.0",
+    "autobind-decorator": "^2.4.0",
     "babel-polyfill": "^6.26.0",
     "evaporate": "^2.1.4",
     "graphql": "^14.0.2",
