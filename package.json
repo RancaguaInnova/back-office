@@ -56,8 +56,6 @@
     "rxjs": "^6.2.1",
     "simple-react-form": "^2.1.5",
     "unfetch": "^4.0.1",
-    "validator": "^10.11.0",
-    "yarn": "^1.13.0"
   },
   "scripts": {
     "start": "./node_modules/orionsoft-react-scripts/bin/react-scripts.js start",
