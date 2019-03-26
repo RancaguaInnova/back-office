@@ -14,6 +14,8 @@ import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import DepartmentFragments from 'App/fragments/Department'
 import OfficialsFragments from 'App/fragments/Official'
 import ServiceAreasFragments from 'App/fragments/ServiceArea'
+import { confirmAlert } from 'react-confirm-alert' // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 @withRouter
 @withMessage
@@ -22,6 +24,11 @@ import ServiceAreasFragments from 'App/fragments/ServiceArea'
     updateDepartment(department: $department) {
       _id
     }
+  }
+`)
+@withMutation(gql`
+  mutation deleteDepartment($_id: ID!) {
+    deleteDepartment(_id: $_id) 
   }
 `)
 @withGraphQL(gql`
@@ -49,7 +56,8 @@ class UpdateDepartment extends React.Component {
     department: PropTypes.object,
     UpdateDepartment: PropTypes.func,
     officials: PropTypes.object,
-    serviceAreas: PropTypes.object
+    serviceAreas: PropTypes.object,
+    DeleteResponse: PropTypes.bool
   }
 
   componentDidMount() {
@@ -60,7 +68,7 @@ class UpdateDepartment extends React.Component {
     }
     this.props.officials.items.unshift(defaultItem)
     this.props.serviceAreas.items.unshift(defaultItem)
-    //this.setState({ department: this.props.department })
+    // this.setState({ department: this.props.department })
     this.setState({
       department: this.props.department,
       validate: false,
@@ -93,6 +101,10 @@ class UpdateDepartment extends React.Component {
     this.props.showMessage('Departamento Actualizado correctamente')
     this.props.history.push(`/directorio/departamentos/`)
   }
+  onSuccessDelete() {
+    this.props.showMessage('Departamento eliminado correctamente')
+    this.props.history.push(`/directorio/departamentos/`)
+  }
 
   @autobind
   async onSubmit() {
@@ -101,16 +113,46 @@ class UpdateDepartment extends React.Component {
       this.onSuccess()
     } catch (error) {
       this.props.showMessage(
-        'Ocurrió un error al editar la aplicación: Complete todos los campos'
+        'Ocurrió un error al editar el departamento'
       )
     }
   }
+
+  @autobind
+  async onDelete() {
+    try {
+
+      await this.props.deleteDepartment({ _id: this.state.department._id })
+      this.onSuccessDelete()
+    } catch (error) {
+      this.props.showMessage(
+        'Ocurrió un error al eliminar el departamento'
+      )
+      console.log(error)
+    }
+  }
+
+  Delete = () => {
+    confirmAlert({
+      title: 'Eliminar Departamento',
+      message: '¿Esta seguro que desea eliminar este departamento?',
+      buttons: [
+        {
+          label: 'Si',
+          onClick: () => this.onDelete()
+        },
+        {
+          label: 'No',
+          onClick: () => console.log('no')
+        }
+      ]
+    })
+  };
 
   handleChangeAddress = contactInformationAddress => {
 
     let department = this.state.department
     department.contactInformation.address = contactInformationAddress
-
 
     this.setState({
       department: department,
@@ -129,7 +171,7 @@ class UpdateDepartment extends React.Component {
       contactInformationAddressFormatted_address: contactInformationAddress.formatted_address || '',
       contactInformationAddressPlace_id: contactInformationAddress.place_id || '',
       contactInformationAddressLatitud: contactInformationAddress.latitude || '',
-      contactInformationAddressLongitud: contactInformationAddress.longitude || '',
+      contactInformationAddressLongitud: contactInformationAddress.longitude || ''
 
     })
   }
@@ -218,7 +260,7 @@ class UpdateDepartment extends React.Component {
       contactInformationAddressCity,
       contactInformationAddressAdministrativeAreaLevel2,
       contactInformationAddressAdministrativeAreaLevel1,
-      contactInformationAddressPostalCode,
+      contactInformationAddressPostalCode
 
     } = this.state
     return (
@@ -421,7 +463,7 @@ class UpdateDepartment extends React.Component {
 
           <div className={styles.label}>Numero Departamento/Otro</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="7"
             id="contactInformation.address.departmentNumber"
             name="contactInformation.address.departmentNumber"
             type="text"
@@ -454,7 +496,7 @@ class UpdateDepartment extends React.Component {
 
           <div className={styles.label}>Ciudad</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="8"
             id="contactInformation.address.city"
             name="contactInformation.address.city"
             type="text"
@@ -486,7 +528,7 @@ class UpdateDepartment extends React.Component {
           />
           <div className={styles.label}>Provincia</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="9"
             id="contactInformation.address.administrativeAreaLevel2"
             name="contactInformation.address.administrativeAreaLevel2"
             type="text"
@@ -520,7 +562,7 @@ class UpdateDepartment extends React.Component {
           />
           <div className={styles.label}>Región</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="10"
             id="contactInformation.address.administrativeAreaLevel1"
             name="contactInformation.address.administrativeAreaLevel1"
             type="text"
@@ -556,7 +598,7 @@ class UpdateDepartment extends React.Component {
 
           <div className={styles.label}>País</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="11"
             id="contactInformation.address.country"
             name="contactInformation.address.country"
             type="text"
@@ -584,7 +626,7 @@ class UpdateDepartment extends React.Component {
           />
           <div className={styles.label}>Código Postal</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="12"
             id="contactInformation.address.postalCode"
             name="contactInformation.address.postalCode"
             type="text"
@@ -621,7 +663,7 @@ class UpdateDepartment extends React.Component {
         <div className={styles.fieldGroup}>
           <div className={styles.label}>Código de área</div>
           <Textbox
-            tabIndex="5"
+            tabIndex="13"
             id="contactInformation.Phone.areaCode"
             name="contactInformation.Phone.areaCode"
             type="number"
@@ -653,7 +695,7 @@ class UpdateDepartment extends React.Component {
           />
           <div className={styles.label}>Número</div>
           <Textbox
-            tabIndex="6"
+            tabIndex="14"
             id="contactInformation.Phone.number"
             name="contactInformation.Phone.number"
             type="number"
@@ -685,7 +727,7 @@ class UpdateDepartment extends React.Component {
           />
           <div className={styles.label}>Celular</div>
           <Textbox
-            tabIndex="13"
+            tabIndex="15"
             id="contactInformation.Phone.number"
             name="contactInformation.Phone.number"
             type="number"
@@ -717,7 +759,7 @@ class UpdateDepartment extends React.Component {
 
           <div className={styles.label}>Email</div>
           <Textbox
-            tabIndex="14"
+            tabIndex="16"
             id="contactInformation.email"
             name="contactInformation.email"
             type="text"
@@ -762,7 +804,7 @@ class UpdateDepartment extends React.Component {
             08:30 a 16:30)
           </div>
           <Textbox
-            tabIndex="15"
+            tabIndex="17"
             id="businessHours"
             name="businessHours"
             type="text"
@@ -792,7 +834,7 @@ class UpdateDepartment extends React.Component {
             Descripción de funciones del departamento
           </div>
           <Textbox
-            tabIndex="10"
+            tabIndex="18"
             id="description"
             name="description"
             type="text"
@@ -823,7 +865,7 @@ class UpdateDepartment extends React.Component {
             Imagen del edificio donde se encuentra el departamento
           </div>
           <Textbox
-            tabIndex="11"
+            tabIndex="19"
             id="imageUrl"
             name="imageUrl"
             type="text"
@@ -856,7 +898,7 @@ class UpdateDepartment extends React.Component {
             Dirección del departamento de tránsito
           </div>
           <Textbox
-            tabIndex="11"
+            tabIndex="20"
             id="address"
             name="address"
             type="text"
@@ -890,6 +932,15 @@ class UpdateDepartment extends React.Component {
           </button>
 
           <button
+            style={{ marginRight: 10 }}
+            onClick={this.Delete}
+            className="orion_button orion_danger"
+          >
+            Eliminar Departamento
+          </button>
+
+          <button
+            style={{ marginRight: 10 }}
             onClick={this.validateForm}
             className="orion_button orion_primary"
           >

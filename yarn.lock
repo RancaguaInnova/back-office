@@ -9409,6 +9409,11 @@ react-color@^2.14.1:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
+react-confirm-alert@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-confirm-alert/-/react-confirm-alert-2.4.0.tgz#347e9d007eff9fed128bc171460228346c4ae1f1"
+  integrity sha512-1rQR6TSFlchKPcNMlkH3G5HdMwBkjDRfe+yNl+bpu3KT0vygjBbe+lt4WtrwTNDv1NQyZ+mlnZOOMda3cN1Ymg==
+
 react-dependent-script@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-dependent-script/-/react-dependent-script-1.1.0.tgz#cd0e90bc1363e64c9cf7e579d70a0df9633030eb"
