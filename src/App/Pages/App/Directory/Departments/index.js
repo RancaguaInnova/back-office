@@ -1,5 +1,4 @@
 import React from 'react'
-import PaginatedList from 'App/components/Crud/List'
 import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
 import Container from 'orionsoft-parts/lib/components/Container'
@@ -30,7 +29,7 @@ export default class Departments extends React.Component {
           />
           <Route
             exact
-            path="/directorio/departamentos/editar/:applicationId"
+            path="/directorio/departamentos/editar/:departmentId"
             component={DynamicComponent(() => import('./Update'))}
           />
         </Switch>
