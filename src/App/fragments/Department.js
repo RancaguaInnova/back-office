@@ -9,7 +9,7 @@ export default {
       managerId
       serviceAreaId
       contactInformation {
-        address{
+        address {
           streetName
           streetNumber
           departmentNumber
@@ -23,7 +23,7 @@ export default {
           latitude
           longitude
         }
-        phone{
+        phone {
           areaCode
           number
           mobilePhone
@@ -34,8 +34,6 @@ export default {
       description
       imageUrl
       address
-
     }
   `
-
 }
