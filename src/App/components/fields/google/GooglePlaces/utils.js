@@ -43,7 +43,6 @@ export const geocodeByPlaceId = placeId => {
 export const geocodeByPlaceLocation = LatLng => {
   const geocoder = new window.google.maps.Geocoder()
   const OK = window.google.maps.GeocoderStatus.OK
-  console.log(LatLng)
 
   return new Promise((resolve, reject) => {
     geocoder.geocode({ location: LatLng }, (results, status) => {
