@@ -109,7 +109,7 @@ export default class Fetch extends React.Component {
     loadingComponent: LoadingIndicator
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       page: 1,
@@ -119,11 +119,12 @@ export default class Fetch extends React.Component {
   }
 
   // public reload function
-  async reload () {
+  async reload() {
     return this.refs.child.refs.child.queryObservable.refetch()
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const newVariables = this.getVariables(nextProps)
     const currentVariables = this.getVariables(this.props)
     if (!isEqual(newVariables, currentVariables) && this.state.page !== 1) {
@@ -131,9 +132,10 @@ export default class Fetch extends React.Component {
     }
   }
 
-  getQuery (props) {
-    return `query ${props.queryFunctionName ||
-      'paginated_' + props.queryName} (${getArguments(props.params)}) {
+  getQuery(props) {
+    return `query ${props.queryFunctionName || 'paginated_' + props.queryName} (${getArguments(
+      props.params
+    )}) {
       result: ${props.queryName} (
         ${getParams(props.params)}
       ) {
@@ -147,7 +149,7 @@ export default class Fetch extends React.Component {
     }`
   }
 
-  getDefaultSort () {
+  getDefaultSort() {
     for (const field of this.props.fields) {
       if (field.defaultSort) {
         return {
@@ -159,7 +161,7 @@ export default class Fetch extends React.Component {
     return {}
   }
 
-  getVariables (props) {
+  getVariables(props) {
     const defaultSort = this.getDefaultSort()
     const variables = {
       limit: this.state.limit,
@@ -173,18 +175,18 @@ export default class Fetch extends React.Component {
   }
 
   @autobind
-  setVariable (key, value) {
+  setVariable(key, value) {
     const variables = this.state.variables
     variables[key] = value
     this.setState({ variables, page: 1 })
   }
 
   @autobind
-  setSort (sortBy, sortType) {
+  setSort(sortBy, sortType) {
     this.setState({ sortBy, sortType })
   }
 
-  render () {
+  render() {
     const variables = this.getVariables(this.props)
     return (
       <div className='paginated-root'>

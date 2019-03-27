@@ -1,7 +1,6 @@
 import React from 'react'
 import styles from './styles.css'
 import Button from 'orionsoft-parts/lib/components/Button'
-import logout from 'App/helpers/auth/logout'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
@@ -16,7 +15,8 @@ import gql from 'graphql-tag'
 export default class Logout extends React.Component {
   static propTypes = {
     history: PropTypes.object,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    logout: PropTypes.func
   }
 
   async logout() {

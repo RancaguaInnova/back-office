@@ -40,6 +40,7 @@ export default class CreateApplication extends React.Component {
           ref="form"
           mutation="createApplication"
           onSuccess={this.onSuccess}
+
         >
           <div className={styles.headerLabel}>
             Información de la aplicación:
@@ -163,7 +164,7 @@ export default class CreateApplication extends React.Component {
         <Button to="/apps/lista" style={{ marginRight: 10 }}>
           Cancelar
         </Button>
-        <Button onClick={() => this.refs.form.submit()} primary>
+        <Button onClick={ () => this.refs.form.submit() } primary>
           Crear Aplicación
         </Button>
       </Section>

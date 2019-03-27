@@ -14,7 +14,8 @@ export default class Relation extends React.Component {
     fieldName: PropTypes.string,
     optionsQueryName: PropTypes.string,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    label: PropTypes.string
   }
 
   state = {
@@ -29,8 +30,8 @@ export default class Relation extends React.Component {
       {
         ${optionsQueryName} {
           items {
-            label: optionLabel
-            value: _id
+            name: optionLabel
+            id: _id
           }
         }
       }

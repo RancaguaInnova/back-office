@@ -35,22 +35,18 @@ export default class DirectoryRoutes extends React.Component {
         <Container>
           <Switch>
             <Route
-              path="/directorio/areas"
+              path='/directorio/areas'
               component={DynamicComponent(() => import('./ServiceAreas'))}
             />
             <Route
-              path="/directorio/departamentos"
+              path='/directorio/departamentos'
               component={DynamicComponent(() => import('./Departments'))}
             />
             <Route
-              path="/directorio/funcionarios"
+              path='/directorio/funcionarios'
               component={DynamicComponent(() => import('./Officials'))}
             />
-            <Route
-              exact
-              path="/directorio"
-              component={DynamicComponent(() => import('./Home'))}
-            />
+            <Route exact path='/directorio' component={DynamicComponent(() => import('./Home'))} />
           </Switch>
         </Container>
       </div>
