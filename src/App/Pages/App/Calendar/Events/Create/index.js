@@ -1,16 +1,13 @@
 import React from 'react'
 import Section from 'App/components/Section'
 import Button from 'orionsoft-parts/lib/components/Button'
-import AutoForm from 'App/components/AutoForm'
 import { Form, Field } from 'simple-react-form'
-import ArrayComponent from 'orionsoft-parts/lib/components/fields/ArrayComponent'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
 import NumberField from 'orionsoft-parts/lib/components/fields/numeral/Number'
 import DateText from 'orionsoft-parts/lib/components/fields/DateText'
 import Checkbox from 'orionsoft-parts/lib/components/fields/Checkbox'
 import HourField from 'App/components/fields/HourField'
 import Select from 'orionsoft-parts/lib/components/fields/Select'
-import Relation from 'App/components/fields/Relation'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
@@ -22,7 +19,17 @@ import reduce from 'lodash/reduce'
 
 @withRouter
 @withMessage
-@withGraphQL(gql``)
+@withGraphQL(gql`
+  query departments {
+    departments {
+      _id
+      items {
+        _id
+        name
+      }
+    }
+  }
+`)
 @withMutation(gql`
   mutation createEvent($event: EventInput!) {
     createEvent(event: $event) {
@@ -39,6 +46,12 @@ export default class CreateEvent extends React.Component {
   state = {
     event: {},
     errorMessages: {}
+  }
+
+  getDepartmentOptions() {
+    return this.props.departments.items.map(department => {
+      return { label: department.name, value: department._id }
+    })
   }
 
   getValidationErrors(error) {
@@ -74,7 +87,7 @@ export default class CreateEvent extends React.Component {
   render() {
     return (
       <Section title="Crear Evento" description="Crear un nuevo evento" top>
-        <Form state={this.state.event} ref="form" onSuccess={this.onSuccess}>
+        <Form state={this.state.event} ref="form">
           <div className="label">Nombre</div>
           <Field fieldName="name" type={Text} />
           <div className="label">Descripción</div>
@@ -97,7 +110,11 @@ export default class CreateEvent extends React.Component {
             label="Mostrar en calendario (publicar evento)"
           />
           <div className="label">Departamento al que pertenece el evento</div>
-          <Field fieldName="departmentId" type={Select} />
+          <Field
+            fieldName="departmentId"
+            type={Select}
+            options={this.getDepartmentOptions()}
+          />
         </Form>
         <br />
         <Button to="/calendar/eventos" style={{ marginRight: 10 }}>
