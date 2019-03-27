@@ -34,8 +34,16 @@ export default class CalendarRoutes extends React.Component {
         <Container>
           <Switch>
             <Route
+              path="/calendario/eventos/crear"
+              component={DynamicComponent(() => import('./Events/Create'))}
+            />
+            <Route
+              path="/calendario/eventos/editar/:eventId"
+              component={DynamicComponent(() => import('./Events/Update'))}
+            />
+            <Route
               path="/calendario/eventos"
-              component={DynamicComponent(() => import('./Events'))}
+              component={DynamicComponent(() => import('./Events/List'))}
             />
             <Route
               path="/calendario/noticias"
