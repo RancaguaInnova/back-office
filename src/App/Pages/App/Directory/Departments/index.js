@@ -8,20 +8,15 @@ import DynamicComponent from 'App/components/DynamicComponent'
 @forceLogin
 @withAuthorization(['admin'])
 export default class Departments extends React.Component {
-  getFields() {
-    return [
-      {
-        name: 'name',
-        title: 'Nombre',
-        sort: 'DESC',
-        render: (value, doc, index) => <span>{value.name} </span>
-      }
-    ]
-  }
   render() {
     return (
       <Container>
         <Switch>
+          <Route
+            exact
+            path="/directorio/departamentos"
+            component={DynamicComponent(() => import('./List'))}
+          />
           <Route
             exact
             path="/directorio/departamentos/crear"

@@ -15,14 +15,18 @@
 }
 
 :local(.label) {
-  font-weigth: 900;
+  font-weight: 900;
 }
 
 .help-block {
   color: red;
   margin-bottom: 10px;
+
+
 }
+
 .padding {
   padding-top: 20px;
   padding-bottom: 20px;
+
 }

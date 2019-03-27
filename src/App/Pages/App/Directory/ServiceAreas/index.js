@@ -1,19 +1,18 @@
 import React from 'react'
 import Crud from 'App/components/Crud'
-
 export default class ServiceAreas extends React.Component {
-  getFields () {
+  getFields() {
     return [
       {
         name: 'name',
         title: 'Nombre',
         sort: 'DESC',
-        render: (value, doc, index) => (<span>{value.name} </span>)
+        render: (value, doc, index) => <span>{value.name} </span>
       }
     ]
   }
 
-  render () {
+  render() {
     return (
       <Crud
         path='/directorio/areas'

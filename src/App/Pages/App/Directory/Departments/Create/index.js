@@ -1,25 +1,19 @@
 import React from 'react'
+import Template from '../Template/'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router'
-import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
-
-@withRouter
-@withMessage
-class CreateDepartaments extends React.Component {
+export default class CreateDepartments extends React.Component {
   static propTypes = {
-    history: PropTypes.object,
-    showMessage: PropTypes.func,
-    createApplication: PropTypes.func
+    history: PropTypes.object
   }
-  state = {}
-
-  onSuccess () {
-    this.props.showMessage('departamento creado')
-    this.props.history.push(`/directorio/departamentos`)
-  }
-
   render () {
-    return <div>Hola</div>
+    return (
+      <Template
+        type='create'
+        departmentId=''
+        title='Crear Departamento'
+        description='Creación de nuevo departamento'
+        history={this.props.history}
+      />
+    )
   }
 }
-export default CreateDepartaments

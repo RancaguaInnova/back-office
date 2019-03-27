@@ -4,7 +4,6 @@ import Page from './Page'
 import PropTypes from 'prop-types'
 
 export default class Pagination extends React.Component {
-
   static propTypes = {
     result: PropTypes.object,
     page: PropTypes.number,
@@ -13,7 +12,7 @@ export default class Pagination extends React.Component {
     setLimit: PropTypes.func.isRequired
   }
 
-  render () {
+  render() {
     return (
       <div className='paginated-pagination'>
         <div className='paginated-pagination-limit'>
@@ -25,5 +24,4 @@ export default class Pagination extends React.Component {
       </div>
     )
   }
-
 }
