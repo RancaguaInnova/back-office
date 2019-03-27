@@ -102,7 +102,7 @@ class TemplateDepartment extends React.Component {
       let address = department.contactInformation.address
       let phone = department.contactInformation.phone
       this.setState({
-        _id: department._id || '',
+        _id: department._id,
         validate: false,
         name: department.name || '',
         optionLabel: department.optionLabel || '',
@@ -124,7 +124,7 @@ class TemplateDepartment extends React.Component {
         latitude: address.latitude,
         longitude: address.longitude,
         postalCode: address.postalCode || '',
-        areaCode: phone.areaCode || '',
+        areaCode: phone.areaCode || null,
         number: phone.number || '',
         mobilePhone: phone.mobilePhone || '',
         email: department.contactInformation.email || ''
@@ -274,7 +274,7 @@ class TemplateDepartment extends React.Component {
     const { hasNameError, hasEmailCodeError } = this.state
     if (!hasNameError && !hasEmailCodeError) {
       this.props.showMessage('Campos validados correctamente')
-      this.onSuccessUpdate()
+      this.onSubmitUpdate()
     } else {
       this.props.showMessage('Verifique que todos los datos estén correctos')
     }
