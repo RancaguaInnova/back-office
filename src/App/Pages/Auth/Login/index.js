@@ -27,7 +27,8 @@ export default class Login extends React.Component {
   }
 
   render() {
-    if (!this.props.loading && this.props.userId) return <LoggedIn />
+    if (!this.props.loading && this.props.userId)
+      return <LoggedIn userId={this.props.userId} />
     return (
       <div>
         <AutoForm
