@@ -102,7 +102,7 @@ class TemplateDepartment extends React.Component {
       let address = department.contactInformation.address
       let phone = department.contactInformation.phone
       this.setState({
-        _id: department._id,
+        _id: department._id || '',
         validate: false,
         name: department.name || '',
         optionLabel: department.optionLabel || '',
@@ -127,7 +127,7 @@ class TemplateDepartment extends React.Component {
         areaCode: phone.areaCode || '',
         number: phone.number || '',
         mobilePhone: phone.mobilePhone || '',
-        email: department.contactInformation.email
+        email: department.contactInformation.email || ''
       })
     }
   }
@@ -138,6 +138,10 @@ class TemplateDepartment extends React.Component {
   }
   onSuccessUpdate() {
     this.props.showMessage('Departamento actualizado correctamente')
+    this.props.history.push(`/directorio/departamentos/`)
+  }
+  @autobind
+  BackList() {
     this.props.history.push(`/directorio/departamentos/`)
   }
 
@@ -199,7 +203,6 @@ class TemplateDepartment extends React.Component {
       this.onSuccessUpdate()
     } catch (error) {
       this.props.showMessage('Ocurrió un error al editar el departamento')
-      console.log('Error creating department:', error)
     }
   }
 
@@ -216,7 +219,6 @@ class TemplateDepartment extends React.Component {
       this.onSuccessDelete()
     } catch (error) {
       this.props.showMessage('Ocurrió un error al eliminar el departamento')
-      console.log(error)
     }
   }
 
@@ -250,8 +252,7 @@ class TemplateDepartment extends React.Component {
           onClick: () => this.onDelete()
         },
         {
-          label: 'No',
-          onClick: () => console.log('no')
+          label: 'No'
         }
       ]
     })
@@ -260,7 +261,6 @@ class TemplateDepartment extends React.Component {
   async validateForm() {
     await this.toggleValidating(true)
     const { hasNameError, hasEmailCodeError } = this.state
-
     if (!hasNameError && !hasEmailCodeError) {
       this.props.showMessage('Campos validados correctamente')
       this.onSubmitInsert()
@@ -317,7 +317,6 @@ class TemplateDepartment extends React.Component {
             value={name}
             validate={validate}
             validationCallback={res => {
-              console.log(res)
               this.setState({ hasNameError: res, validate: false })
             }}
             onChange={(name, e) => {
@@ -605,7 +604,6 @@ class TemplateDepartment extends React.Component {
             placeholder=''
             validate={validate}
             validationCallback={res => {
-              console.log(res)
               this.setState({
                 hasEmailCodeError: res,
                 validate: false
@@ -690,7 +688,7 @@ class TemplateDepartment extends React.Component {
           />
         </div>
         <div className='os_button_container padding'>
-          <button style={{ marginRight: 10 }} className='orion_button '>
+          <button style={{ marginRight: 10 }} className='orion_button ' onClick={this.BackList}>
             Volver
           </button>
           {this.props.type === 'update' && (

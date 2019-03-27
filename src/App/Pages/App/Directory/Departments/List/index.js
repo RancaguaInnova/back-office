@@ -9,6 +9,12 @@ export default class ListDepartment extends React.Component {
         title: 'Nombre',
         sort: 'DESC',
         render: (value, doc, index) => <span>{value.name} </span>
+      },
+      {
+        name: 'optionLabel',
+        title: 'Description',
+        sort: 'DESC',
+        render: (value, doc, index) => <span>{value.optionLabel} </span>
       }
     ]
   }
@@ -20,7 +26,6 @@ export default class ListDepartment extends React.Component {
         basePath='/directorio/departamentos'
         fields={this.getFields()}
         canUpdate
-        allowSearch
         canCreate
       />
     )
