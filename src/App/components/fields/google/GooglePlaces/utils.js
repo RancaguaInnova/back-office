@@ -15,7 +15,6 @@ export const geocodeByAddress = address => {
 export const getLatLng = result => {
   return new Promise((resolve, reject) => {
     try {
-
       const latLng = {
         lat: result.geometry.location.lat(),
         lng: result.geometry.location.lng()
@@ -47,7 +46,7 @@ export const geocodeByPlaceLocation = LatLng => {
   console.log(LatLng)
 
   return new Promise((resolve, reject) => {
-    geocoder.geocode({'location': LatLng}, (results, status) => {
+    geocoder.geocode({ location: LatLng }, (results, status) => {
       if (status !== OK) {
         reject(status)
       }

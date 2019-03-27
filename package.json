@@ -55,7 +55,7 @@
     "react-stripe-elements": "^2.0.0",
     "rxjs": "^6.2.1",
     "simple-react-form": "^2.1.5",
-    "unfetch": "^4.0.1",
+    "unfetch": "^4.0.1"
   },
   "scripts": {
     "start": "./node_modules/orionsoft-react-scripts/bin/react-scripts.js start",

@@ -6,29 +6,26 @@ import { Route, Switch } from 'react-router-dom'
 import DynamicComponent from 'App/components/DynamicComponent'
 @forceLogin
 @withAuthorization(['admin'])
-
 export default class Departments extends React.Component {
-
-  render () {
+  render() {
     return (
       <Container>
         <Switch>
-         <Route
+          <Route
             exact
-            path="/directorio/departamentos"
+            path='/directorio/departamentos'
             component={DynamicComponent(() => import('./List'))}
           />
           <Route
             exact
-            path="/directorio/departamentos/crear"
+            path='/directorio/departamentos/crear'
             component={DynamicComponent(() => import('./Create'))}
           />
           <Route
             exact
-            path="/directorio/departamentos/editar/:departmentId"
+            path='/directorio/departamentos/editar/:departmentId'
             component={DynamicComponent(() => import('./Update'))}
           />
-
         </Switch>
       </Container>
     )

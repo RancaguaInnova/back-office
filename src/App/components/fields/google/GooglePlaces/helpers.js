@@ -14,9 +14,7 @@ export const classnames = (...args) => {
         }
       })
     } else {
-      throw new Error(
-        '`classnames` only accepts string or object as arguments'
-      )
+      throw new Error('`classnames` only accepts string or object as arguments')
     }
   })
 

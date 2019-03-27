@@ -14,26 +14,27 @@ export default class Page extends React.Component {
 
   state = { page: 1 }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.page !== this.props.page) {
       this.setState({ page: nextProps.page })
     }
   }
 
   @autobind
-  onPageBlur (event) {
+  onPageBlur(event) {
     this.props.setPage(Number(event.target.value))
   }
 
   @autobind
-  onKeyPress (event) {
+  onKeyPress(event) {
     const code = event.keyCode || event.which
     if (code === 13) {
       this.props.setPage(Number(event.target.value))
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div
@@ -43,8 +44,7 @@ export default class Page extends React.Component {
               : 'paginated-pagination-page-icon-disabled'
           }
           onClick={() =>
-            this.props.result.hasPreviousPage &&
-            this.props.setPage(this.props.page - 1)
+            this.props.result.hasPreviousPage && this.props.setPage(this.props.page - 1)
           }
         >
           <BeforeIcon size={25} />
@@ -67,10 +67,7 @@ export default class Page extends React.Component {
               ? 'paginated-pagination-page-icon'
               : 'paginated-pagination-page-icon-disabled'
           }
-          onClick={() =>
-            this.props.result.hasNextPage &&
-            this.props.setPage(this.props.page + 1)
-          }
+          onClick={() => this.props.result.hasNextPage && this.props.setPage(this.props.page + 1)}
         >
           <NextIcon size={25} />
         </div>

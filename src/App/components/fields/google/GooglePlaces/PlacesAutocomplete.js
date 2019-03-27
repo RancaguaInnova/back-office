@@ -13,14 +13,12 @@ const formattedSuggestion = structured_formatting => ({
 class PlacesAutocomplete extends React.Component {
   constructor(props) {
     super(props)
-
     this.state = {
       loading: false,
       suggestions: [],
       userInputValue: props.value,
       ready: !props.googleCallbackName
     }
-
     this.debouncedFetchPredictions = debounce(this.fetchPredictions, this.props.debounce)
   }
   componentDidMount() {

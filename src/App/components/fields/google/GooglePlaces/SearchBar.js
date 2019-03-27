@@ -2,8 +2,7 @@ import React from 'react'
 import PlacesAutocomplete from './PlacesAutocomplete'
 import { geocodeByAddress, geocodeByPlaceLocation } from './utils'
 import { classnames } from './helpers'
-import styles from './styles.css'
-
+import './styles.css'
 import PropTypes from 'prop-types'
 
 class SearchPlaceBar extends React.Component {
@@ -11,25 +10,25 @@ class SearchPlaceBar extends React.Component {
     handleChangeAddress: PropTypes.func,
     latitude: PropTypes.number,
     longitude: PropTypes.number,
-    address: PropTypes.string,
+    address: PropTypes.string
   }
 
   constructor(props) {
     super(props)
-  
-  let l = -34.1719656
-    if (props.latitude != 0 && props.latitude !== null ){
-       l = props.latitude
-    } 
+
+    let l = -34.1719656
+    if (props.latitude !== 0 && props.latitude !== null) {
+      l = props.latitude
+    }
     let lg = -34.1719656
 
-    if (props.longitude != 0 && props.longitude !== null  ) {
-      lg=props.longitude
+    if (props.longitude !== 0 && props.longitude !== null) {
+      lg = props.longitude
     }
     this.state = {
       address: props.address || '',
       errorMessage: '',
-      latitude:l,
+      latitude: l,
       longitude: lg,
       gmapsLoaded: false,
       isGeocoding: false,
@@ -113,21 +112,17 @@ class SearchPlaceBar extends React.Component {
               this.setState({
                 administrative_area_level_1: val
               })
-
             } else if (addressType === 'administrative_area_level_2') {
               let val = place.address_components[i][this.state.componentForm[addressType]]
               this.setState({
                 administrative_area_level_2: val
               })
-
             } else if (addressType === 'country') {
               let val = place.address_components[i][this.state.componentForm[addressType]]
               this.setState({
                 country: val
               })
-
             }
-
           }
         }
 
@@ -142,11 +137,11 @@ class SearchPlaceBar extends React.Component {
             postalCode: this.state.postal_code,
             administrativeAreaLevel1: this.state.administrative_area_level_1,
             administrativeAreaLevel2: this.state.administrative_area_level_2,
-            country: this.state.country,      
+            country: this.state.country,
             latitude: place.geometry.location.lat(),
-          longitude: place.geometry.location.lng(),
-          formatted_address: place.formatted_address,
-          place_id: place.place_id,
+            longitude: place.geometry.location.lng(),
+            formatted_address: place.formatted_address,
+            place_id: place.place_id
           }
         })
 
@@ -233,7 +228,6 @@ class SearchPlaceBar extends React.Component {
   }
 
   componentDidMount() {
-
     this.initMap()
   }
   render() {

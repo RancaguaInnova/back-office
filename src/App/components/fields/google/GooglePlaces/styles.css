@@ -2,15 +2,18 @@
   min-height: 300px;
   width: 100%;
 }
+
 .map .infowindow-content {
   display: inline;
 }
-.map > div{
+
+.map>div {
 
   width: 100% !important;
-  min-height: 300px  !important;
+  min-height: 300px !important;
 
 }
+
 .map-maker-icon {
   color: #FD6C6C;
 }
@@ -48,7 +51,7 @@
 .search-input,
 .search-input:focus,
 .search-input:active {
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
   border: honeydew;
   display: block;
   width: 100%;
@@ -61,7 +64,8 @@
 .clear-button,
 .clear-button:active,
 .clear-button:focus {
-  position: relative;;
+  position: relative;
+  ;
   right: -10px;
   top: 20px;
   transform: translateY(-50%);
@@ -78,7 +82,7 @@
   border-left: honeydew;
   border-right: honeydew;
   border-top: 1px solid #e6e6e6;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border-radius: 0 0 2px 2px;
 }
 

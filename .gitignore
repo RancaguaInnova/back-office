@@ -5,3 +5,6 @@
 node_modules/
 build/
 .vscode/
+src/googleApiKey.js
+.package_master.json.icloud
+yarn-error.log
