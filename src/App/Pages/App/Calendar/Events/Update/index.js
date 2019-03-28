@@ -17,6 +17,8 @@ import autobind from 'autobind-decorator'
 import gql from 'graphql-tag'
 import EventFragments from 'App/fragments/Event'
 import omit from 'lodash/omit'
+import { confirmAlert } from 'react-confirm-alert'
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 @withRouter
 @withMessage
@@ -43,6 +45,11 @@ import omit from 'lodash/omit'
   }
   ${EventFragments.FullEvent}
 `)
+@withMutation(gql`
+  mutation deleteEvent($_id: ID!) {
+    deleteEvent(_id: $_id)
+  }
+`)
 export default class UpdateEvent extends React.Component {
   static propTypes = {
     history: PropTypes.object,
@@ -65,8 +72,8 @@ export default class UpdateEvent extends React.Component {
 
   @autobind
   handleChangeAddress(contactInformationAddress) {
-    this.setState({
-      event: {
+    let newState = Object.assign(this.state.event, {
+      address: {
         streetName: contactInformationAddress.streetName,
         administrativeAreaLevel1:
           contactInformationAddress.administrativeAreaLevel1,
@@ -83,6 +90,36 @@ export default class UpdateEvent extends React.Component {
         longitude: contactInformationAddress.longitude || ''
       }
     })
+    this.setState(newState)
+  }
+
+  @autobind
+  confirmDelete() {
+    confirmAlert({
+      title: 'Confirmar acción',
+      message: '¿Eliminar este evento?',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: async () => await this.delete()
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    })
+  }
+
+  async delete() {
+    try {
+      await this.props.deleteEvent({ _id: this.props.event._id })
+      this.props.showMessage('Evento eliminado!')
+      this.props.history.push('/calendario/eventos')
+    } catch (error) {
+      console.log('Error deleting event:', error)
+      this.showMessage('Ocurrió un error')
+    }
   }
 
   async onSubmit() {
@@ -141,6 +178,9 @@ export default class UpdateEvent extends React.Component {
         </Button>
         <Button onClick={() => this.onSubmit()} primary>
           Guardar
+        </Button>
+        <Button onClick={() => this.confirmDelete()} danger>
+          Eliminar
         </Button>
       </Section>
     )

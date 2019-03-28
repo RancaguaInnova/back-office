@@ -42,7 +42,6 @@ export default class List extends React.Component {
       this.props.onSelect(item)
     } else {
       this.props.history.push(`${this.props.basePath}/editar/${item._id}`)
-      console.log(`${this.props.basePath}/editar/${item._id}`)
     }
   }
 
