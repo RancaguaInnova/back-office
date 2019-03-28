@@ -1,4 +1,4 @@
-import React from 'react'
+/* import React from 'react'
 import Section from 'App/components/Section'
 import Button from 'orionsoft-parts/lib/components/Button'
 import { Form, Field } from 'simple-react-form'
@@ -13,7 +13,6 @@ import withUserId from 'App/helpers/auth/withUserId'
 import gql from 'graphql-tag'
 import AppFragments from 'App/fragments/Apps'
 import LinkToAccount from './LinkToAccount'
-
 import styles from './styles.css'
 
 @withRouter
@@ -44,9 +43,7 @@ export default class AppRegistrationForm extends React.Component {
     try {
       let application = Object.assign({}, this.state)
       await this.props.createApplication({ application })
-      this.props.showMessage(
-        'Aplicación registrada. Recibirás un correo con el token de tu app.'
-      )
+      this.props.showMessage('Aplicación registrada. Recibirás un correo con el token de tu app.')
       this.props.history.push(`/devs`)
     } catch (error) {
       this.props.showMessage('Ocurrió un error al registrar la aplicación.')
@@ -78,56 +75,39 @@ export default class AppRegistrationForm extends React.Component {
           </div>
           <div className={styles.fieldGroup} style={{ marginTop: 15 }}>
             <div className={styles.label}>Nombre:</div>
-            <Field fieldName="developerInfo.firstName" type={Text} />
+            <Field fieldName='developerInfo.firstName' type={Text} />
             <div className={styles.label}>Apellido:</div>
-            <Field fieldName="developerInfo.lastName" type={Text} />
+            <Field fieldName='developerInfo.lastName' type={Text} />
             <div className={styles.label}>Pagina Web:</div>
-            <Field fieldName="developerInfo.url" type={Text} />
+            <Field fieldName='developerInfo.url' type={Text} />
             <div className={styles.headerLabel}>Información de contacto:</div>
             <div className={styles.fieldGroup}>
               <div className={styles.subheaderLabel}>Dirección:</div>
               <div className={styles.fieldGroup}>
                 <div className={styles.label}>Nombre de calle:</div>
-                <Field
-                  fieldName="developerInfo.address.streetName"
-                  type={Text}
-                />
+                <Field fieldName='developerInfo.address.streetName' type={Text} />
                 <div className={styles.label}>Numeración:</div>
-                <Field
-                  fieldName="developerInfo.address.streetNumber"
-                  type={Text}
-                />
-                <div className={styles.label}>
-                  Número de oficina/casa/departamento (opcional):
-                </div>
-                <Field
-                  fieldName="developerInfo.address.departmentNumber"
-                  type={Text}
-                />
+                <Field fieldName='developerInfo.address.streetNumber' type={Text} />
+                <div className={styles.label}>Número de oficina/casa/departamento (opcional):</div>
+                <Field fieldName='developerInfo.address.departmentNumber' type={Text} />
                 <div className={styles.label}>Ciudad:</div>
-                <Field fieldName="developerInfo.address.city" type={Text} />
+                <Field fieldName='developerInfo.address.city' type={Text} />
                 <div className={styles.label}>Código Postal:</div>
-                <Field
-                  fieldName="developerInfo.address.postalCode"
-                  type={Text}
-                />
+                <Field fieldName='developerInfo.address.postalCode' type={Text} />
               </div>
               <div className={styles.subheaderLabel}>Teléfono:</div>
               <div className={styles.fieldGroup}>
                 <div className={styles.label}>Código de área:</div>
-                <Field fieldName="developerInfo.phone.areaCode" type={Text} />
+                <Field fieldName='developerInfo.phone.areaCode' type={Text} />
                 <div className={styles.label}>Número fijo:</div>
-                <Field fieldName="developerInfo.phone.number" type={Text} />
+                <Field fieldName='developerInfo.phone.number' type={Text} />
                 <div className={styles.label}>Celular:</div>
-                <Field
-                  fieldName="developerInfo.phone.mobilePhone"
-                  type={Text}
-                />
+                <Field fieldName='developerInfo.phone.mobilePhone' type={Text} />
               </div>
               <div className={styles.subheaderLabel}>Email:</div>
               <div className={styles.fieldGroup}>
                 <div className={styles.label}>Email:</div>
-                <Field fieldName="developerInfo.email" type={Text} />
+                <Field fieldName='developerInfo.email' type={Text} />
               </div>
             </div>
           </div>
@@ -139,25 +119,23 @@ export default class AppRegistrationForm extends React.Component {
   render() {
     return (
       <Section
-        title="Registro de integraciones"
-        description="Registra tu aplicación llenando este
-        formulario. Recibirás un email cuando tu aplicación sea aprobada"
+        title='Registro de integraciones'
+        description='Registra tu aplicación llenando este
+        formulario. Recibirás un email cuando tu aplicación sea aprobada'
         top
       >
         <Form state={this.state} onChange={changes => this.setState(changes)}>
-          <div className={styles.headerLabel}>
-            Información de la aplicación:
-          </div>
+          <div className={styles.headerLabel}>Información de la aplicación:</div>
           <div className={styles.fieldGroup}>
             <div className={styles.label}>Nombre:</div>
-            <Field fieldName="name" type={Text} />
+            <Field fieldName='name' type={Text} />
             <div className={styles.label}>Descripción:</div>
-            <Field fieldName="description" type={Textarea} />
+            <Field fieldName='description' type={Textarea} />
             <div className={styles.label}>URL de redirección:</div>
-            <Field fieldName="applicationURL" type={Text} />
+            <Field fieldName='applicationURL' type={Text} />
             <div className={styles.label}>Datos de usuario:</div>
             <Field
-              fieldName="userFields"
+              fieldName='userFields'
               type={Select}
               multi
               options={[
@@ -203,13 +181,43 @@ export default class AppRegistrationForm extends React.Component {
           {this.renderDeveloperInfo()}
         </Form>
         <br />
-        <Button to="/" style={{ marginRight: 10 }}>
+        <Button to='/' style={{ marginRight: 10 }}>
           Cancelar
         </Button>
         <Button onClick={() => this.onSubmit()} primary>
           Registrar Aplicación
         </Button>
       </Section>
+    )
+  }
+}
+ */
+import React from 'react'
+import forceLogin from 'App/helpers/auth/forceLogin'
+import withAuthorization from 'App/helpers/auth/withAuthorization'
+import Container from 'orionsoft-parts/lib/components/Container'
+import { Route, Switch } from 'react-router-dom'
+import DynamicComponent from 'App/components/DynamicComponent'
+@forceLogin
+@withAuthorization(['admin'])
+export default class Aplication extends React.Component {
+  render() {
+    return (
+      <Container>
+        <Switch>
+          <Route exact path='/devs/apps' component={DynamicComponent(() => import('./List'))} />
+          <Route
+            exact
+            path='/devs/apps/crear'
+            component={DynamicComponent(() => import('./Create'))}
+          />
+          <Route
+            exact
+            path='/devs/apps/editar/:applicationId'
+            component={DynamicComponent(() => import('./Update'))}
+          />
+        </Switch>
+      </Container>
     )
   }
 }
