@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import SearchBar from './SearchBar'
 import ReactDependentScript from 'react-dependent-script'
 import PropTypes from 'prop-types'
-import { apiKey } from '../../../../../googleApiKey.js'
+import { apiKey } from '../../../../googleApiKey.js'
 
 export default class SearchGoogle extends Component {
   static propTypes = {
@@ -12,10 +12,14 @@ export default class SearchGoogle extends Component {
     address: PropTypes.string
   }
 
-  render() {
+  render () {
     return (
       <ReactDependentScript
-        scripts={['https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places']}
+        scripts={[
+          'https://maps.googleapis.com/maps/api/js?key=' +
+            apiKey +
+            '&libraries=places'
+        ]}
       >
         <SearchBar
           handleChangeAddress={this.props.handleChangeAddress}

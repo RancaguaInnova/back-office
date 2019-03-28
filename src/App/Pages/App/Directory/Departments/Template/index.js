@@ -4,7 +4,7 @@ import Section from 'App/components/Section'
 import { withRouter } from 'react-router'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import styles from './styles.css'
-import SearchBar from 'App/components/fields/google/GooglePlaces'
+import SearchBar from 'App/components/fields/GooglePlaces'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import autobind from 'autobind-decorator'
@@ -69,7 +69,7 @@ class TemplateDepartment extends React.Component {
     title: PropTypes.string,
     description: PropTypes.string
   }
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       validate: false,
@@ -96,7 +96,7 @@ class TemplateDepartment extends React.Component {
     this.validateForm = this.validateForm.bind(this)
     this.validateFormUpdate = this.validateFormUpdate.bind(this)
   }
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.type === 'update') {
       let department = this.props.department
       let address = department.contactInformation.address
@@ -132,20 +132,20 @@ class TemplateDepartment extends React.Component {
     }
   }
 
-  onSuccessInsert() {
+  onSuccessInsert () {
     this.props.showMessage('Departamento creado')
     this.props.history.push(`/directorio/departamentos/`)
   }
-  onSuccessUpdate() {
+  onSuccessUpdate () {
     this.props.showMessage('Departamento actualizado correctamente')
     this.props.history.push(`/directorio/departamentos/`)
   }
   @autobind
-  BackList() {
+  BackList () {
     this.props.history.push(`/directorio/departamentos/`)
   }
 
-  setDepartment() {
+  setDepartment () {
     let s = this.state
     var department = {
       _id: s._id,
@@ -185,7 +185,7 @@ class TemplateDepartment extends React.Component {
   }
 
   @autobind
-  async onSubmitInsert() {
+  async onSubmitInsert () {
     try {
       var department = this.setDepartment()
       await this.props.createDepartment({ department: department })
@@ -196,7 +196,7 @@ class TemplateDepartment extends React.Component {
   }
 
   @autobind
-  async onSubmitUpdate() {
+  async onSubmitUpdate () {
     try {
       var department = this.setDepartment()
       await this.props.updateDepartment({ department: department })
@@ -206,13 +206,13 @@ class TemplateDepartment extends React.Component {
     }
   }
 
-  onSuccessDelete() {
+  onSuccessDelete () {
     this.props.showMessage('Departamento eliminado correctamente')
     this.props.history.push(`/directorio/departamentos/`)
   }
 
   @autobind
-  async onDelete() {
+  async onDelete () {
     try {
       var department = this.setDepartment()
       await this.props.deleteDepartment({ _id: department._id })
@@ -225,8 +225,10 @@ class TemplateDepartment extends React.Component {
   handleChangeAddress = contactInformationAddress => {
     this.setState({
       streetName: contactInformationAddress.streetName,
-      administrativeAreaLevel1: contactInformationAddress.administrativeAreaLevel1,
-      administrativeAreaLevel2: contactInformationAddress.administrativeAreaLevel2,
+      administrativeAreaLevel1:
+        contactInformationAddress.administrativeAreaLevel1,
+      administrativeAreaLevel2:
+        contactInformationAddress.administrativeAreaLevel2,
       city: contactInformationAddress.city,
       departmentNumber: contactInformationAddress.departmentNumber,
       postalCode: contactInformationAddress.postalCode,
@@ -239,7 +241,7 @@ class TemplateDepartment extends React.Component {
     })
   }
 
-  toggleValidating(validate) {
+  toggleValidating (validate) {
     this.setState({ validate })
   }
   Delete = () => {
@@ -258,7 +260,7 @@ class TemplateDepartment extends React.Component {
     })
   }
 
-  async validateForm() {
+  async validateForm () {
     await this.toggleValidating(true)
     const { hasNameError, hasEmailCodeError } = this.state
     if (!hasNameError && !hasEmailCodeError) {
@@ -269,7 +271,7 @@ class TemplateDepartment extends React.Component {
     }
   }
 
-  async validateFormUpdate() {
+  async validateFormUpdate () {
     await this.toggleValidating(true)
     const { hasNameError, hasEmailCodeError } = this.state
     if (!hasNameError && !hasEmailCodeError) {
@@ -280,7 +282,7 @@ class TemplateDepartment extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const {
       name,
       optionLabel,
@@ -305,7 +307,11 @@ class TemplateDepartment extends React.Component {
       postalCode
     } = this.state
     return (
-      <Section title={this.props.title} description={this.props.description} top>
+      <Section
+        title={this.props.title}
+        description={this.props.description}
+        top
+      >
         <div className={styles.fieldGroup}>
           <div className={styles.label}>Nombre</div>
           <Textbox
@@ -338,7 +344,11 @@ class TemplateDepartment extends React.Component {
             onChange={(optionLabel, e) => {
               this.setState({ optionLabel })
             }}
-            validationOption={{ name: 'optionLabel', check: false, required: false }}
+            validationOption={{
+              name: 'optionLabel',
+              check: false,
+              required: false
+            }}
           />
           <div className={styles.label}>Director(a) de este departamento</div>
           <Select
@@ -361,7 +371,9 @@ class TemplateDepartment extends React.Component {
               required: false
             }}
           />
-          <div className={styles.label}>Area de servicio a la que pertenece este departamento</div>
+          <div className={styles.label}>
+            Area de servicio a la que pertenece este departamento
+          </div>
           <Select
             tabIndex='4'
             id={'serviceAreaId'}
@@ -622,7 +634,8 @@ class TemplateDepartment extends React.Component {
             }}
           />
           <div className={styles.label}>
-            Horarios de atención (Ej: lunes a jueves / 08:30 a 13:30 / Viernes 08:30 a 16:30)
+            Horarios de atención (Ej: lunes a jueves / 08:30 a 13:30 / Viernes
+            08:30 a 16:30)
           </div>
           <Textbox
             tabIndex='17'
@@ -635,7 +648,9 @@ class TemplateDepartment extends React.Component {
               this.setState({ businessHours })
             }}
           />
-          <div className={styles.label}>Descripción de funciones del departamento</div>
+          <div className={styles.label}>
+            Descripción de funciones del departamento
+          </div>
           <Textbox
             tabIndex='18'
             id='description'
@@ -652,7 +667,9 @@ class TemplateDepartment extends React.Component {
               required: false
             }}
           />
-          <div className={styles.label}>Imagen del edificio donde se encuentra el departamento</div>
+          <div className={styles.label}>
+            Imagen del edificio donde se encuentra el departamento
+          </div>
           <Textbox
             tabIndex='19'
             id='imageUrl'
@@ -669,7 +686,9 @@ class TemplateDepartment extends React.Component {
               required: false
             }}
           />
-          <div className={styles.label}>Dirección del departamento de tránsito</div>
+          <div className={styles.label}>
+            Dirección del departamento de tránsito
+          </div>
           <Textbox
             tabIndex='20'
             id='address'
@@ -688,7 +707,11 @@ class TemplateDepartment extends React.Component {
           />
         </div>
         <div className='os_button_container padding'>
-          <button style={{ marginRight: 10 }} className='orion_button ' onClick={this.BackList}>
+          <button
+            style={{ marginRight: 10 }}
+            className='orion_button '
+            onClick={this.BackList}
+          >
             Volver
           </button>
           {this.props.type === 'update' && (
@@ -710,7 +733,10 @@ class TemplateDepartment extends React.Component {
             </button>
           )}
           {this.props.type === 'create' && (
-            <button onClick={this.validateForm} className='orion_button orion_primary'>
+            <button
+              onClick={this.validateForm}
+              className='orion_button orion_primary'
+            >
               Crear Departamento
             </button>
           )}

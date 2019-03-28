@@ -8,6 +8,7 @@ import DateText from 'orionsoft-parts/lib/components/fields/DateText'
 import Checkbox from 'orionsoft-parts/lib/components/fields/Checkbox'
 import HourField from 'App/components/fields/HourField'
 import Select from 'orionsoft-parts/lib/components/fields/Select'
+import SearchBar from 'App/components/fields/GooglePlaces'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
@@ -84,6 +85,25 @@ export default class CreateEvent extends React.Component {
     this.props.history.push(`/calendario/eventos`)
   }
 
+  handleChangeAddress = contactInformationAddress => {
+    this.setState({
+      streetName: contactInformationAddress.streetName,
+      administrativeAreaLevel1:
+        contactInformationAddress.administrativeAreaLevel1,
+      administrativeAreaLevel2:
+        contactInformationAddress.administrativeAreaLevel2,
+      city: contactInformationAddress.city,
+      departmentNumber: contactInformationAddress.departmentNumber,
+      postalCode: contactInformationAddress.postalCode,
+      streetNumber: contactInformationAddress.streetNumber,
+      country: contactInformationAddress.country,
+      formatted_address: contactInformationAddress.formatted_address || '',
+      place_id: contactInformationAddress.place_id || '',
+      latitude: contactInformationAddress.latitude || '',
+      longitude: contactInformationAddress.longitude || ''
+    })
+  }
+
   render() {
     return (
       <Section title="Crear Evento" description="Crear un nuevo evento" top>
@@ -100,6 +120,8 @@ export default class CreateEvent extends React.Component {
           <Field fieldName="date.startHour" type={HourField} />
           <div className="label">Hora de término</div>
           <Field fieldName="date.endHour" type={HourField} />
+          <div className="label">Dirección</div>
+          <SearchBar handleChangeAddress={this.handleChangeAddress} />
           <div className="label">
             Texto que aparecerá en campos para seleccionar un evento
           </div>
