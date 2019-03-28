@@ -40,12 +40,15 @@ export default class HourTextField extends React.Component {
   }
 
   onChange (text) {
+    console.log('text:', text)
     if (text === 'n') {
       return this.props.onChange(this.setNow())
     }
     if (this.replaceTexts(text, this.state.text)) return
     this.setState({ text })
-    if (text.length !== 5) return this.props.onChange(text.slice(4))
+    if (text.length != 6) {
+      return this.props.onChange(text.slice(0, 5))
+    }
   }
 
   render () {

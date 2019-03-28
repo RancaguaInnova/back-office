@@ -76,7 +76,7 @@ export default class CreateDeveloperAccount extends React.Component {
       return
     }
 
-    let profile = { identifier, roles: ['devaloper'] }
+    let profile = { identifier, roles: ['developer'] }
     try {
       const { createUser } = await this.props.createUser({
         email,

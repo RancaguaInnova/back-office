@@ -3,7 +3,6 @@ import Section from 'App/components/Section'
 import Button from 'orionsoft-parts/lib/components/Button'
 import { Form, Field } from 'simple-react-form'
 import Text from 'orionsoft-parts/lib/components/fields/Text'
-import NumberField from 'orionsoft-parts/lib/components/fields/numeral/Number'
 import DateText from 'orionsoft-parts/lib/components/fields/DateText'
 import Checkbox from 'orionsoft-parts/lib/components/fields/Checkbox'
 import HourField from 'App/components/fields/HourField'
@@ -68,7 +67,9 @@ export default class CreateEvent extends React.Component {
   @autobind
   async submit() {
     try {
-      await this.props.createEvent(this.state)
+      await this.props.createEvent({ event: this.state.event })
+      this.props.showMessage('Evento creado')
+      this.props.history.push('/calendario/eventos')
     } catch (error) {
       this.setState({ errorMessages: this.getValidationErrors(error) })
       this.props.showMessage('Ocurrión un error!')
@@ -80,34 +81,36 @@ export default class CreateEvent extends React.Component {
     console.log('UNIMPLEMENTED')
   }
 
-  onSuccess(event) {
-    this.props.showMessage('Evento creado')
-    this.props.history.push(`/calendario/eventos`)
-  }
-
-  handleChangeAddress = contactInformationAddress => {
+  @autobind
+  handleChangeAddress(contactInformationAddress) {
     this.setState({
-      streetName: contactInformationAddress.streetName,
-      administrativeAreaLevel1:
-        contactInformationAddress.administrativeAreaLevel1,
-      administrativeAreaLevel2:
-        contactInformationAddress.administrativeAreaLevel2,
-      city: contactInformationAddress.city,
-      departmentNumber: contactInformationAddress.departmentNumber,
-      postalCode: contactInformationAddress.postalCode,
-      streetNumber: contactInformationAddress.streetNumber,
-      country: contactInformationAddress.country,
-      formatted_address: contactInformationAddress.formatted_address || '',
-      place_id: contactInformationAddress.place_id || '',
-      latitude: contactInformationAddress.latitude || '',
-      longitude: contactInformationAddress.longitude || ''
+      event: {
+        streetName: contactInformationAddress.streetName,
+        administrativeAreaLevel1:
+          contactInformationAddress.administrativeAreaLevel1,
+        administrativeAreaLevel2:
+          contactInformationAddress.administrativeAreaLevel2,
+        city: contactInformationAddress.city,
+        departmentNumber: contactInformationAddress.departmentNumber,
+        postalCode: contactInformationAddress.postalCode,
+        streetNumber: contactInformationAddress.streetNumber,
+        country: contactInformationAddress.country,
+        formatted_address: contactInformationAddress.formatted_address || '',
+        place_id: contactInformationAddress.place_id || '',
+        latitude: contactInformationAddress.latitude || '',
+        longitude: contactInformationAddress.longitude || ''
+      }
     })
   }
 
   render() {
     return (
       <Section title="Crear Evento" description="Crear un nuevo evento" top>
-        <Form state={this.state.event} ref="form">
+        <Form
+          state={this.state.event}
+          ref="form"
+          onChange={change => this.setState({ event: { ...change } })}
+        >
           <div className="label">Nombre</div>
           <Field fieldName="name" type={Text} />
           <div className="label">Descripción</div>
@@ -121,7 +124,11 @@ export default class CreateEvent extends React.Component {
           <div className="label">Hora de término</div>
           <Field fieldName="date.endHour" type={HourField} />
           <div className="label">Dirección</div>
-          <SearchBar handleChangeAddress={this.handleChangeAddress} />
+          <SearchBar
+            handleChangeAddress={this.handleChangeAddress}
+            latitude={-34.1703131}
+            longitude={-70.74064759999999}
+          />
           <div className="label">
             Texto que aparecerá en campos para seleccionar un evento
           </div>

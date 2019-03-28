@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 export default {
   FullEvent: gql`
-    fragment FullApp on Application {
+    fragment FullEvent on Event {
       _id
       name
       description
@@ -26,32 +26,6 @@ export default {
       showInCalendar
       tags {
         tag
-      }
-    }
-  `,
-  AppRegistrationForm: gql`
-    fragment AppRegistrationForm on Application {
-      _id
-      name
-      description
-      userFields
-      applicationURL
-      developerInfo {
-        firstName
-        lastName
-        url
-        email
-        address {
-          streetName
-          streetNumber
-          departmentNumber
-          postalCode
-        }
-        phone {
-          areaCode
-          number
-          mobilePhone
-        }
       }
     }
   `
