@@ -12,6 +12,7 @@ import { Field, Form } from 'simple-react-form'
 import SelectOrisoft from 'orionsoft-parts/lib/components/fields/Select'
 import SearchBar from 'App/components/fields/google/GooglePlaces'
 import FormatEmail from 'App/helpers/format/formatMail'
+import FormatUrl from 'App/helpers/format/formatUrl'
 import LinkToAccount from '../LinkToAccount'
 import { Textbox } from 'react-inputs-validation'
 import withUserId from 'App/helpers/auth/withUserId'
@@ -71,6 +72,8 @@ class TemplateApplication extends React.Component {
       name: '',
       userFields: null,
       hasNameError: true,
+      hasApplicationUrlError: true,
+      hasUrlError: true,
       _id: '',
       description: '',
       applicationURL: '',
@@ -196,7 +199,7 @@ class TemplateApplication extends React.Component {
 
   onSuccessDelete() {
     this.props.showMessage('Aplicación eliminado correctamente')
-    this.props.history.push(`/directorio/Aplicacións/`)
+    this.props.history.push(`/devs/apps`)
   }
 
   @autobind
@@ -248,8 +251,8 @@ class TemplateApplication extends React.Component {
     e.preventDefault()
 
     await this.toggleValidating(true)
-    const { hasNameError, hasDescriptionError } = this.state
-    if (!hasNameError && !hasDescriptionError) {
+    const { hasNameError, hasDescriptionError, hasApplicationUrlError, hasUrlError } = this.state
+    if (!hasNameError && !hasDescriptionError && !hasApplicationUrlError && !hasUrlError) {
       this.props.showMessage('Campos validados correctamente')
       this.onSubmitInsert()
     } else {
@@ -260,8 +263,8 @@ class TemplateApplication extends React.Component {
   async validateFormUpdate(e) {
     e.preventDefault()
     await this.toggleValidating(true)
-    const { hasNameError } = this.state
-    if (!hasNameError) {
+    const { hasNameError, hasDescriptionError, hasApplicationUrlError, hasUrlError } = this.state
+    if (!hasNameError && !hasDescriptionError && !hasApplicationUrlError && !hasUrlError) {
       this.props.showMessage('Campos validados correctamente')
       this.onSubmitUpdate()
     } else {
@@ -347,7 +350,17 @@ class TemplateApplication extends React.Component {
               onChange={(applicationURL, e) => {
                 this.setState({ applicationURL })
               }}
-              validationOption={{ name: 'Url aplicación', check: false, required: false }}
+              validationCallback={res => {
+                this.setState({ hasApplicationUrlError: res, validate: false })
+              }}
+              validationOption={{
+                name: 'Url aplicación',
+                check: true,
+                required: false,
+                customFunc: applicationURL => {
+                  return FormatUrl(applicationURL)
+                }
+              }}
             />
             <div className={styles.label}>Datos de usuario:</div>
             <Field
@@ -446,7 +459,17 @@ class TemplateApplication extends React.Component {
                   onChange={(url, e) => {
                     this.setState({ url })
                   }}
-                  validationOption={{ name: 'Url', check: false, required: false }}
+                  validationCallback={res => {
+                    this.setState({ hasUrlError: res, validate: false })
+                  }}
+                  validationOption={{
+                    name: 'Url',
+                    check: true,
+                    required: false,
+                    customFunc: url => {
+                      return FormatUrl(url)
+                    }
+                  }}
                 />
                 <div className={styles.headerLabel}>Información de contacto:</div>
                 <div className={styles.fieldGroup}>
