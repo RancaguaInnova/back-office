@@ -29,7 +29,6 @@ import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
       _id
     }
   }
-  ${AppFragments.AppRegistrationForm}
 `)
 @withMutation(gql`
   mutation updateApplication($application: ApplicationInput!) {
@@ -98,6 +97,7 @@ class TemplateApplication extends React.Component {
       let Application = this.props.application
 
       this.setState({
+        ownerId: Application.ownerId,
         _id: Application._id,
         applicationURL: Application.applicationURL || '',
         name: Application.name || '',
@@ -106,16 +106,16 @@ class TemplateApplication extends React.Component {
         validate: false
       })
       let { developerInfo } = Application
-      if (!developerInfo && developerInfo !== null) {
+      if (developerInfo !== null) {
         this.setState({
           firstName: Application.developerInfo.firstName || '',
           lastName: Application.developerInfo.lastName || '',
           url: Application.developerInfo.url || '',
           email: Application.developerInfo.email || '',
-          address: Application.developerInfo.address || '',
-          addressstreetNumber: Application.developerInfo.addressstreetNumber || '',
-          addressdepartmentNumber: Application.developerInfo.addressdepartmentNumber || '',
-          addresspostalCode: Application.developerInfo.addresspostalCode || '',
+          streetName: Application.developerInfo.address.streetName || '',
+          streetNumber: Application.developerInfo.address.streetNumber || '',
+          departmentNumber: Application.developerInfo.address.departmentNumber || '',
+          postalCode: Application.developerInfo.address.postalCode || '',
           areaCode: Application.developerInfo.phone.areaCode || '',
           number: Application.developerInfo.phone.number || '',
           mobilePhone: Application.developerInfo.phone.mobilePhone || ''
@@ -142,6 +142,7 @@ class TemplateApplication extends React.Component {
     let s = this.state
     var Application = {
       _id: s._id,
+      ownerId: this.props.type === 'create' ? this.props.userId : s.ownerId,
       name: s.name,
       description: s.description,
       userFields: s.userFields,
@@ -212,11 +213,11 @@ class TemplateApplication extends React.Component {
 
   handleChangeAddress = contactInformationAddress => {
     this.setState({
-      address: contactInformationAddress.streetName,
+      streetName: contactInformationAddress.streetName,
       city: contactInformationAddress.city,
-      addressdepartmentNumber: contactInformationAddress.departmentNumber,
-      addresspostalCode: contactInformationAddress.postalCode,
-      addressstreetNumber: contactInformationAddress.streetNumber,
+      departmentNumber: contactInformationAddress.departmentNumber,
+      postalCode: contactInformationAddress.postalCode,
+      streetNumber: contactInformationAddress.streetNumber,
       formatted_address: contactInformationAddress.formatted_address || '',
       place_id: contactInformationAddress.place_id || '',
       latitude: contactInformationAddress.latitude || '',
@@ -243,7 +244,9 @@ class TemplateApplication extends React.Component {
     })
   }
 
-  async validateForm() {
+  async validateForm(e) {
+    e.preventDefault()
+
     await this.toggleValidating(true)
     const { hasNameError, hasDescriptionError } = this.state
     if (!hasNameError && !hasDescriptionError) {
@@ -254,7 +257,8 @@ class TemplateApplication extends React.Component {
     }
   }
 
-  async validateFormUpdate() {
+  async validateFormUpdate(e) {
+    e.preventDefault()
     await this.toggleValidating(true)
     const { hasNameError } = this.state
     if (!hasNameError) {
