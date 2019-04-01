@@ -45,7 +45,22 @@ export default class DeveloperInfo extends React.Component {
 
   state = { ...this.props.user }
   handleChangeAddress = contactInformationAddress => {
+    console.log(contactInformationAddress)
+
     var profile = this.state.profile
+    if (profile.address === null) {
+      profile = {}
+      var address = {
+        streetName: '',
+        streetNumber: '',
+        departmentNumber: '',
+        city: '',
+        postalCode: ''
+      }
+      profile = {
+        address: address
+      }
+    }
     profile.address.streetName = contactInformationAddress.streetName
     profile.address.streetNumber = contactInformationAddress.streetNumber
     profile.address.departmentNumber = contactInformationAddress.departmentNumber
