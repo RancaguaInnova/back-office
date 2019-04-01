@@ -175,11 +175,9 @@ class TemplateApplication extends React.Component {
   async onSubmitInsert() {
     try {
       var Application = this.setApplication()
-      console.log(Application)
       await this.props.createApplication({ application: Application })
       this.onSuccessInsert()
     } catch (error) {
-      console.log(error)
       this.props.showMessage('Ocurrió un error al registrar el Aplicación')
     }
   }
@@ -188,11 +186,9 @@ class TemplateApplication extends React.Component {
   async onSubmitUpdate() {
     try {
       var Application = this.setApplication()
-      console.log(Application)
       await this.props.updateApplication({ application: Application })
       this.onSuccessUpdate()
     } catch (error) {
-      console.log(error)
       this.props.showMessage('Ocurrió un error al editar el Aplicación')
     }
   }
@@ -209,7 +205,6 @@ class TemplateApplication extends React.Component {
       await this.props.deleteApplication({ _id: Application._id })
       this.onSuccessDelete()
     } catch (error) {
-      console.log(error)
       this.props.showMessage('Ocurrió un error al eliminar el Aplicación')
     }
   }
@@ -276,7 +271,31 @@ class TemplateApplication extends React.Component {
     return (
       <LinkToAccount
         userId={this.props.userId}
-        linkAccountData={developerInfo => this.setState({ developerInfo })}
+        linkAccountData={developerInfo => {
+          if (developerInfo !== null) {
+            this.setState({
+              firstName: developerInfo.firstName || '',
+              lastName: developerInfo.lastName || '',
+              email: developerInfo.email || ''
+            })
+          }
+          if (developerInfo.address !== null) {
+            this.setState({
+              streetName: developerInfo.address.streetName || '',
+              streetNumber: developerInfo.address.streetNumber || '',
+              departmentNumber: developerInfo.address.departmentNumber || '',
+              city: developerInfo.address.city || '',
+              postalCode: developerInfo.postalCode || ''
+            })
+          }
+          if (developerInfo.phone !== null) {
+            this.setState({
+              areaCode: developerInfo.phone.areaCode || '',
+              number: developerInfo.phone.number || '',
+              mobilePhone: developerInfo.phone.mobilePhone || ''
+            })
+          }
+        }}
         loading={true}
       />
     )
@@ -368,7 +387,6 @@ class TemplateApplication extends React.Component {
               type={SelectOrisoft}
               multi
               onChange={userFields => {
-                console.log(userFields)
                 this.setState({ userFields })
               }}
               options={[
