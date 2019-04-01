@@ -16,7 +16,6 @@ import withMutation from 'react-apollo-decorators/lib/withMutation'
 import autobind from 'autobind-decorator'
 import gql from 'graphql-tag'
 import EventFragments from 'App/fragments/Event'
-import omit from 'lodash/omit'
 import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
@@ -55,7 +54,9 @@ export default class UpdateEvent extends React.Component {
     history: PropTypes.object,
     showMessage: PropTypes.func,
     event: PropTypes.object,
-    updateEvent: PropTypes.func
+    updateEvent: PropTypes.func,
+    departments: PropTypes.object,
+    deleteEvent: PropTypes.func
   }
 
   state = {}
@@ -75,10 +76,8 @@ export default class UpdateEvent extends React.Component {
     let newState = Object.assign(this.state.event, {
       address: {
         streetName: contactInformationAddress.streetName,
-        administrativeAreaLevel1:
-          contactInformationAddress.administrativeAreaLevel1,
-        administrativeAreaLevel2:
-          contactInformationAddress.administrativeAreaLevel2,
+        administrativeAreaLevel1: contactInformationAddress.administrativeAreaLevel1,
+        administrativeAreaLevel2: contactInformationAddress.administrativeAreaLevel2,
         city: contactInformationAddress.city,
         departmentNumber: contactInformationAddress.departmentNumber,
         postalCode: contactInformationAddress.postalCode,
@@ -133,47 +132,38 @@ export default class UpdateEvent extends React.Component {
 
   render() {
     return (
-      <Section title="Editar Evento" description="Editar un evento" top>
-        <Form
-          state={this.state.event}
-          onChange={change => this.setState({ event: { ...change } })}
-        >
-          <div className="label">Nombre</div>
-          <Field fieldName="name" type={Text} />
-          <div className="label">Descripción</div>
-          <Field fieldName="description" type={Text} />
-          <div className="label">Link a información</div>
-          <Field fieldName="externalUrl" type={Text} />
-          <div className="label">Fecha</div>
-          <Field fieldName="date.date" type={DateText} />
-          <div className="label">Hora de inicio</div>
-          <Field fieldName="date.startHour" type={HourField} />
-          <div className="label">Hora de término</div>
-          <Field fieldName="date.endHour" type={HourField} />
-          <div className="label">Dirección</div>
+      <Section title='Editar Evento' description='Editar un evento' top>
+        <Form state={this.state.event} onChange={change => this.setState({ event: { ...change } })}>
+          <div className='label'>Nombre</div>
+          <Field fieldName='name' type={Text} />
+          <div className='label'>Descripción</div>
+          <Field fieldName='description' type={Text} />
+          <div className='label'>Link a información</div>
+          <Field fieldName='externalUrl' type={Text} />
+          <div className='label'>Fecha</div>
+          <Field fieldName='date.date' type={DateText} />
+          <div className='label'>Hora de inicio</div>
+          <Field fieldName='date.startHour' type={HourField} />
+          <div className='label'>Hora de término</div>
+          <Field fieldName='date.endHour' type={HourField} />
+          <div className='label'>Dirección</div>
           <SearchBar
             handleChangeAddress={this.handleChangeAddress}
             latitude={-34.1703131}
             longitude={-70.74064759999999}
           />
-          <div className="label">
-            Texto que aparecerá en campos para seleccionar un evento
-          </div>
-          <Field fieldName="optionLabel" type={Text} />
+          <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
+          <Field fieldName='optionLabel' type={Text} />
           <Field
-            fieldName="showInCalendar"
+            fieldName='showInCalendar'
             type={Checkbox}
-            label="Mostrar en calendario (publicar evento)"
+            label='Mostrar en calendario (publicar evento)'
           />
-          <div className="label">Departamento al que pertenece el evento</div>
-          <Field
-            fieldName="departmentId"
-            type={Select}
-            options={this.getDepartmentOptions()}
-          />
+          <div className='label'>Departamento al que pertenece el evento</div>
+          <Field fieldName='departmentId' type={Select} options={this.getDepartmentOptions()} />
         </Form>
         <br />
-        <Button to="/calendario/eventos" style={{ marginRight: 10 }}>
+        <Button to='/calendario/eventos' style={{ marginRight: 10 }}>
           Cancelar
         </Button>
         <Button onClick={() => this.onSubmit()} primary>

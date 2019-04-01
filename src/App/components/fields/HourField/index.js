@@ -22,16 +22,16 @@ export default class HourTextField extends React.Component {
   state = { text: '' }
 
   @autobind
-  setNow () {
+  setNow() {
     const now = moment()
     this.props.onChange(`${now.hour()}:${now.minute()}`)
   }
 
-  getValue () {
+  getValue() {
     return this.props.value || this.state.text
   }
 
-  replaceTexts (text, previous) {
+  replaceTexts(text, previous) {
     if (previous.length > text.length) return
     if (text.length === 2) {
       this.onChange(text + ':')
@@ -39,19 +39,19 @@ export default class HourTextField extends React.Component {
     }
   }
 
-  onChange (text) {
+  onChange(text) {
     console.log('text:', text)
     if (text === 'n') {
       return this.props.onChange(this.setNow())
     }
     if (this.replaceTexts(text, this.state.text)) return
     this.setState({ text })
-    if (text.length != 6) {
+    if (text.length !== 6) {
       return this.props.onChange(text.slice(0, 5))
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div className='label'>{this.props.label}</div>
