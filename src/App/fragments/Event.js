@@ -27,6 +27,10 @@ export default {
       tags {
         tag
       }
+      locations {
+        name
+        quota
+      }
     }
   `
 }

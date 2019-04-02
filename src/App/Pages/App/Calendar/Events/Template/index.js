@@ -121,12 +121,12 @@ export default class TemplateEvent extends React.Component {
 
   @autobind
   removeLocation(e) {
-    let locations = this.state.location
+    console.log(e)
+    let locations = this.state.locations
+    console.log(locations)
     locations = this.arrayRemove(locations, e)
-
-    this.setState({
-      location: locations
-    })
+    console.log(locations)
+    this.setState({ locations })
   }
 
   arrayRemove(arr, value) {
@@ -142,14 +142,13 @@ export default class TemplateEvent extends React.Component {
     const { hasCampoNameError, hasQuotaCodeError } = this.state
     if (!hasCampoNameError && !hasQuotaCodeError) {
       let newLocation = {
-        id: '',
         name: this.state.campoName,
         quota: this.state.campoQuota
       }
-      let locations = this.state.location
+      let locations = this.state.locations
       locations.push(newLocation)
       this.setState({
-        location: locations,
+        locations: locations,
         campoName: '',
         campoQuota: ''
       })
@@ -178,6 +177,7 @@ export default class TemplateEvent extends React.Component {
           postalCode: ''
         }
       }
+      console.log(event)
       this.setState({
         _id: event._id,
         name: event.name || '',
@@ -195,7 +195,8 @@ export default class TemplateEvent extends React.Component {
         departmentId: event.departmentId || '',
         externalUrl: event.externalUrl || '',
         imageUrl: event.imageUrl || '',
-        showInCalendarChecked: event.showInCalendar || ''
+        showInCalendarChecked: event.showInCalendar || '',
+        locations: event.locations || []
       })
     }
   }
@@ -282,7 +283,8 @@ export default class TemplateEvent extends React.Component {
       showInCalendar: s.showInCalendarChecked,
       tags: {
         tag: s.tags
-      }
+      },
+      locations: s.locations
     }
     return event
   }
@@ -310,7 +312,7 @@ export default class TemplateEvent extends React.Component {
     } else {
       try {
         let event = this.getEvent()
-
+        console.log(event)
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
@@ -642,7 +644,7 @@ export default class TemplateEvent extends React.Component {
                           </button>
                         </td>
                       </tr>
-                      {this.state.location.map(function(item, index) {
+                      {this.state.locations.map(function(item, index) {
                         return (
                           <tr key={index}>
                             <td className='col2'>{item.name}</td>
