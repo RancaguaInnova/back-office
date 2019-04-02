@@ -2,7 +2,7 @@ import React from 'react'
 import PaginatedList from 'App/components/Crud/List'
 
 export default class Events extends React.Component {
-  getFields () {
+  getFields() {
     return [
       {
         name: 'name',
@@ -19,7 +19,7 @@ export default class Events extends React.Component {
     ]
   }
 
-  render () {
+  render() {
     return (
       <PaginatedList
         title='Eventos'

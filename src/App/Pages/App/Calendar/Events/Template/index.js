@@ -1,7 +1,6 @@
 import React from 'react'
 import Section from 'App/components/Section'
 import Button from 'orionsoft-parts/lib/components/Button'
-import { Form } from 'simple-react-form'
 import SearchBar from 'App/components/fields/GooglePlaces'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
@@ -158,30 +157,49 @@ export default class TemplateEvent extends React.Component {
       this.props.showMessage('Verifique que todos los datos estén correctos')
     }
   }
-  @autobind
-  confirmDelete() {
-    confirmAlert({
-      title: 'Confirmar acción',
-      message: '¿Eliminar este evento?',
-      buttons: [
-        {
-          label: 'Sí',
-          onClick: async () => await this.delete()
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    })
-  }
+
   componentDidMount() {
     if (this.props.type === 'update') {
-      this.setEvent(this.props.event)
+      let event = this.props.event
+      if (event.date === null) {
+        event.date = {
+          dateStr: '',
+          startHour: '',
+          endHour: '',
+          date: ''
+        }
+      }
+      if (event.address === null) {
+        event.address = {
+          streetName: '',
+          streetNumber: '',
+          departmentNumber: '',
+          city: '',
+          postalCode: ''
+        }
+      }
+      this.setState({
+        _id: event._id,
+        name: event.name || '',
+        description: event.description || '',
+        date: event.date.dateStr || '',
+        startHour: event.date.startHour || '',
+        endHour: event.date.endHour || '',
+        dateStr: event.date.dateStr || '',
+        streetName: event.address.streetName || '',
+        streetNumber: event.address.streetNumber || '',
+        departmentNumber: event.address.departmentNumber || '',
+        city: event.address.city || '',
+        postalCode: event.address.postalCode || '',
+        optionLabel: event.optionLabel || '',
+        departmentId: event.departmentId || '',
+        externalUrl: event.externalUrl || '',
+        imageUrl: event.imageUrl || '',
+        showInCalendarChecked: event.showInCalendar || ''
+      })
     }
   }
 
-  @autobind
   async validateForm(e) {
     await this.toggleValidating(true)
     const {
@@ -192,7 +210,6 @@ export default class TemplateEvent extends React.Component {
       hasEndHourError,
       hasDepartmentIdError
     } = this.state
-
     if (
       !hasNombreError &&
       !hasDescriptionError &&
@@ -206,43 +223,36 @@ export default class TemplateEvent extends React.Component {
       this.props.showMessage('Verifique que todos los datos estén correctos')
     }
   }
+  onSuccessDelete() {
+    this.props.showMessage('Evento eliminado correctamente')
+    this.props.history.push('/calendario/eventos')
+  }
+  @autobind
+  async onDelete() {
+    try {
+      let event = this.getEvent()
+      await this.props.deleteEvent({ _id: event._id })
+      this.onSuccessDelete()
+    } catch (error) {
+      this.props.showMessage('Ocurrió un error al eliminar el departamento')
+    }
+  }
 
-  setEvent(event) {
-    if (event.date === null) {
-      event.date = {
-        dateStr: '',
-        startHour: '',
-        endHour: '',
-        date: ''
-      }
-    }
-    if (event.address === null) {
-      event.address = {
-        streetName: '',
-        streetNumber: '',
-        departmentNumber: '',
-        city: '',
-        postalCode: ''
-      }
-    }
-    this.setState({
-      _id: event._id,
-      name: event.name || '',
-      description: event.description || '',
-      date: event.date.dateStr || '',
-      startHour: event.date.startHour || '',
-      endHour: event.date.endHour || '',
-      dateStr: event.date.dateStr || '',
-      streetName: event.address.streetName || '',
-      streetNumber: event.address.streetNumber || '',
-      departmentNumber: event.address.departmentNumber || '',
-      city: event.address.city || '',
-      postalCode: event.address.postalCode || '',
-      optionLabel: event.optionLabel || '',
-      departmentId: event.departmentId || '',
-      externalUrl: event.externalUrl || '',
-      imageUrl: event.imageUrl || '',
-      showInCalendar: event.showInCalendar || ''
+  @autobind
+  confirmDelete() {
+    confirmAlert({
+      title: 'Confirmar acción',
+      message: '¿Eliminar este evento?',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: async () => await this.onDelete()
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
     })
   }
 
@@ -269,12 +279,20 @@ export default class TemplateEvent extends React.Component {
       departmentId: s.departmentId,
       externalUrl: s.externalUrl,
       imageUrl: s.imageUrl,
-      showInCalendar: s.showInCalendar,
+      showInCalendar: s.showInCalendarChecked,
       tags: {
         tag: s.tags
       }
     }
     return event
+  }
+  onSuccessInsert() {
+    this.props.showMessage('Evento creado')
+    this.props.history.push('/calendario/eventos')
+  }
+  onSuccessUpdate() {
+    this.props.showMessage('Cambios guardados!')
+    this.props.history.push('/calendario/eventos')
   }
   @autobind
   async onSubmit() {
@@ -283,8 +301,8 @@ export default class TemplateEvent extends React.Component {
         let event = this.getEvent()
 
         await this.props.createEvent({ event: event })
-        this.props.showMessage('Evento creado')
-        this.props.history.push('/calendario/eventos')
+
+        this.onSuccessInsert()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
         this.props.showMessage('Ocurrión un error!')
@@ -292,8 +310,9 @@ export default class TemplateEvent extends React.Component {
     } else {
       try {
         let event = this.getEvent()
+
         await this.props.updateEvent({ event: event })
-        this.props.showMessage('Cambios guardados!')
+        this.onSuccessUpdate()
       } catch (error) {
         this.props.showMessage('Ocurrión un error!')
       }
@@ -340,218 +359,212 @@ export default class TemplateEvent extends React.Component {
 
     return (
       <Section title={this.props.title} description={this.props.description} top>
-        <Form
-          state={this.state.event}
-          ref='form'
-          onChange={change => this.setState({ event: { ...change } })}
-        >
-          <div className='label'>Nombre</div>
-          <Textbox
-            tabIndex='1'
-            id='name'
-            name='name'
-            type='text'
-            value={name}
-            classNameInput='name'
-            maxLength='500'
-            validate={validate}
-            validationCallback={res => {
-              this.setState({ hasNombreError: res, validate: false })
-            }}
-            onChange={(name, e) => {
-              this.setState({ name })
-            }}
-            validationOption={{
-              name: 'Nombre',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Descripción</div>
-          <Textbox
-            tabIndex='2'
-            id='description'
-            name='description'
-            type='text'
-            value={description}
-            maxLength='2500'
-            validate={validate}
-            validationCallback={res => {
-              this.setState({ hasDescriptionError: res, validate: false })
-            }}
-            onChange={(description, e) => {
-              this.setState({ description })
-            }}
-            validationOption={{
-              name: 'Descripción',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Link a información</div>
-          <Textbox
-            tabIndex='3'
-            id='externalUrl'
-            name='externalUrl'
-            type='text'
-            value={externalUrl}
-            maxLength='2500'
-            validate={validate}
-            onChange={(externalUrl, e) => {
-              this.setState({ externalUrl })
-            }}
-            validationOption={{
-              name: 'Link a información',
-              check: false,
-              required: false
-            }}
-          />
-          <div className='label'>Fecha</div>
-          <Textbox
-            tabIndex='3'
-            id='date'
-            name='date'
-            type='date'
-            value={date}
-            maxLength='2500'
-            validate={validate}
-            classNameInput='os-input-text'
-            validationCallback={res => {
-              this.setState({ hasDateError: res, validate: false })
-            }}
-            onChange={(date, e) => {
-              this.setState({ date })
-            }}
-            validationOption={{
-              name: 'Fecha',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Hora de inicio</div>
-          <Textbox
-            tabIndex='4'
-            id='startHour'
-            name='startHour'
-            type='time'
-            value={startHour}
-            maxLength='5'
-            validate={validate}
-            classNameInput='os-input-text'
-            validationCallback={res => {
-              this.setState({ hasStartHourError: res, validate: false })
-            }}
-            onChange={(startHour, e) => {
-              this.setState({ startHour })
-            }}
-            validationOption={{
-              name: 'Hora de inicio',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Hora de término</div>
-          <Textbox
-            tabIndex='5'
-            id='endHour'
-            name='endHour'
-            type='time'
-            value={endHour}
-            maxLength='5'
-            validate={validate}
-            classNameInput='os-input-text'
-            validationCallback={res => {
-              this.setState({ hasEndHourError: res, validate: false })
-            }}
-            onChange={(endHour, e) => {
-              this.setState({ endHour })
-            }}
-            validationOption={{
-              name: 'Hora de término',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Dirección</div>
-          <SearchBar
-            handleChangeAddress={this.handleChangeAddress}
-            latitude={-34.1703131}
-            longitude={-70.74064759999999}
-          />
-          <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
-          <Textbox
-            tabIndex='6'
-            id='optionLabel'
-            name='optionLabel'
-            type='text'
-            value={optionLabel}
-            maxLength='5'
-            validate={validate}
-            classNameInput='os-input-text'
-            validationCallback={res => {
-              this.setState({ hasOptionLabelError: res, validate: false })
-            }}
-            onChange={(optionLabel, e) => {
-              this.setState({ optionLabel })
-            }}
-            validationOption={{
-              name: 'Texto que aparecerá en campos para seleccionar un evento',
-              check: true,
-              required: true
-            }}
-          />
-          <Checkbox
-            tabIndex='7'
-            id={'showInCalendar'}
-            name={'showInCalendar'}
-            value={showInCalendar}
-            checked={showInCalendarChecked}
-            disabled={false}
-            validate={validate}
-            onChange={(showInCalendarChecked, e) => {
-              this.setState({ showInCalendarChecked })
-            }}
-            labelHtml={
-              <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
-                Mostrar en calendario (publicar evento)
-              </div>
-            }
-            validationOption={{
-              name: 'agreement',
-              check: false,
-              required: false
-            }}
-          />
+        <div className='label'>Nombre</div>
+        <Textbox
+          tabIndex='1'
+          id='name'
+          name='name'
+          type='text'
+          value={name}
+          classNameInput='name'
+          maxLength='500'
+          validate={validate}
+          validationCallback={res => {
+            this.setState({ hasNombreError: res, validate: false })
+          }}
+          onChange={(name, e) => {
+            this.setState({ name })
+          }}
+          validationOption={{
+            name: 'Nombre',
+            check: true,
+            required: true
+          }}
+        />
+        <div className='label'>Descripción</div>
+        <Textbox
+          tabIndex='2'
+          id='description'
+          name='description'
+          type='text'
+          value={description}
+          maxLength='2500'
+          validate={validate}
+          validationCallback={res => {
+            this.setState({ hasDescriptionError: res, validate: false })
+          }}
+          onChange={(description, e) => {
+            this.setState({ description })
+          }}
+          validationOption={{
+            name: 'Descripción',
+            check: true,
+            required: true
+          }}
+        />
+        <div className='label'>Link a información</div>
+        <Textbox
+          tabIndex='3'
+          id='externalUrl'
+          name='externalUrl'
+          type='text'
+          value={externalUrl}
+          maxLength='2500'
+          validate={validate}
+          onChange={(externalUrl, e) => {
+            this.setState({ externalUrl })
+          }}
+          validationOption={{
+            name: 'Link a información',
+            check: false,
+            required: false
+          }}
+        />
+        <div className='label'>Fecha</div>
+        <Textbox
+          tabIndex='3'
+          id='date'
+          name='date'
+          type='date'
+          value={date}
+          maxLength='2500'
+          validate={validate}
+          classNameInput='os-input-text'
+          validationCallback={res => {
+            this.setState({ hasDateError: res, validate: false })
+          }}
+          onChange={(date, e) => {
+            this.setState({ date })
+          }}
+          validationOption={{
+            name: 'Fecha',
+            check: true,
+            required: true
+          }}
+        />
+        <div className='label'>Hora de inicio</div>
+        <Textbox
+          tabIndex='4'
+          id='startHour'
+          name='startHour'
+          type='time'
+          value={startHour}
+          maxLength='10'
+          validate={validate}
+          classNameInput='os-input-text'
+          validationCallback={res => {
+            this.setState({ hasStartHourError: res, validate: false })
+          }}
+          onChange={(startHour, e) => {
+            this.setState({ startHour })
+          }}
+          validationOption={{
+            name: 'Hora de inicio',
+            check: true,
+            required: true
+          }}
+        />
+        <div className='label'>Hora de término</div>
+        <Textbox
+          tabIndex='5'
+          id='endHour'
+          name='endHour'
+          type='time'
+          value={endHour}
+          maxLength='10'
+          validate={validate}
+          classNameInput='os-input-text'
+          validationCallback={res => {
+            this.setState({ hasEndHourError: res, validate: false })
+          }}
+          onChange={(endHour, e) => {
+            this.setState({ endHour })
+          }}
+          validationOption={{
+            name: 'Hora de término',
+            check: true,
+            required: true
+          }}
+        />
+        <div className='label'>Dirección</div>
+        <SearchBar
+          handleChangeAddress={this.handleChangeAddress}
+          latitude={-34.1703131}
+          longitude={-70.74064759999999}
+        />
+        <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
+        <Textbox
+          tabIndex='6'
+          id='optionLabel'
+          name='optionLabel'
+          type='text'
+          value={optionLabel}
+          maxLength='200'
+          validate={validate}
+          classNameInput='os-input-text'
+          validationCallback={res => {
+            this.setState({ hasOptionLabelError: res, validate: false })
+          }}
+          onChange={(optionLabel, e) => {
+            this.setState({ optionLabel })
+          }}
+          validationOption={{
+            name: 'Texto que aparecerá en campos para seleccionar un evento',
+            check: true,
+            required: true
+          }}
+        />
+        <Checkbox
+          tabIndex='7'
+          id={'showInCalendar'}
+          name={'showInCalendar'}
+          value={showInCalendar}
+          checked={showInCalendarChecked}
+          disabled={false}
+          validate={validate}
+          onChange={(showInCalendarChecked, e) => {
+            this.setState({ showInCalendarChecked })
+          }}
+          labelHtml={
+            <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
+              Mostrar en calendario (publicar evento)
+            </div>
+          }
+          validationOption={{
+            name: 'agreement',
+            check: false,
+            required: false
+          }}
+        />
 
-          <div className='label'>Departamento al que pertenece el evento</div>
-          <Select
-            tabIndex='3'
-            id={'departmentId'}
-            name={'departmentId'}
-            value={departmentId}
-            validate={validate}
-            optionList={this.getDepartmentOptions()}
-            validationCallback={res => {
-              this.setState({
-                hasDepartmentIdError: res,
-                validate: false
-              })
-            }}
-            onChange={(departmentId, e) => {
-              this.setState({ departmentId })
-            }}
-            customStyleOptionListContainer={{
-              maxHeight: '200px',
-              overflow: 'auto',
-              fontSize: '14px'
-            }}
-            validationOption={{
-              name: 'Departamento',
-              check: true,
-              required: true
-            }}
-          />
-        </Form>
+        <div className='label'>Departamento al que pertenece el evento</div>
+        <Select
+          tabIndex='3'
+          id={'departmentId'}
+          name={'departmentId'}
+          value={departmentId}
+          validate={validate}
+          optionList={this.getDepartmentOptions()}
+          validationCallback={res => {
+            this.setState({
+              hasDepartmentIdError: res,
+              validate: false
+            })
+          }}
+          onChange={(departmentId, e) => {
+            this.setState({ departmentId })
+          }}
+          customStyleOptionListContainer={{
+            maxHeight: '200px',
+            overflow: 'auto',
+            fontSize: '14px'
+          }}
+          validationOption={{
+            name: 'Departamento',
+            check: true,
+            required: true
+          }}
+        />
         <div>
           <Popup trigger={<button className='button'> Agregar ticket al evento </button>} modal>
             {close => (
@@ -670,7 +683,7 @@ export default class TemplateEvent extends React.Component {
           </Popup>
         </div>
         <br />
-        <Button to='/calendar/eventos' style={{ marginRight: 10 }}>
+        <Button to='/calendario/eventos' style={{ marginRight: 10 }}>
           Cancelar
         </Button>
         {this.props.type === 'create' && (
@@ -694,7 +707,7 @@ export default class TemplateEvent extends React.Component {
         {this.props.type === 'update' && (
           <button
             style={{ marginRight: 10 }}
-            onClick={() => this.validateForm()}
+            onClick={() => this.confirmDelete()}
             className='orion_button orion_danger'
           >
             Eliminar
