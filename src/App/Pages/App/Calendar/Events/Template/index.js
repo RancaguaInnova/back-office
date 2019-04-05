@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Section from 'App/components/Section'
 import Button from 'orionsoft-parts/lib/components/Button'
 import SearchBar from 'App/components/fields/GooglePlaces'
@@ -17,7 +17,14 @@ import './modal.css'
 import MaterialIcon, { colorPalette } from 'material-icons-react'
 import EventFragments from 'App/fragments/Event'
 import { confirmAlert } from 'react-confirm-alert'
-import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+import 'react-confirm-alert/src/react-confirm-alert.css'
+import { EditorState, convertToRaw, ContentState } from 'draft-js'
+import { Editor } from 'react-draft-wysiwyg'
+import draftToHtml from 'draftjs-to-html'
+import htmlToDraft from 'html-to-draftjs'
+
+import '../../../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+
 @withRouter
 @withMessage
 @withMutation(gql`
@@ -55,7 +62,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
   }
   ${EventFragments.FullEvent}
 `)
-export default class TemplateEvent extends React.Component {
+export default class TemplateEvent extends Component {
   static propTypes = {
     history: PropTypes.object,
     showMessage: PropTypes.func,
@@ -68,6 +75,7 @@ export default class TemplateEvent extends React.Component {
     title: PropTypes.string,
     description: PropTypes.string
   }
+
   constructor(props) {
     super(props)
     let event = this.props.event
@@ -90,7 +98,13 @@ export default class TemplateEvent extends React.Component {
           postalCode: ''
         }
       }
+      const blocksFromHtml = htmlToDraft(event.description)
+      const { contentBlocks, entityMap } = blocksFromHtml
+      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+      const editorState = EditorState.createWithContent(contentState)
+
       this.state = {
+        editorState: editorState,
         _id: event._id,
         firebaseIdEvent: event.firebaseIdEvent,
         name: event.name || '',
@@ -133,7 +147,6 @@ export default class TemplateEvent extends React.Component {
         hasCampoNameError: true,
         hasNameError: true,
         hasNombreError: true,
-        hasDescriptionError: true,
         hasDateError: true,
         hasStartHourError: true,
         hasEndHourError: true,
@@ -208,16 +221,10 @@ export default class TemplateEvent extends React.Component {
     }
   }
 
-  componentDidMount() {
-    let event = this.props.event
-    console.log('componentDidMount', event)
-  }
-
   async validateForm(e) {
     await this.toggleValidating(true)
     const {
       hasNombreError,
-      hasDescriptionError,
       hasDateError,
       hasStartHourError,
       hasEndHourError,
@@ -225,7 +232,6 @@ export default class TemplateEvent extends React.Component {
     } = this.state
     if (
       !hasNombreError &&
-      !hasDescriptionError &&
       !hasDateError &&
       !hasStartHourError &&
       !hasEndHourError &&
@@ -275,7 +281,7 @@ export default class TemplateEvent extends React.Component {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
-      description: s.description,
+      description: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       date: {
         date: s.date,
         startHour: s.startHour,
@@ -357,6 +363,11 @@ export default class TemplateEvent extends React.Component {
     })
     this.setState(newState)
   }
+  onEditorStateChange = editorState => {
+    this.setState({
+      editorState
+    })
+  }
 
   render() {
     const {
@@ -365,7 +376,6 @@ export default class TemplateEvent extends React.Component {
       campoQuota,
       validate,
       name,
-      description,
       externalUrl,
       date,
       startHour,
@@ -377,7 +387,8 @@ export default class TemplateEvent extends React.Component {
       imageUrl,
       formattedAddress,
       latitude,
-      longitude
+      longitude,
+      editorState
     } = this.state
     var _this = this
 
@@ -406,26 +417,16 @@ export default class TemplateEvent extends React.Component {
           }}
         />
         <div className='label'>Descripción</div>
-        <Textbox
-          tabIndex='2'
-          id='description'
-          name='description'
-          type='text'
-          value={description}
-          maxLength='2500'
-          validate={validate}
-          validationCallback={res => {
-            this.setState({ hasDescriptionError: res, validate: false })
-          }}
-          onChange={(description, e) => {
-            this.setState({ description })
-          }}
-          validationOption={{
-            name: 'Descripción',
-            check: true,
-            required: true
-          }}
-        />
+        <div>
+          <Editor
+            wrapperClassName='wrapper-class'
+            editorClassName='os-input-text'
+            toolbarClassName='toolbar-class'
+            editorState={editorState}
+            onEditorStateChange={this.onEditorStateChange}
+          />
+        </div>
+
         <div className='label'>Link a información</div>
         <Textbox
           tabIndex='3'
