@@ -20,21 +20,6 @@ import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 @withRouter
 @withMessage
-@withGraphQL(gql`
-  query event($eventId: ID!) {
-    event(eventId: $eventId) {
-      ...FullEvent
-    }
-    departments {
-      _id
-      items {
-        _id
-        name
-      }
-    }
-  }
-  ${EventFragments.FullEvent}
-`)
 @withMutation(gql`
   mutation createEvent($event: EventInput!) {
     createEvent(event: $event) {
@@ -55,6 +40,21 @@ import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
     deleteEvent(_id: $_id)
   }
 `)
+@withGraphQL(gql`
+  query event($eventId: ID!) {
+    event(eventId: $eventId) {
+      ...FullEvent
+    }
+    departments {
+      _id
+      items {
+        _id
+        name
+      }
+    }
+  }
+  ${EventFragments.FullEvent}
+`)
 export default class TemplateEvent extends React.Component {
   static propTypes = {
     history: PropTypes.object,
@@ -70,25 +70,79 @@ export default class TemplateEvent extends React.Component {
   }
   constructor(props) {
     super(props)
-    this.state = {
-      event: {},
-      errorMessages: {},
-      location: [],
-      campoID: '',
-      validate: false,
-      validatePop: false,
-      campoName: '',
-      campoQuota: 0,
-      hasQuotaCodeError: true,
-      hasCampoNameError: true,
-      hasNameError: true,
-      hasNombreError: true,
-      hasDescriptionError: true,
-      hasDateError: true,
-      hasStartHourError: true,
-      hasEndHourError: true,
-      hasDepartmentIdError: true
+    let event = this.props.event
+
+    if (this.props.type === 'update') {
+      if (event.date === null) {
+        event.date = {
+          dateStr: '',
+          startHour: '',
+          endHour: '',
+          date: ''
+        }
+      }
+      if (event.address === null) {
+        event.address = {
+          streetName: '',
+          streetNumber: '',
+          departmentNumber: '',
+          city: '',
+          postalCode: ''
+        }
+      }
+      this.state = {
+        _id: event._id,
+        firebaseIdEvent: event.firebaseIdEvent,
+        name: event.name || '',
+        description: event.description || '',
+        date: event.date.dateStr || '',
+        startHour: event.date.startHour || '',
+        endHour: event.date.endHour || '',
+        dateStr: event.date.dateStr || '',
+        streetName: event.address.streetName || '',
+        streetNumber: event.address.streetNumber || '',
+        departmentNumber: event.address.departmentNumber || '',
+        city: event.address.city || '',
+        postalCode: event.address.postalCode || '',
+        administrativeAreaLevel1: event.address.administrativeAreaLevel1,
+        administrativeAreaLevel2: event.address.administrativeAreaLevel2,
+        country: event.address.country,
+        formattedAddress: event.address.formatted_address || '',
+        place_id: event.address.place_id || '',
+        latitude: event.address.latitude || -34.1703131,
+        longitude: event.address.longitude || -70.74064759999999,
+
+        optionLabel: event.optionLabel || '',
+        departmentId: event.departmentId || '',
+        externalUrl: event.externalUrl || '',
+        imageUrl: event.imageUrl || '',
+        showInCalendarChecked: event.showInCalendar || '',
+        locations: event.locations || []
+      }
+    } else {
+      this.state = {
+        event: {},
+        errorMessages: {},
+        locations: [],
+        campoID: '',
+        validate: false,
+        validatePop: false,
+        campoName: '',
+        campoQuota: 0,
+        hasQuotaCodeError: true,
+        hasCampoNameError: true,
+        hasNameError: true,
+        hasNombreError: true,
+        hasDescriptionError: true,
+        hasDateError: true,
+        hasStartHourError: true,
+        hasEndHourError: true,
+        hasDepartmentIdError: true,
+        latitude: -34.1703131,
+        longitude: -70.74064759999999
+      }
     }
+
     this.validateForm = this.validateForm.bind(this)
   }
 
@@ -121,11 +175,8 @@ export default class TemplateEvent extends React.Component {
 
   @autobind
   removeLocation(e) {
-    console.log(e)
     let locations = this.state.locations
-    console.log(locations)
     locations = this.arrayRemove(locations, e)
-    console.log(locations)
     this.setState({ locations })
   }
 
@@ -158,47 +209,8 @@ export default class TemplateEvent extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.type === 'update') {
-      let event = this.props.event
-      if (event.date === null) {
-        event.date = {
-          dateStr: '',
-          startHour: '',
-          endHour: '',
-          date: ''
-        }
-      }
-      if (event.address === null) {
-        event.address = {
-          streetName: '',
-          streetNumber: '',
-          departmentNumber: '',
-          city: '',
-          postalCode: ''
-        }
-      }
-      console.log(event)
-      this.setState({
-        _id: event._id,
-        name: event.name || '',
-        description: event.description || '',
-        date: event.date.dateStr || '',
-        startHour: event.date.startHour || '',
-        endHour: event.date.endHour || '',
-        dateStr: event.date.dateStr || '',
-        streetName: event.address.streetName || '',
-        streetNumber: event.address.streetNumber || '',
-        departmentNumber: event.address.departmentNumber || '',
-        city: event.address.city || '',
-        postalCode: event.address.postalCode || '',
-        optionLabel: event.optionLabel || '',
-        departmentId: event.departmentId || '',
-        externalUrl: event.externalUrl || '',
-        imageUrl: event.imageUrl || '',
-        showInCalendarChecked: event.showInCalendar || '',
-        locations: event.locations || []
-      })
-    }
+    let event = this.props.event
+    console.log('componentDidMount', event)
   }
 
   async validateForm(e) {
@@ -261,6 +273,7 @@ export default class TemplateEvent extends React.Component {
     let s = this.state
     var event = {
       _id: s._id,
+      firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
       description: s.description,
       date: {
@@ -274,7 +287,14 @@ export default class TemplateEvent extends React.Component {
         streetNumber: s.streetNumber,
         departmentNumber: s.departmentNumber,
         city: s.city,
-        postalCode: s.postalCode
+        postalCode: s.postalCode,
+        administrativeAreaLevel1: s.administrativeAreaLevel1,
+        administrativeAreaLevel2: s.administrativeAreaLevel2,
+        country: s.country,
+        formatted_address: s.formattedAddress,
+        place_id: s.place_id,
+        latitude: s.latitude,
+        longitude: s.longitude
       },
       optionLabel: s.optionLabel,
       departmentId: s.departmentId,
@@ -301,7 +321,6 @@ export default class TemplateEvent extends React.Component {
     if (this.props.type === 'create') {
       try {
         let event = this.getEvent()
-
         await this.props.createEvent({ event: event })
 
         this.onSuccessInsert()
@@ -312,7 +331,6 @@ export default class TemplateEvent extends React.Component {
     } else {
       try {
         let event = this.getEvent()
-        console.log(event)
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
@@ -332,7 +350,7 @@ export default class TemplateEvent extends React.Component {
       postalCode: contactInformationAddress.postalCode,
       streetNumber: contactInformationAddress.streetNumber,
       country: contactInformationAddress.country,
-      formatted_address: contactInformationAddress.formatted_address || '',
+      formattedAddress: contactInformationAddress.formatted_address || '',
       place_id: contactInformationAddress.place_id || '',
       latitude: contactInformationAddress.latitude || '',
       longitude: contactInformationAddress.longitude || ''
@@ -355,7 +373,11 @@ export default class TemplateEvent extends React.Component {
       optionLabel,
       showInCalendar,
       showInCalendarChecked,
-      departmentId
+      departmentId,
+      imageUrl,
+      formattedAddress,
+      latitude,
+      longitude
     } = this.state
     var _this = this
 
@@ -488,11 +510,12 @@ export default class TemplateEvent extends React.Component {
             required: true
           }}
         />
-        <div className='label'>Dirección</div>
+        <div className='label'>Dirección </div>
         <SearchBar
           handleChangeAddress={this.handleChangeAddress}
-          latitude={-34.1703131}
-          longitude={-70.74064759999999}
+          latitude={latitude}
+          longitude={longitude}
+          address={formattedAddress}
         />
         <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
         <Textbox
@@ -516,8 +539,29 @@ export default class TemplateEvent extends React.Component {
             required: true
           }}
         />
-        <Checkbox
+        <div className='label'>Url con imagen para el evento</div>
+        <Textbox
           tabIndex='7'
+          id='imageUrl'
+          name='imageUrl'
+          type='text'
+          value={imageUrl}
+          maxLength='200'
+          validate={validate}
+          classNameInput='os-input-text'
+          onChange={(imageUrl, e) => {
+            this.setState({ imageUrl })
+          }}
+          validationOption={{
+            name: 'Texto que aparecerá en campos para seleccionar un evento',
+            check: false,
+            required: false
+          }}
+        />
+        <div className='label'> </div>
+
+        <Checkbox
+          tabIndex='8'
           id={'showInCalendar'}
           name={'showInCalendar'}
           value={showInCalendar}
@@ -541,7 +585,7 @@ export default class TemplateEvent extends React.Component {
 
         <div className='label'>Departamento al que pertenece el evento</div>
         <Select
-          tabIndex='3'
+          tabIndex='9'
           id={'departmentId'}
           name={'departmentId'}
           value={departmentId}
@@ -588,7 +632,7 @@ export default class TemplateEvent extends React.Component {
                       <tr>
                         <td className='col2'>
                           <Textbox
-                            tabIndex='1'
+                            tabIndex='10'
                             id='campoName'
                             name='campoName'
                             type='text'
@@ -611,7 +655,7 @@ export default class TemplateEvent extends React.Component {
                         </td>
                         <td className='col3'>
                           <Textbox
-                            tabIndex='1'
+                            tabIndex='11'
                             id='campoQuota'
                             name='campoQuota'
                             type='text'

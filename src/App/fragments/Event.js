@@ -18,6 +18,13 @@ export default {
         departmentNumber
         city
         postalCode
+        administrativeAreaLevel1
+        administrativeAreaLevel2
+        country
+        formatted_address
+        place_id
+        latitude
+        longitude
       }
       optionLabel
       departmentId
@@ -28,9 +35,12 @@ export default {
         tag
       }
       locations {
+        id
         name
         quota
       }
+      sendFirebase
+      firebaseIdEvent
     }
   `
 }
