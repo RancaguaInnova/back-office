@@ -79,16 +79,9 @@ export default class TemplateEvent extends Component {
   constructor(props) {
     super(props)
     let event = this.props.event
+    console.log(event)
 
     if (this.props.type === 'update') {
-      if (event.date === null) {
-        event.date = {
-          dateStr: '',
-          startHour: '',
-          endHour: '',
-          date: ''
-        }
-      }
       if (event.address === null) {
         event.address = {
           streetName: '',
@@ -109,10 +102,9 @@ export default class TemplateEvent extends Component {
         firebaseIdEvent: event.firebaseIdEvent,
         name: event.name || '',
         description: event.description || '',
-        date: event.date.dateStr || '',
-        startHour: event.date.startHour || '',
-        endHour: event.date.endHour || '',
-        dateStr: event.date.dateStr || '',
+        date: event.date || '',
+        time: event.time || '',
+        endTime: event.endTime || '',
         streetName: event.address.streetName || '',
         streetNumber: event.address.streetNumber || '',
         departmentNumber: event.address.departmentNumber || '',
@@ -148,8 +140,8 @@ export default class TemplateEvent extends Component {
         hasNameError: true,
         hasNombreError: true,
         hasDateError: true,
-        hasStartHourError: true,
-        hasEndHourError: true,
+        hastimeError: true,
+        hasendTimeError: true,
         hasDepartmentIdError: true,
         latitude: -34.1703131,
         longitude: -70.74064759999999
@@ -226,15 +218,15 @@ export default class TemplateEvent extends Component {
     const {
       hasNombreError,
       hasDateError,
-      hasStartHourError,
-      hasEndHourError,
+      hastimeError,
+      hasendTimeError,
       hasDepartmentIdError
     } = this.state
     if (
       !hasNombreError &&
       !hasDateError &&
-      !hasStartHourError &&
-      !hasEndHourError &&
+      !hastimeError &&
+      !hasendTimeError &&
       !hasDepartmentIdError
     ) {
       this.onSubmit()
@@ -282,12 +274,9 @@ export default class TemplateEvent extends Component {
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
       description: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
-      date: {
-        date: s.date,
-        startHour: s.startHour,
-        endHour: s.endHour,
-        dateStr: s.date
-      },
+      date: s.date,
+      time: s.time,
+      endTime: s.endTime,
       address: {
         streetName: s.streetName,
         streetNumber: s.streetNumber,
@@ -331,6 +320,7 @@ export default class TemplateEvent extends Component {
 
         this.onSuccessInsert()
       } catch (error) {
+        console.log(error)
         this.setState({ errorMessages: this.getValidationErrors(error) })
         this.props.showMessage('Ocurrión un error!')
       }
@@ -340,6 +330,7 @@ export default class TemplateEvent extends Component {
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
+        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     }
@@ -378,8 +369,8 @@ export default class TemplateEvent extends Component {
       name,
       externalUrl,
       date,
-      startHour,
-      endHour,
+      time,
+      endTime,
       optionLabel,
       showInCalendar,
       showInCalendarChecked,
@@ -470,18 +461,18 @@ export default class TemplateEvent extends Component {
         <div className='label'>Hora de inicio</div>
         <Textbox
           tabIndex='4'
-          id='startHour'
-          name='startHour'
+          id='time'
+          name='time'
           type='time'
-          value={startHour}
+          value={time}
           maxLength='10'
           validate={validate}
           classNameInput='os-input-text'
           validationCallback={res => {
-            this.setState({ hasStartHourError: res, validate: false })
+            this.setState({ hastimeError: res, validate: false })
           }}
-          onChange={(startHour, e) => {
-            this.setState({ startHour })
+          onChange={(time, e) => {
+            this.setState({ time })
           }}
           validationOption={{
             name: 'Hora de inicio',
@@ -492,18 +483,18 @@ export default class TemplateEvent extends Component {
         <div className='label'>Hora de término</div>
         <Textbox
           tabIndex='5'
-          id='endHour'
-          name='endHour'
+          id='endTime'
+          name='endTime'
           type='time'
-          value={endHour}
+          value={endTime}
           maxLength='10'
           validate={validate}
           classNameInput='os-input-text'
           validationCallback={res => {
-            this.setState({ hasEndHourError: res, validate: false })
+            this.setState({ hasendTimeError: res, validate: false })
           }}
-          onChange={(endHour, e) => {
-            this.setState({ endHour })
+          onChange={(endTime, e) => {
+            this.setState({ endTime })
           }}
           validationOption={{
             name: 'Hora de término',

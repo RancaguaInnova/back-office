@@ -6,12 +6,9 @@ export default {
       _id
       name
       description
-      date {
-        date
-        startHour
-        endHour
-        dateStr
-      }
+      date
+      time
+      endTime
       address {
         streetName
         streetNumber
