@@ -5,11 +5,12 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
-
+import autobind from 'autobind-decorator'
+import LogoutHelp from 'App/helpers/auth/logout'
 @withRouter
 @withMutation(gql`
-  mutation logout($_id: ID!) {
-    logout(_id: $_id)
+  mutation logout($sessionId: ID!) {
+    logout(sessionId: $sessionId)
   }
 `)
 export default class Logout extends React.Component {
@@ -18,9 +19,11 @@ export default class Logout extends React.Component {
     userId: PropTypes.string,
     logout: PropTypes.func
   }
-
+  @autobind
   async logout() {
-    await this.props.logout({ _id: this.props.userId })
+    await this.props.logout({ sessionId: this.props.userId })
+    LogoutHelp()
+    this.props.history.push('/login')
   }
 
   render() {

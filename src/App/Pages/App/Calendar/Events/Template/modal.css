@@ -117,3 +117,9 @@ tr:nth-child(even) {
 
 
 }
+
+@media (max-width: 1020px) {
+  .popup-content {
+    width: 90% !important
+  }
+}

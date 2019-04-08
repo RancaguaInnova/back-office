@@ -7,10 +7,15 @@ import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import DynamicComponent from 'App/components/DynamicComponent'
 import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
+import Logout from '../Logout/'
+import PropTypes from 'prop-types'
 
 @forceLogin
 @withAuthorization(['admin', 'communications'])
 export default class CalendarRoutes extends React.Component {
+  static propTypes = {
+    history: PropTypes.object
+  }
   render() {
     return (
       <div>
@@ -34,28 +39,25 @@ export default class CalendarRoutes extends React.Component {
         <Container>
           <Switch>
             <Route
-              path="/calendario/eventos/crear"
+              path='/calendario/eventos/crear'
               component={DynamicComponent(() => import('./Events/Create'))}
             />
             <Route
-              path="/calendario/eventos/editar/:eventId"
+              path='/calendario/eventos/editar/:eventId'
               component={DynamicComponent(() => import('./Events/Update'))}
             />
             <Route
-              path="/calendario/eventos"
+              path='/calendario/eventos'
               component={DynamicComponent(() => import('./Events/List'))}
             />
             <Route
-              path="/calendario/noticias"
+              path='/calendario/noticias'
               component={DynamicComponent(() => import('./News'))}
             />
-            <Route
-              exact
-              path="/calendario"
-              component={DynamicComponent(() => import('./Home'))}
-            />
+            <Route exact path='/calendario' component={DynamicComponent(() => import('./Home'))} />
           </Switch>
         </Container>
+        <Logout history={this.props.history} />
       </div>
     )
   }

@@ -1,0 +1,19 @@
+:local(.container) {
+  text-align: center;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0 !important;
+  padding: 5px;
+  width: 100%;
+  background-color: #f0f0f0;
+  color: 000;
+  margin-top: 40px;
+  text-align: right;
+}
+
+.os_container {
+  padding-bottom: 40px
+}

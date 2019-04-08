@@ -22,8 +22,11 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js'
 import { Editor } from 'react-draft-wysiwyg'
 import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs'
-
-import '../../../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import es from 'date-fns/locale/es'
+import moment from 'moment'
 
 @withRouter
 @withMessage
@@ -94,6 +97,13 @@ export default class TemplateEvent extends Component {
       const { contentBlocks, entityMap } = blocksFromHtml
       const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
       const editorState = EditorState.createWithContent(contentState)
+      let time = new Date()
+      let aux = event.time.split(':')
+      time.setHours(aux[0], aux[1])
+      let endTime = new Date()
+      let aux2 = event.endTime.split(':')
+      endTime.setHours(aux2[0], aux2[1])
+      console.log(endTime)
 
       this.state = {
         editorState: editorState,
@@ -101,9 +111,9 @@ export default class TemplateEvent extends Component {
         firebaseIdEvent: event.firebaseIdEvent,
         name: event.name || '',
         description: event.description || '',
-        date: event.date || '',
-        time: event.time || '',
-        endTime: event.endTime || '',
+        date: new Date(event.date),
+        time: time,
+        endTime: endTime,
         streetName: event.address.streetName || '',
         streetNumber: event.address.streetNumber || '',
         departmentNumber: event.address.departmentNumber || '',
@@ -122,12 +132,15 @@ export default class TemplateEvent extends Component {
         externalUrl: event.externalUrl || '',
         imageUrl: event.imageUrl || '',
         showInCalendarChecked: event.showInCalendar || '',
-        locations: event.locations || []
+        locations: event.locations || [],
+        loading: true
       }
     } else {
       this.state = {
         event: {},
         errorMessages: {},
+        date: new Date(),
+        time: new Date(),
         locations: [],
         campoID: '',
         validate: false,
@@ -138,14 +151,17 @@ export default class TemplateEvent extends Component {
         hasCampoNameError: true,
         hasNameError: true,
         hasNombreError: true,
-        hasDateError: true,
         hastimeError: true,
         hasendTimeError: true,
         hasDepartmentIdError: true,
         latitude: -34.1703131,
-        longitude: -70.74064759999999
+        longitude: -70.74064759999999,
+        loading: true
       }
     }
+    this.handleChangeDate = this.handleChangeDate.bind(this)
+    this.handleChangeTime = this.handleChangeTime.bind(this)
+    this.handleChangeEndTime = this.handleChangeEndTime.bind(this)
 
     this.validateForm = this.validateForm.bind(this)
   }
@@ -189,7 +205,21 @@ export default class TemplateEvent extends Component {
       return ele !== value
     })
   }
-
+  handleChangeDate(date) {
+    this.setState({
+      date: date
+    })
+  }
+  handleChangeTime(time) {
+    this.setState({
+      time: time
+    })
+  }
+  handleChangeEndTime(endTime) {
+    this.setState({
+      endTime: endTime
+    })
+  }
   @autobind
   async addLocation(e) {
     e.preventDefault()
@@ -214,20 +244,8 @@ export default class TemplateEvent extends Component {
 
   async validateForm(e) {
     await this.toggleValidating(true)
-    const {
-      hasNombreError,
-      hasDateError,
-      hastimeError,
-      hasendTimeError,
-      hasDepartmentIdError
-    } = this.state
-    if (
-      !hasNombreError &&
-      !hasDateError &&
-      !hastimeError &&
-      !hasendTimeError &&
-      !hasDepartmentIdError
-    ) {
+    const { hasNombreError, hastimeError, hasendTimeError, hasDepartmentIdError } = this.state
+    if (!hasNombreError && !hastimeError && !hasendTimeError && !hasDepartmentIdError) {
       this.onSubmit()
     } else {
       this.props.showMessage('Verifique que todos los datos estén correctos')
@@ -274,8 +292,8 @@ export default class TemplateEvent extends Component {
       name: s.name,
       description: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       date: s.date,
-      time: s.time,
-      endTime: s.endTime,
+      time: moment(s.time).format('HH:mm'),
+      endTime: moment(s.endTime).format('HH:mm'),
       address: {
         streetName: s.streetName,
         streetNumber: s.streetNumber,
@@ -356,6 +374,9 @@ export default class TemplateEvent extends Component {
       editorState
     })
   }
+  handleDateChangeRaw = e => {
+    e.preventDefault()
+  }
 
   render() {
     const {
@@ -365,7 +386,6 @@ export default class TemplateEvent extends Component {
       validate,
       name,
       externalUrl,
-      date,
       time,
       endTime,
       optionLabel,
@@ -379,7 +399,6 @@ export default class TemplateEvent extends Component {
       editorState
     } = this.state
     var _this = this
-
     return (
       <Section title={this.props.title} description={this.props.description} top>
         <div className='label'>Nombre</div>
@@ -414,7 +433,6 @@ export default class TemplateEvent extends Component {
             onEditorStateChange={this.onEditorStateChange}
           />
         </div>
-
         <div className='label'>Link a información</div>
         <Textbox
           tabIndex='3'
@@ -434,71 +452,47 @@ export default class TemplateEvent extends Component {
           }}
         />
         <div className='label'>Fecha</div>
-        <Textbox
-          tabIndex='3'
-          id='date'
-          name='date'
-          type='date'
-          value={date}
-          maxLength='2500'
-          validate={validate}
-          classNameInput='os-input-text'
-          validationCallback={res => {
-            this.setState({ hasDateError: res, validate: false })
-          }}
-          onChange={(date, e) => {
-            this.setState({ date })
-          }}
-          validationOption={{
-            name: 'Fecha',
-            check: true,
-            required: true
-          }}
+        <DatePicker
+          selected={this.state.date}
+          onChange={this.handleChangeDate}
+          strictParsing
+          calendarClassName=''
+          className='os-input-text'
+          dateFormat='dd-MM-YYYY'
+          minDate={new Date()}
+          locale={es}
+          onChangeRaw={this.handleDateChangeRaw}
         />
         <div className='label'>Hora de inicio</div>
-        <Textbox
-          tabIndex='4'
-          id='time'
-          name='time'
-          type='time'
-          value={time}
-          maxLength='10'
-          validate={validate}
-          classNameInput='os-input-text'
-          validationCallback={res => {
-            this.setState({ hastimeError: res, validate: false })
-          }}
-          onChange={(time, e) => {
-            this.setState({ time })
-          }}
-          validationOption={{
-            name: 'Hora de inicio',
-            check: true,
-            required: true
-          }}
+        <DatePicker
+          selected={this.state.time}
+          onChange={this.handleChangeTime}
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={5}
+          strictParsing
+          className='os-input-text'
+          dateFormat='HH:mm'
+          timeCaption='Time'
+          locale={es}
+          onChangeRaw={this.handleDateChangeRaw}
         />
         <div className='label'>Hora de término</div>
-        <Textbox
-          tabIndex='5'
-          id='endTime'
-          name='endTime'
-          type='time'
-          value={endTime}
-          maxLength='10'
-          validate={validate}
-          classNameInput='os-input-text'
-          validationCallback={res => {
-            this.setState({ hasendTimeError: res, validate: false })
-          }}
-          onChange={(endTime, e) => {
-            this.setState({ endTime })
-          }}
-          validationOption={{
-            name: 'Hora de término',
-            check: true,
-            required: true
-          }}
+
+        <DatePicker
+          selected={this.state.endTime}
+          onChange={this.handleChangeEndTime}
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={5}
+          strictParsing
+          className='os-input-text'
+          dateFormat='HH:mm'
+          timeCaption='Time'
+          locale={es}
+          onChangeRaw={this.handleDateChangeRaw}
         />
+
         <div className='label'>Dirección </div>
         <SearchBar
           handleChangeAddress={this.handleChangeAddress}
@@ -548,7 +542,6 @@ export default class TemplateEvent extends Component {
           }}
         />
         <div className='label'> </div>
-
         <Checkbox
           tabIndex='8'
           id={'showInCalendar'}
@@ -571,7 +564,6 @@ export default class TemplateEvent extends Component {
             required: false
           }}
         />
-
         <div className='label'>Departamento al que pertenece el evento</div>
         <Select
           tabIndex='9'
@@ -601,7 +593,15 @@ export default class TemplateEvent extends Component {
           }}
         />
         <div>
-          <Popup trigger={<button className='button'> Agregar ticket al evento </button>} modal>
+          <Popup
+            trigger={
+              <Button className='button' style={{ marginTop: 20 }}>
+                <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
+                Agregar ticket al evento
+              </Button>
+            }
+            modal
+          >
             {close => (
               <div className='modal'>
                 <a className='close' onClick={close}>
