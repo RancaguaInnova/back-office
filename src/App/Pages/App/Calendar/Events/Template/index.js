@@ -79,7 +79,6 @@ export default class TemplateEvent extends Component {
   constructor(props) {
     super(props)
     let event = this.props.event
-    console.log(event)
 
     if (this.props.type === 'update') {
       if (event.address === null) {
@@ -320,7 +319,6 @@ export default class TemplateEvent extends Component {
 
         this.onSuccessInsert()
       } catch (error) {
-        console.log(error)
         this.setState({ errorMessages: this.getValidationErrors(error) })
         this.props.showMessage('Ocurrión un error!')
       }
@@ -330,7 +328,6 @@ export default class TemplateEvent extends Component {
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
-        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     }
