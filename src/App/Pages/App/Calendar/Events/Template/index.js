@@ -386,8 +386,6 @@ export default class TemplateEvent extends Component {
       validate,
       name,
       externalUrl,
-      time,
-      endTime,
       optionLabel,
       showInCalendar,
       showInCalendarChecked,
