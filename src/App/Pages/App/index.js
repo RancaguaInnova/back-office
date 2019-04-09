@@ -3,9 +3,14 @@ import styles from './styles.css'
 import { Route, Switch } from 'react-router-dom'
 import DynamicComponent from 'App/components/DynamicComponent'
 import forceLogin from 'App/helpers/auth/forceLogin'
+import Logout from './Logout/'
+import PropTypes from 'prop-types'
 
 @forceLogin
 export default class MainHome extends React.Component {
+  static propTypes = {
+    history: PropTypes.object
+  }
   render() {
     return (
       <div className={styles.container}>
@@ -26,6 +31,7 @@ export default class MainHome extends React.Component {
           />
           <Route path='/' exact component={DynamicComponent(() => import('./Home'))} />
         </Switch>
+        <Logout history={this.props.history} />
       </div>
     )
   }

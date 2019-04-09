@@ -1,17 +1,17 @@
 import React from 'react'
 import Template from '../Template/'
 import PropTypes from 'prop-types'
-export default class CreateDepartments extends React.Component {
+export default class CreateEvents extends React.Component {
   static propTypes = {
     history: PropTypes.object
   }
-  render () {
+  render() {
     return (
       <Template
         type='create'
-        departmentId=''
-        title='Crear Departamento'
-        description='Creación de nuevo departamento'
+        eventId=''
+        title='Crear evento'
+        description='Creación de eventos'
         history={this.props.history}
       />
     )

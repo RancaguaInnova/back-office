@@ -5,7 +5,7 @@ export default class AppsHome extends React.Component {
     return (
       <div>
         <h4>Sección de administración de integraciones</h4>
-        <p>Registra y edita integraciones</p>
+        <p>Crea y edita integraciones</p>
       </div>
     )
   }
