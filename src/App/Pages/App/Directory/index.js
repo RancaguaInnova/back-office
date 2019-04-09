@@ -7,14 +7,9 @@ import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import DynamicComponent from 'App/components/DynamicComponent'
 import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
-import Logout from '../Logout/'
-import PropTypes from 'prop-types'
 @forceLogin
 @withAuthorization(['admin', 'directory'])
 export default class DirectoryRoutes extends React.Component {
-  static propTypes = {
-    history: PropTypes.object
-  }
   render() {
     return (
       <div>
@@ -53,7 +48,6 @@ export default class DirectoryRoutes extends React.Component {
             <Route exact path='/directorio' component={DynamicComponent(() => import('./Home'))} />
           </Switch>
         </Container>
-        <Logout history={this.props.history} />
       </div>
     )
   }

@@ -103,7 +103,6 @@ export default class TemplateEvent extends Component {
       let endTime = new Date()
       let aux2 = event.endTime.split(':')
       endTime.setHours(aux2[0], aux2[1])
-      console.log(endTime)
 
       this.state = {
         editorState: editorState,
@@ -126,7 +125,6 @@ export default class TemplateEvent extends Component {
         place_id: event.address.place_id || '',
         latitude: event.address.latitude || -34.1703131,
         longitude: event.address.longitude || -70.74064759999999,
-
         optionLabel: event.optionLabel || '',
         departmentId: event.departmentId || '',
         externalUrl: event.externalUrl || '',
