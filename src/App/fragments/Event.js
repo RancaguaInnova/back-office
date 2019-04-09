@@ -6,6 +6,7 @@ export default {
       _id
       name
       description
+      detail
       date
       time
       endTime

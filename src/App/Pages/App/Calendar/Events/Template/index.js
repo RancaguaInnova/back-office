@@ -93,7 +93,8 @@ export default class TemplateEvent extends Component {
           postalCode: ''
         }
       }
-      const blocksFromHtml = htmlToDraft(event.description)
+
+      const blocksFromHtml = htmlToDraft(event.detail || '')
       const { contentBlocks, entityMap } = blocksFromHtml
       const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
       const editorState = EditorState.createWithContent(contentState)
@@ -148,6 +149,7 @@ export default class TemplateEvent extends Component {
         hasQuotaCodeError: true,
         hasCampoNameError: true,
         hasNameError: true,
+        hasDescriptionError: true,
         hasNombreError: true,
         hastimeError: true,
         hasendTimeError: true,
@@ -242,8 +244,20 @@ export default class TemplateEvent extends Component {
 
   async validateForm(e) {
     await this.toggleValidating(true)
-    const { hasNombreError, hastimeError, hasendTimeError, hasDepartmentIdError } = this.state
-    if (!hasNombreError && !hastimeError && !hasendTimeError && !hasDepartmentIdError) {
+    const {
+      hasNombreError,
+      hastimeError,
+      hasendTimeError,
+      hasDepartmentIdError,
+      hasDescriptionError
+    } = this.state
+    if (
+      !hasNombreError &&
+      !hastimeError &&
+      !hasendTimeError &&
+      !hasDepartmentIdError &&
+      !hasDescriptionError
+    ) {
       this.onSubmit()
     } else {
       this.props.showMessage('Verifique que todos los datos estén correctos')
@@ -288,7 +302,8 @@ export default class TemplateEvent extends Component {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
-      description: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+      description: s.description,
+      detail: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       date: s.date,
       time: moment(s.time).format('HH:mm'),
       endTime: moment(s.endTime).format('HH:mm'),
@@ -392,7 +407,8 @@ export default class TemplateEvent extends Component {
       formattedAddress,
       latitude,
       longitude,
-      editorState
+      editorState,
+      description
     } = this.state
     var _this = this
     return (
@@ -419,7 +435,28 @@ export default class TemplateEvent extends Component {
             required: true
           }}
         />
-        <div className='label'>Descripción</div>
+        <div className='label'>descripción</div>
+        <Textbox
+          tabIndex='3'
+          id='description'
+          name='description'
+          type='text'
+          value={description}
+          maxLength='200'
+          validate={validate}
+          validationCallback={res => {
+            this.setState({ hasDescriptionError: res, validate: false })
+          }}
+          onChange={(description, e) => {
+            this.setState({ description })
+          }}
+          validationOption={{
+            name: 'Descripción',
+            check: true,
+            required: true
+          }}
+        />
+        <div className='label'>Detail</div>
         <div>
           <Editor
             wrapperClassName='wrapper-class'
