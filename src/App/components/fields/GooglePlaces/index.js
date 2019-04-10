@@ -15,9 +15,7 @@ export default class SearchGoogle extends Component {
     return (
       <ReactDependentScript
         scripts={[
-          'https://maps.googleapis.com/maps/api/js?key=' +
-            process.env.GOOGLE_PLACES_KEY +
-            '&libraries=places'
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyAmQ7APQAvy5cbGkGba-KZNT_VHHlLddeI&libraries=places'
         ]}
       >
         <SearchBar
