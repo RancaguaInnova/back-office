@@ -99,11 +99,21 @@ export default class TemplateEvent extends Component {
       const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
       const editorState = EditorState.createWithContent(contentState)
       let time = new Date()
-      let aux = event.time.split(':')
-      time.setHours(aux[0], aux[1])
+      console.log(event.time)
+      if (event.time !== null && this.HoraValida(event.time)) {
+        let aux = event.time.split(':')
+        time.setHours(aux[0], aux[1])
+      } else {
+        time.setHours(0, 0)
+      }
+
       let endTime = new Date()
-      let aux2 = event.endTime.split(':')
-      endTime.setHours(aux2[0], aux2[1])
+      if (event.endTime !== null) {
+        let aux2 = event.endTime.split(':')
+        endTime.setHours(aux2[0], aux2[1])
+      } else {
+        endTime.setHours(0, 0)
+      }
 
       this.state = {
         editorState: editorState,
@@ -180,6 +190,27 @@ export default class TemplateEvent extends Component {
       },
       {}
     )
+  }
+  HoraValida(lahora) {
+    if (lahora !== '') {
+      var arrHora = lahora.split(':')
+
+      if (arrHora.length !== 2) {
+        return false
+      }
+
+      if (parseInt(arrHora[0]) < 0 || parseInt(arrHora[0]) > 23) {
+        return false
+      }
+
+      if (parseInt(arrHora[1]) < 0 || parseInt(arrHora[1]) > 59) {
+        return false
+      }
+
+      return true
+    } else {
+      return false
+    }
   }
 
   renderErrorMessages() {
@@ -456,16 +487,7 @@ export default class TemplateEvent extends Component {
             required: true
           }}
         />
-        <div className='label'>Detail</div>
-        <div>
-          <Editor
-            wrapperClassName='wrapper-class'
-            editorClassName='os-input-text'
-            toolbarClassName='toolbar-class'
-            editorState={editorState}
-            onEditorStateChange={this.onEditorStateChange}
-          />
-        </div>
+
         <div className='label'>Link a información</div>
         <Textbox
           tabIndex='3'
@@ -641,6 +663,19 @@ export default class TemplateEvent extends Component {
                   &times;
                 </a>
                 <div className='headerModal'> Información de ticket </div>
+                <div className='label'>
+                  <h4>Detail</h4>
+                </div>
+                <div>
+                  <Editor
+                    wrapperClassName='wrapper-class'
+                    editorClassName='os-input-text'
+                    toolbarClassName='toolbar-class'
+                    editorState={editorState}
+                    onEditorStateChange={this.onEditorStateChange}
+                  />
+                  <br />
+                </div>
                 <div className='contentModal'>
                   <table className='tableModal'>
                     <thead>
