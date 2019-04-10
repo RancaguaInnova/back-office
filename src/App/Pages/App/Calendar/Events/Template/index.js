@@ -93,16 +93,26 @@ export default class TemplateEvent extends Component {
           postalCode: ''
         }
       }
-      const blocksFromHtml = htmlToDraft(event.description)
+
+      const blocksFromHtml = htmlToDraft(event.detail || '')
       const { contentBlocks, entityMap } = blocksFromHtml
       const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
       const editorState = EditorState.createWithContent(contentState)
       let time = new Date()
-      let aux = event.time.split(':')
-      time.setHours(aux[0], aux[1])
+      if (event.time !== null && this.HoraValida(event.time)) {
+        let aux = event.time.split(':')
+        time.setHours(aux[0], aux[1])
+      } else {
+        time.setHours(0, 0)
+      }
+
       let endTime = new Date()
-      let aux2 = event.endTime.split(':')
-      endTime.setHours(aux2[0], aux2[1])
+      if (event.endTime !== null) {
+        let aux2 = event.endTime.split(':')
+        endTime.setHours(aux2[0], aux2[1])
+      } else {
+        endTime.setHours(0, 0)
+      }
 
       this.state = {
         editorState: editorState,
@@ -148,6 +158,7 @@ export default class TemplateEvent extends Component {
         hasQuotaCodeError: true,
         hasCampoNameError: true,
         hasNameError: true,
+        hasDescriptionError: true,
         hasNombreError: true,
         hastimeError: true,
         hasendTimeError: true,
@@ -180,6 +191,28 @@ export default class TemplateEvent extends Component {
     )
   }
 
+  HoraValida(lahora) {
+    if (lahora !== '') {
+      var arrHora = lahora.split(':')
+
+      if (arrHora.length !== 2) {
+        return false
+      }
+
+      if (parseInt(arrHora[0]) < 0 || parseInt(arrHora[0]) > 23) {
+        return false
+      }
+
+      if (parseInt(arrHora[1]) < 0 || parseInt(arrHora[1]) > 59) {
+        return false
+      }
+
+      return true
+    } else {
+      return false
+    }
+  }
+
   renderErrorMessages() {
     if (!this.state.errorMessages) return
     console.log('UNIMPLEMENTED')
@@ -203,21 +236,25 @@ export default class TemplateEvent extends Component {
       return ele !== value
     })
   }
+
   handleChangeDate(date) {
     this.setState({
       date: date
     })
   }
+
   handleChangeTime(time) {
     this.setState({
       time: time
     })
   }
+
   handleChangeEndTime(endTime) {
     this.setState({
       endTime: endTime
     })
   }
+
   @autobind
   async addLocation(e) {
     e.preventDefault()
@@ -242,17 +279,31 @@ export default class TemplateEvent extends Component {
 
   async validateForm(e) {
     await this.toggleValidating(true)
-    const { hasNombreError, hastimeError, hasendTimeError, hasDepartmentIdError } = this.state
-    if (!hasNombreError && !hastimeError && !hasendTimeError && !hasDepartmentIdError) {
+    const {
+      hasNombreError,
+      hastimeError,
+      hasendTimeError,
+      hasDepartmentIdError,
+      hasDescriptionError
+    } = this.state
+    if (
+      !hasNombreError &&
+      !hastimeError &&
+      !hasendTimeError &&
+      !hasDepartmentIdError &&
+      !hasDescriptionError
+    ) {
       this.onSubmit()
     } else {
       this.props.showMessage('Verifique que todos los datos estén correctos')
     }
   }
+
   onSuccessDelete() {
     this.props.showMessage('Evento eliminado correctamente')
     this.props.history.push('/calendario/eventos')
   }
+
   @autobind
   async onDelete() {
     try {
@@ -288,7 +339,8 @@ export default class TemplateEvent extends Component {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
-      description: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+      description: s.description,
+      detail: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
       date: s.date,
       time: moment(s.time).format('HH:mm'),
       endTime: moment(s.endTime).format('HH:mm'),
@@ -318,14 +370,17 @@ export default class TemplateEvent extends Component {
     }
     return event
   }
+
   onSuccessInsert() {
     this.props.showMessage('Evento creado')
     this.props.history.push('/calendario/eventos')
   }
+
   onSuccessUpdate() {
     this.props.showMessage('Cambios guardados!')
     this.props.history.push('/calendario/eventos')
   }
+
   @autobind
   async onSubmit() {
     if (this.props.type === 'create') {
@@ -367,11 +422,13 @@ export default class TemplateEvent extends Component {
     })
     this.setState(newState)
   }
+
   onEditorStateChange = editorState => {
     this.setState({
       editorState
     })
   }
+
   handleDateChangeRaw = e => {
     e.preventDefault()
   }
@@ -392,7 +449,8 @@ export default class TemplateEvent extends Component {
       formattedAddress,
       latitude,
       longitude,
-      editorState
+      editorState,
+      description
     } = this.state
     var _this = this
     return (
@@ -419,16 +477,28 @@ export default class TemplateEvent extends Component {
             required: true
           }}
         />
-        <div className='label'>Descripción</div>
-        <div>
-          <Editor
-            wrapperClassName='wrapper-class'
-            editorClassName='os-input-text'
-            toolbarClassName='toolbar-class'
-            editorState={editorState}
-            onEditorStateChange={this.onEditorStateChange}
-          />
-        </div>
+        <div className='label'>descripción</div>
+        <Textbox
+          tabIndex='3'
+          id='description'
+          name='description'
+          type='text'
+          value={description}
+          maxLength='200'
+          validate={validate}
+          validationCallback={res => {
+            this.setState({ hasDescriptionError: res, validate: false })
+          }}
+          onChange={(description, e) => {
+            this.setState({ description })
+          }}
+          validationOption={{
+            name: 'Descripción',
+            check: true,
+            required: true
+          }}
+        />
+
         <div className='label'>Link a información</div>
         <Textbox
           tabIndex='3'
@@ -593,7 +663,8 @@ export default class TemplateEvent extends Component {
             trigger={
               <Button className='button' style={{ marginTop: 20 }}>
                 <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                Agregar ticket al evento
+                {this.state.locations.length < 1 && 'Agregar  ticket al evento'}
+                {this.state.locations.length >= 1 && 'Editar  ticket del evento'}
               </Button>
             }
             modal
@@ -604,6 +675,45 @@ export default class TemplateEvent extends Component {
                   &times;
                 </a>
                 <div className='headerModal'> Información de ticket </div>
+                <div className='label'>
+                  <h4>Detail</h4>
+                </div>
+                <div>
+                  <Editor
+                    wrapperClassName='wrapper-class'
+                    editorClassName='os-input-text'
+                    toolbarClassName='toolbar-class'
+                    editorState={editorState}
+                    onEditorStateChange={this.onEditorStateChange}
+                    toolbar={{
+                      options: [
+                        'inline',
+                        'blockType',
+                        'fontSize',
+                        'fontFamily',
+                        'list',
+                        'textAlign',
+                        'colorPicker',
+                        'link',
+                        'embedded',
+                        'emoji',
+                        'image',
+                        'remove',
+                        'history'
+                      ],
+                      inline: {
+                        inDropdown: true,
+                        options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
+                        bold: { className: 'bordered-option-classname' },
+                        italic: { className: 'bordered-option-classname' },
+                        underline: { className: 'bordered-option-classname' },
+                        strikethrough: { className: 'bordered-option-classname' },
+                        code: { className: 'bordered-option-classname' }
+                      }
+                    }}
+                  />
+                  <br />
+                </div>
                 <div className='contentModal'>
                   <table className='tableModal'>
                     <thead>
