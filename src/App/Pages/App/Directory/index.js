@@ -7,7 +7,6 @@ import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import DynamicComponent from 'App/components/DynamicComponent'
 import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
-
 @forceLogin
 @withAuthorization(['admin', 'directory'])
 export default class DirectoryRoutes extends React.Component {

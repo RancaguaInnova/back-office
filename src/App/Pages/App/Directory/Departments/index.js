@@ -4,6 +4,7 @@ import withAuthorization from 'App/helpers/auth/withAuthorization'
 import Container from 'orionsoft-parts/lib/components/Container'
 import { Route, Switch } from 'react-router-dom'
 import DynamicComponent from 'App/components/DynamicComponent'
+
 @forceLogin
 @withAuthorization(['admin'])
 export default class Departments extends React.Component {
@@ -13,17 +14,17 @@ export default class Departments extends React.Component {
         <Switch>
           <Route
             exact
-            path='/directorio/departamentos'
+            path="/directorio/departamentos"
             component={DynamicComponent(() => import('./List'))}
           />
           <Route
             exact
-            path='/directorio/departamentos/crear'
+            path="/directorio/departamentos/crear"
             component={DynamicComponent(() => import('./Create'))}
           />
           <Route
             exact
-            path='/directorio/departamentos/editar/:departmentId'
+            path="/directorio/departamentos/editar/:departmentId"
             component={DynamicComponent(() => import('./Update'))}
           />
         </Switch>

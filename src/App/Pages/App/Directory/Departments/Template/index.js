@@ -4,7 +4,7 @@ import Section from 'App/components/Section'
 import { withRouter } from 'react-router'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import styles from './styles.css'
-import SearchBar from 'App/components/fields/google/GooglePlaces'
+import SearchBar from 'App/components/fields/GooglePlaces'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import autobind from 'autobind-decorator'
@@ -338,7 +338,11 @@ class TemplateDepartment extends React.Component {
             onChange={(optionLabel, e) => {
               this.setState({ optionLabel })
             }}
-            validationOption={{ name: 'optionLabel', check: false, required: false }}
+            validationOption={{
+              name: 'optionLabel',
+              check: false,
+              required: false
+            }}
           />
           <div className={styles.label}>Director(a) de este departamento</div>
           <Select

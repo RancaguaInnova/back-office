@@ -2,18 +2,18 @@ import React from 'react'
 import Template from '../Template/'
 import PropTypes from 'prop-types'
 
-export default class UpdateDepartment extends React.Component {
+export default class UpdateEvent extends React.Component {
   static propTypes = {
     history: PropTypes.object,
-    departmentId: PropTypes.string
+    eventId: PropTypes.string
   }
-  render () {
+  render() {
     return (
       <Template
         type='update'
-        departmentId={this.props.departmentId}
-        title='Actualizar Departamento'
-        description='Actualizando departamento'
+        eventId={this.props.eventId}
+        title='Actualizar Evento'
+        description='Actualizando evento'
         history={this.props.history}
       />
     )

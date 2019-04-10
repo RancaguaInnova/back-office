@@ -7,7 +7,6 @@ import DynamicComponent from 'App/components/DynamicComponent'
 import Tabs from 'orionsoft-parts/lib/components/Tabs'
 import forceLogin from 'App/helpers/auth/forceLogin'
 import withAuthorization from 'App/helpers/auth/withAuthorization'
-
 @forceLogin
 @withAuthorization(['admin'])
 export default class ApplicationsRoutes extends React.Component {
@@ -32,23 +31,13 @@ export default class ApplicationsRoutes extends React.Component {
         </div>
         <Container>
           <Switch>
+            <Route path='/apps/lista' component={DynamicComponent(() => import('./List'))} />
+            <Route path='/apps/crear' component={DynamicComponent(() => import('./Create'))} />
             <Route
-              path="/apps/lista"
-              component={DynamicComponent(() => import('./List'))}
-            />
-            <Route
-              path="/apps/crear"
-              component={DynamicComponent(() => import('./Create'))}
-            />
-            <Route
-              path="/apps/editar/:applicationId"
+              path='/apps/editar/:applicationId'
               component={DynamicComponent(() => import('./Update'))}
             />
-            <Route
-              exact
-              path="/apps"
-              component={DynamicComponent(() => import('./Home'))}
-            />
+            <Route exact path='/apps' component={DynamicComponent(() => import('./Home'))} />
           </Switch>
         </Container>
       </div>

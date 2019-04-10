@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default class DirectoryHome extends React.Component {
+export default class CalendarHome extends React.Component {
   render () {
     return (
       <div>
