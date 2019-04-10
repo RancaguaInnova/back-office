@@ -28,21 +28,19 @@ export default class LinkToAccount extends React.Component {
     user: PropTypes.object,
     showMessage: PropTypes.func,
     linkAccountData: PropTypes.func,
-    loading: PropTypes.boolean
+    loading: PropTypes.bool
   }
 
   @autobind
   linkToAccount() {
-    let { user: { roles } } = this.props
+    let {
+      user: { roles }
+    } = this.props
     let { user } = this.props
     if (!includes(roles, 'developer')) {
-      this.props.showMessage(
-        `Debes estar logueado en una cuenta de tipo "Desarrollador"`
-      )
+      this.props.showMessage(`Debes estar logueado en una cuenta de tipo "Desarrollador"`)
     } else {
-      this.props.showMessage(
-        `Enlazando aplicación con cuenta ${this.props.user.email}`
-      )
+      this.props.showMessage(`Enlazando aplicación con cuenta ${this.props.user.email}`)
       let developerInfo = Object.assign({}, user.profile, { email: user.email })
       delete developerInfo.identifier
       delete developerInfo.educationalLevel
@@ -52,9 +50,8 @@ export default class LinkToAccount extends React.Component {
 
   render() {
     let { userId } = this.props
-    console.log('this.props.userId:', this.props.userId)
     if (!userId || this.props.loading) {
-      return <LoadingSection top="asdf" />
+      return <LoadingSection top='Cargando...' />
     }
     return (
       <Button

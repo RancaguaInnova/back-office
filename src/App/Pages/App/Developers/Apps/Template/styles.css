@@ -18,7 +18,12 @@
   font-weight: 900;
 }
 
-:local(.linkButton) {
-  padding-top: 10px;
-  padding-bottom: 10px;
+.help-block {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.padding {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }

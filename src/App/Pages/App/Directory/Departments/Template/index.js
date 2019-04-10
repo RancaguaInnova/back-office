@@ -392,7 +392,12 @@ class TemplateDepartment extends React.Component {
           <b>DIRECCIÓN</b>
         </div>
         <div className={styles.fieldGroup}>
-          <SearchBar handleChangeAddress={this.handleChangeAddress} />
+          <SearchBar
+            handleChangeAddress={this.handleChangeAddress}
+            latitude={this.latitude}
+            longitude={this.longitude}
+            address={this.formatted_address}
+          />
           <div className={styles.label}>Calle</div>
           <Textbox
             tabIndex='5'
