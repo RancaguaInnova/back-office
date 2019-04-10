@@ -652,7 +652,8 @@ export default class TemplateEvent extends Component {
             trigger={
               <Button className='button' style={{ marginTop: 20 }}>
                 <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                Agregar ticket al evento
+                {this.state.locations.length < 1 && 'Agregar  ticket al evento'}
+                {this.state.locations.length >= 1 && 'Editar  ticket del evento'}
               </Button>
             }
             modal
@@ -673,6 +674,32 @@ export default class TemplateEvent extends Component {
                     toolbarClassName='toolbar-class'
                     editorState={editorState}
                     onEditorStateChange={this.onEditorStateChange}
+                    toolbar={{
+                      options: [
+                        'inline',
+                        'blockType',
+                        'fontSize',
+                        'fontFamily',
+                        'list',
+                        'textAlign',
+                        'colorPicker',
+                        'link',
+                        'embedded',
+                        'emoji',
+                        'image',
+                        'remove',
+                        'history'
+                      ],
+                      inline: {
+                        inDropdown: true,
+                        options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
+                        bold: { className: 'bordered-option-classname' },
+                        italic: { className: 'bordered-option-classname' },
+                        underline: { className: 'bordered-option-classname' },
+                        strikethrough: { className: 'bordered-option-classname' },
+                        code: { className: 'bordered-option-classname' }
+                      }
+                    }}
                   />
                   <br />
                 </div>

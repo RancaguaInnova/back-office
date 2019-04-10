@@ -11,7 +11,7 @@ export default class SearchGoogle extends Component {
     address: PropTypes.string
   }
 
-  render () {
+  render() {
     return (
       <ReactDependentScript
         scripts={[

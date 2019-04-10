@@ -118,6 +118,13 @@ tr:nth-child(even) {
 
 }
 
+.rdw-editor-main {
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  max-height: 120px;
+}
+
 @media (max-width: 1020px) {
   .popup-content {
     width: 90% !important
