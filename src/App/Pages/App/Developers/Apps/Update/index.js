@@ -1,6 +1,7 @@
 import React from 'react'
 import Template from '../Template/'
 import PropTypes from 'prop-types'
+
 export default class CreateApplication extends React.Component {
   static propTypes = {
     history: PropTypes.object,
@@ -8,6 +9,7 @@ export default class CreateApplication extends React.Component {
     user: PropTypes.object,
     applicationId: PropTypes.string
   }
+
   render() {
     return (
       <Template

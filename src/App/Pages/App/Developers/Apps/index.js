@@ -4,6 +4,7 @@ import withAuthorization from 'App/helpers/auth/withAuthorization'
 import Container from 'orionsoft-parts/lib/components/Container'
 import { Route, Switch } from 'react-router-dom'
 import DynamicComponent from 'App/components/DynamicComponent'
+
 @forceLogin
 @withAuthorization(['admin'])
 export default class Aplication extends React.Component {

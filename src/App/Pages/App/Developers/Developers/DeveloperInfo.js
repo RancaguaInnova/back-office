@@ -9,7 +9,7 @@ import withMutation from 'react-apollo-decorators/lib/withMutation'
 import { withRouter } from 'react-router'
 import gql from 'graphql-tag'
 import UserFragments from 'App/fragments/User'
-import SearchBar from 'App/components/fields/google/GooglePlaces'
+import SearchBar from 'App/components/fields/GooglePlaces'
 import styles from './styles.css'
 
 @withRouter
@@ -68,6 +68,7 @@ export default class DeveloperInfo extends React.Component {
       profile: profile
     })
   }
+
   async onSubmit() {
     let user = Object.assign({}, this.props.user)
     user.profile = Object.assign({}, this.props.user.profile, this.state.profile)

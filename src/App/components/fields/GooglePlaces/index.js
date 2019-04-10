@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import SearchBar from './SearchBar'
 import ReactDependentScript from 'react-dependent-script'
 import PropTypes from 'prop-types'
-import { googlePlaces } from '../../../../apiKeys.js'
 
 export default class SearchGoogle extends Component {
   static propTypes = {
@@ -12,13 +11,11 @@ export default class SearchGoogle extends Component {
     address: PropTypes.string
   }
 
-  render () {
+  render() {
     return (
       <ReactDependentScript
         scripts={[
-          'https://maps.googleapis.com/maps/api/js?key=' +
-            googlePlaces +
-            '&libraries=places'
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyAmQ7APQAvy5cbGkGba-KZNT_VHHlLddeI&libraries=places'
         ]}
       >
         <SearchBar

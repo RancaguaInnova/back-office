@@ -12,6 +12,7 @@ export default class ListApplications extends React.Component {
       }
     ]
   }
+
   render() {
     return (
       <PaginatedList
