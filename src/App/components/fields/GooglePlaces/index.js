@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import SearchBar from './SearchBar'
 import ReactDependentScript from 'react-dependent-script'
 import PropTypes from 'prop-types'
-import { googlePlaces } from '../../../../apiKeys.js'
 
 export default class SearchGoogle extends Component {
   static propTypes = {
@@ -17,7 +16,7 @@ export default class SearchGoogle extends Component {
       <ReactDependentScript
         scripts={[
           'https://maps.googleapis.com/maps/api/js?key=' +
-            googlePlaces +
+            process.env.GOOGLE_PLACES_KEY +
             '&libraries=places'
         ]}
       >
