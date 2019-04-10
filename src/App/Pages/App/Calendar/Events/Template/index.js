@@ -99,7 +99,6 @@ export default class TemplateEvent extends Component {
       const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
       const editorState = EditorState.createWithContent(contentState)
       let time = new Date()
-      console.log(event.time)
       if (event.time !== null && this.HoraValida(event.time)) {
         let aux = event.time.split(':')
         time.setHours(aux[0], aux[1])
@@ -191,6 +190,7 @@ export default class TemplateEvent extends Component {
       {}
     )
   }
+
   HoraValida(lahora) {
     if (lahora !== '') {
       var arrHora = lahora.split(':')
@@ -236,21 +236,25 @@ export default class TemplateEvent extends Component {
       return ele !== value
     })
   }
+
   handleChangeDate(date) {
     this.setState({
       date: date
     })
   }
+
   handleChangeTime(time) {
     this.setState({
       time: time
     })
   }
+
   handleChangeEndTime(endTime) {
     this.setState({
       endTime: endTime
     })
   }
+
   @autobind
   async addLocation(e) {
     e.preventDefault()
@@ -294,10 +298,12 @@ export default class TemplateEvent extends Component {
       this.props.showMessage('Verifique que todos los datos estén correctos')
     }
   }
+
   onSuccessDelete() {
     this.props.showMessage('Evento eliminado correctamente')
     this.props.history.push('/calendario/eventos')
   }
+
   @autobind
   async onDelete() {
     try {
@@ -364,14 +370,17 @@ export default class TemplateEvent extends Component {
     }
     return event
   }
+
   onSuccessInsert() {
     this.props.showMessage('Evento creado')
     this.props.history.push('/calendario/eventos')
   }
+
   onSuccessUpdate() {
     this.props.showMessage('Cambios guardados!')
     this.props.history.push('/calendario/eventos')
   }
+
   @autobind
   async onSubmit() {
     if (this.props.type === 'create') {
@@ -413,11 +422,13 @@ export default class TemplateEvent extends Component {
     })
     this.setState(newState)
   }
+
   onEditorStateChange = editorState => {
     this.setState({
       editorState
     })
   }
+
   handleDateChangeRaw = e => {
     e.preventDefault()
   }
