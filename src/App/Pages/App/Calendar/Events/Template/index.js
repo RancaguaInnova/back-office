@@ -107,7 +107,7 @@ export default class TemplateEvent extends Component {
       }
 
       let endTime = new Date()
-      if (event.endTime !== null) {
+      if (event.endTime !== null && this.HoraValida(event.endTime)) {
         let aux2 = event.endTime.split(':')
         endTime.setHours(aux2[0], aux2[1])
       } else {
@@ -141,10 +141,26 @@ export default class TemplateEvent extends Component {
         imageUrl: event.imageUrl || '',
         showInCalendarChecked: event.showInCalendar || '',
         locations: event.locations || [],
-        loading: true
+        loading: true,
+        validate: false,
+        validatePop: false,
+        campoName: '',
+        campoQuota: 0,
+        hasQuotaCodeError: true,
+        hasCampoNameError: true,
+        hasNameError: true,
+        hasDescriptionError: true,
+        hasNombreError: true,
+        hasDepartmentIdError: true
       }
     } else {
+      const blocksFromHtml = htmlToDraft('')
+      const { contentBlocks, entityMap } = blocksFromHtml
+      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+      const editorState = EditorState.createWithContent(contentState)
+
       this.state = {
+        editorState: editorState,
         event: {},
         errorMessages: {},
         date: new Date(),
@@ -279,20 +295,8 @@ export default class TemplateEvent extends Component {
 
   async validateForm(e) {
     await this.toggleValidating(true)
-    const {
-      hasNombreError,
-      hastimeError,
-      hasendTimeError,
-      hasDepartmentIdError,
-      hasDescriptionError
-    } = this.state
-    if (
-      !hasNombreError &&
-      !hastimeError &&
-      !hasendTimeError &&
-      !hasDepartmentIdError &&
-      !hasDescriptionError
-    ) {
+    const { hasNombreError, hasDepartmentIdError, hasDescriptionError } = this.state
+    if (!hasNombreError && !hasDepartmentIdError && !hasDescriptionError) {
       this.onSubmit()
     } else {
       this.props.showMessage('Verifique que todos los datos estén correctos')
@@ -334,13 +338,16 @@ export default class TemplateEvent extends Component {
   }
 
   getEvent() {
+    let detail = ''
+    detail = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+
     let s = this.state
     var event = {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
       description: s.description,
-      detail: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+      detail: detail,
       date: s.date,
       time: moment(s.time).format('HH:mm'),
       endTime: moment(s.endTime).format('HH:mm'),
