@@ -144,7 +144,13 @@ export default class TemplateEvent extends Component {
         loading: true
       }
     } else {
+      const blocksFromHtml = htmlToDraft('')
+      const { contentBlocks, entityMap } = blocksFromHtml
+      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+      const editorState = EditorState.createWithContent(contentState)
+
       this.state = {
+        editorState: editorState,
         event: {},
         errorMessages: {},
         date: new Date(),
@@ -279,20 +285,8 @@ export default class TemplateEvent extends Component {
 
   async validateForm(e) {
     await this.toggleValidating(true)
-    const {
-      hasNombreError,
-      hastimeError,
-      hasendTimeError,
-      hasDepartmentIdError,
-      hasDescriptionError
-    } = this.state
-    if (
-      !hasNombreError &&
-      !hastimeError &&
-      !hasendTimeError &&
-      !hasDepartmentIdError &&
-      !hasDescriptionError
-    ) {
+    const { hasNombreError, hasDepartmentIdError, hasDescriptionError } = this.state
+    if (!hasNombreError && !hasDepartmentIdError && !hasDescriptionError) {
       this.onSubmit()
     } else {
       this.props.showMessage('Verifique que todos los datos estén correctos')
@@ -334,13 +328,16 @@ export default class TemplateEvent extends Component {
   }
 
   getEvent() {
+    let detail = ''
+    detail = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+
     let s = this.state
     var event = {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
       description: s.description,
-      detail: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+      detail: detail,
       date: s.date,
       time: moment(s.time).format('HH:mm'),
       endTime: moment(s.endTime).format('HH:mm'),
@@ -390,6 +387,8 @@ export default class TemplateEvent extends Component {
 
         this.onSuccessInsert()
       } catch (error) {
+        console.log(error)
+
         this.setState({ errorMessages: this.getValidationErrors(error) })
         this.props.showMessage('Ocurrión un error!')
       }
@@ -399,6 +398,7 @@ export default class TemplateEvent extends Component {
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
+        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     }
