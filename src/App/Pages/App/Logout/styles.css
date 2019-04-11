@@ -17,3 +17,18 @@
 .os_container {
   margin-bottom: 50px !important
 }
+
+@media (max-width: 600px) {
+
+  .react-confirm-alert-body {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 98% !important;
+    margin: 0 auto !important;
+    padding: 10px !important;
+    text-align: left;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
+    color: #666;
+  }
+}

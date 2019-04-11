@@ -15,6 +15,10 @@ export default {
           departmentNumber
           city
           postalCode
+          formatted_address
+          place_id
+          latitude
+          longitude
         }
         phone {
           areaCode
@@ -39,6 +43,10 @@ export default {
           departmentNumber
           city
           postalCode
+          formatted_address
+          place_id
+          latitude
+          longitude
         }
         phone {
           areaCode
