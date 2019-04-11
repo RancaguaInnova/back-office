@@ -10,7 +10,7 @@ export default class Events extends React.Component {
         title: 'Fecha',
         sort: 'desc',
         render: (value, doc, index) => (
-          <span>{value.date ? moment(value.date).format('DD-MM-YYYY') : ''} </span>
+          <span>{value && value.date ? moment(value.date).format('DD-MM-YYYY') : ''} </span>
         )
       },
       {
