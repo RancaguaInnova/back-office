@@ -67,65 +67,65 @@ class TemplateApplication extends React.Component {
   }
   constructor(props) {
     super(props)
-    this.state = {
-      validate: false,
-      name: '',
-      userFields: null,
-      hasNameError: true,
-      hasApplicationUrlError: true,
-      hasUrlError: true,
-      _id: '',
-      description: '',
-      applicationURL: '',
-      fieldName: '',
-      lastName: '',
-      url: '',
-      email: '',
-      streetName: '',
-      streetNumber: '',
-      departmentNumber: '',
-      postalCode: '',
-      areaCode: '',
-      number: '',
-      mobilePhone: '',
-      longitude: -70.740435,
-      latitude: -34.1706134
-    }
-    this.validateForm = this.validateForm.bind(this)
-    this.validateFormUpdate = this.validateFormUpdate.bind(this)
-  }
-
-  componentDidMount() {
     if (this.props.type === 'update') {
       let Application = this.props.application
-
-      this.setState({
+      this.state = {
         ownerId: Application.ownerId,
         _id: Application._id,
         applicationURL: Application.applicationURL || '',
         name: Application.name || '',
         description: Application.description || '',
         userFields: Application.userFields || '',
-        validate: false
-      })
-      let { developerInfo } = Application
-      if (developerInfo !== null) {
-        this.setState({
-          firstName: Application.developerInfo.firstName || '',
-          lastName: Application.developerInfo.lastName || '',
-          url: Application.developerInfo.url || '',
-          email: Application.developerInfo.email || '',
-          streetName: Application.developerInfo.address.streetName || '',
-          streetNumber: Application.developerInfo.address.streetNumber || '',
-          departmentNumber: Application.developerInfo.address.departmentNumber || '',
-          postalCode: Application.developerInfo.address.postalCode || '',
-          areaCode: Application.developerInfo.phone.areaCode || '',
-          number: Application.developerInfo.phone.number || '',
-          mobilePhone: Application.developerInfo.phone.mobilePhone || ''
-        })
+        validate: false,
+        firstName: Application.developerInfo.firstName || '',
+        lastName: Application.developerInfo.lastName || '',
+        url: Application.developerInfo.url || '',
+        email: Application.developerInfo.email || '',
+        streetName: Application.developerInfo.address.streetName || '',
+        streetNumber: Application.developerInfo.address.streetNumber || '',
+        departmentNumber: Application.developerInfo.address.departmentNumber || '',
+        postalCode: Application.developerInfo.address.postalCode || '',
+        areaCode: Application.developerInfo.phone.areaCode || '',
+        administrativeAreaLevel1: Application.developerInfo.address.administrativeAreaLevel1,
+        administrativeAreaLevel2: Application.developerInfo.address.administrativeAreaLevel2,
+        country: Application.developerInfo.address.country,
+        formatted_address: Application.developerInfo.address.formatted_address || '',
+        place_id: Application.developerInfo.address.place_id || '',
+        latitude: Application.developerInfo.address.latitude || -34.1703131,
+        longitude: Application.developerInfo.address.longitude || -70.74064759999999,
+        number: Application.developerInfo.phone.number || '',
+        mobilePhone: Application.developerInfo.phone.mobilePhone || ''
+      }
+    } else {
+      this.state = {
+        validate: false,
+        name: '',
+        userFields: null,
+        hasNameError: true,
+        hasApplicationUrlError: true,
+        hasUrlError: true,
+        _id: '',
+        description: '',
+        applicationURL: '',
+        fieldName: '',
+        lastName: '',
+        url: '',
+        email: '',
+        streetName: '',
+        streetNumber: '',
+        departmentNumber: '',
+        postalCode: '',
+        areaCode: '',
+        number: '',
+        mobilePhone: '',
+        longitude: -70.740435,
+        latitude: -34.1706134
       }
     }
+    this.validateForm = this.validateForm.bind(this)
+    this.validateFormUpdate = this.validateFormUpdate.bind(this)
   }
+
   @autobind
   onSuccessInsert() {
     this.props.showMessage('Aplicación creada')
@@ -151,7 +151,7 @@ class TemplateApplication extends React.Component {
       userFields: s.userFields,
       applicationURL: s.applicationURL,
       developerInfo: {
-        firstName: s.fieldName,
+        firstName: s.firstName,
         lastName: s.lastName,
         url: s.url,
         email: s.email,
@@ -159,7 +159,15 @@ class TemplateApplication extends React.Component {
           streetName: s.streetName,
           streetNumber: s.streetNumber,
           departmentNumber: s.departmentNumber,
-          postalCode: s.postalCode
+          city: s.city,
+          postalCode: s.postalCode,
+          administrativeAreaLevel1: s.administrativeAreaLevel1,
+          administrativeAreaLevel2: s.administrativeAreaLevel2,
+          country: s.country,
+          formatted_address: s.formatted_address,
+          place_id: s.place_id,
+          latitude: s.latitude,
+          longitude: s.longitude
         },
         phone: {
           areaCode: s.areaCode !== '' ? s.areaCode : null,

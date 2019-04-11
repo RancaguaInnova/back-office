@@ -71,37 +71,14 @@ class TemplateDepartment extends React.Component {
   }
   constructor(props) {
     super(props)
-    this.state = {
-      validate: false,
-      officialsArray: this.props.officials.items,
-      serviceAreasArray: this.props.serviceAreas.items,
-      name: '',
-      optionLabel: '',
-      managerId: '',
-      serviceAreaId: '',
-      businessHours: '',
-      description: '',
-      imageUrl: '',
-      city: '',
-      address: '',
-      country: '',
-      streetNumber: '',
-      streetName: '',
-      administrativeAreaLevel2: '',
-      administrativeAreaLevel1: '',
-      postalCode: '',
-      hasNameError: true,
-      hasEmailCodeError: true
-    }
-    this.validateForm = this.validateForm.bind(this)
-    this.validateFormUpdate = this.validateFormUpdate.bind(this)
-  }
-  componentDidMount() {
     if (this.props.type === 'update') {
       let department = this.props.department
-      let address = department.contactInformation.address
-      let phone = department.contactInformation.phone
-      this.setState({
+      let address =
+        department && department.contactInformation ? department.contactInformation.address : []
+      let phone =
+        department && department.contactInformation ? department.contactInformation.phone : []
+
+      this.state = {
         _id: department._id,
         validate: false,
         name: department.name || '',
@@ -128,9 +105,35 @@ class TemplateDepartment extends React.Component {
         number: phone.number || '',
         mobilePhone: phone.mobilePhone || '',
         email: department.contactInformation.email || ''
-      })
+      }
+    } else {
+      this.state = {
+        validate: false,
+        officialsArray: this.props.officials.items,
+        serviceAreasArray: this.props.serviceAreas.items,
+        name: '',
+        optionLabel: '',
+        managerId: '',
+        serviceAreaId: '',
+        businessHours: '',
+        description: '',
+        imageUrl: '',
+        city: '',
+        address: '',
+        country: '',
+        streetNumber: '',
+        streetName: '',
+        administrativeAreaLevel2: '',
+        administrativeAreaLevel1: '',
+        postalCode: '',
+        hasNameError: true,
+        hasEmailCodeError: true
+      }
     }
+    this.validateForm = this.validateForm.bind(this)
+    this.validateFormUpdate = this.validateFormUpdate.bind(this)
   }
+  componentDidMount() {}
 
   onSuccessInsert() {
     this.props.showMessage('Departamento creado')
@@ -173,7 +176,7 @@ class TemplateDepartment extends React.Component {
           administrativeAreaLevel1: s.administrativeAreaLevel1,
           administrativeAreaLevel2: s.administrativeAreaLevel2,
           country: s.country,
-          formatted_address: s.formatted_addressç,
+          formatted_address: s.formatted_address,
           place_id: s.place_id,
           latitude: s.latitude,
           longitude: s.longitude
@@ -232,7 +235,7 @@ class TemplateDepartment extends React.Component {
       postalCode: contactInformationAddress.postalCode,
       streetNumber: contactInformationAddress.streetNumber,
       country: contactInformationAddress.country,
-      formatted_address: contactInformationAddress.formatted_address || '',
+      formatted_address: contactInformationAddress.formatted_address,
       place_id: contactInformationAddress.place_id || '',
       latitude: contactInformationAddress.latitude || '',
       longitude: contactInformationAddress.longitude || ''
@@ -394,9 +397,9 @@ class TemplateDepartment extends React.Component {
         <div className={styles.fieldGroup}>
           <SearchBar
             handleChangeAddress={this.handleChangeAddress}
-            latitude={this.latitude}
-            longitude={this.longitude}
-            address={this.formatted_address}
+            latitude={this.state.latitude}
+            longitude={this.state.longitude}
+            address={this.state.formatted_address}
           />
           <div className={styles.label}>Calle</div>
           <Textbox

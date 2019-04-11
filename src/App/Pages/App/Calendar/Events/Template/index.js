@@ -103,7 +103,7 @@ export default class TemplateEvent extends Component {
         let aux = event.time.split(':')
         time.setHours(aux[0], aux[1])
       } else {
-        time.setHours(0, 0)
+        time = null
       }
 
       let endTime = new Date()
@@ -111,7 +111,7 @@ export default class TemplateEvent extends Component {
         let aux2 = event.endTime.split(':')
         endTime.setHours(aux2[0], aux2[1])
       } else {
-        endTime.setHours(0, 0)
+        endTime = null
       }
 
       this.state = {

@@ -23,6 +23,7 @@ import styles from './styles.css'
         verified
       }
       ...Profile
+      roles
     }
   }
   ${UserFragments.Profile}
@@ -42,8 +43,11 @@ export default class DeveloperInfo extends React.Component {
     showMessage: PropTypes.func,
     history: PropTypes.object
   }
+  constructor(props) {
+    super(props)
+    this.state = { ...this.props.user }
+  }
 
-  state = { ...this.props.user }
   handleChangeAddress = contactInformationAddress => {
     var profile = this.state.profile
     if (profile.address === null) {
@@ -53,7 +57,11 @@ export default class DeveloperInfo extends React.Component {
         streetNumber: '',
         departmentNumber: '',
         city: '',
-        postalCode: ''
+        postalCode: '',
+        formatted_address: '',
+        place_id: '',
+        latitude: '',
+        longitude: ''
       }
       profile = {
         address: address
@@ -64,15 +72,26 @@ export default class DeveloperInfo extends React.Component {
     profile.address.departmentNumber = contactInformationAddress.departmentNumber
     profile.address.city = contactInformationAddress.city
     profile.address.postalCode = contactInformationAddress.postalCode
+    profile.address.formatted_address = contactInformationAddress.formatted_address
+    profile.address.place_id = contactInformationAddress.place_id
+    profile.address.latitude = contactInformationAddress.latitude
+    profile.address.longitude = contactInformationAddress.longitude
     this.setState({
       profile: profile
     })
   }
 
+  handleCheck(array, val) {
+    return array.indexOf(val) > -1
+  }
   async onSubmit() {
     let user = Object.assign({}, this.props.user)
     user.profile = Object.assign({}, this.props.user.profile, this.state.profile)
-    user.roles = ['developer']
+
+    if (!this.handleCheck(user.roles, 'developer')) {
+      user.roles.push('developer')
+    }
+
     try {
       await this.props.updateUser({ user })
       this.props.showMessage('Información Guardada. Ahora puedes registrar tu aplicación')
@@ -97,9 +116,9 @@ export default class DeveloperInfo extends React.Component {
             <div className={styles.fieldGroup}>
               <SearchBar
                 handleChangeAddress={this.handleChangeAddress}
-                latitude={this.state.latitude}
-                longitude={this.state.longitude}
-                address={this.state.formatted_address}
+                latitude={this.state.profile.address.latitude}
+                longitude={this.state.profile.address.longitude}
+                address={this.state.profile.address.formatted_address}
               />
               <div className={styles.subheaderLabel}>Dirección:</div>
               <div className={styles.label}>Nombre de Calle:</div>
