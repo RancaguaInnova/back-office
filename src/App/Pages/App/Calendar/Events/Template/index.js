@@ -107,7 +107,7 @@ export default class TemplateEvent extends Component {
       }
 
       let endTime = new Date()
-      if (event.endTime !== null) {
+      if (event.endTime !== null && this.HoraValida(event.endTime)) {
         let aux2 = event.endTime.split(':')
         endTime.setHours(aux2[0], aux2[1])
       } else {
@@ -141,7 +141,17 @@ export default class TemplateEvent extends Component {
         imageUrl: event.imageUrl || '',
         showInCalendarChecked: event.showInCalendar || '',
         locations: event.locations || [],
-        loading: true
+        loading: true,
+        validate: false,
+        validatePop: false,
+        campoName: '',
+        campoQuota: 0,
+        hasQuotaCodeError: true,
+        hasCampoNameError: true,
+        hasNameError: true,
+        hasDescriptionError: true,
+        hasNombreError: true,
+        hasDepartmentIdError: true
       }
     } else {
       const blocksFromHtml = htmlToDraft('')
@@ -387,8 +397,6 @@ export default class TemplateEvent extends Component {
 
         this.onSuccessInsert()
       } catch (error) {
-        console.log(error)
-
         this.setState({ errorMessages: this.getValidationErrors(error) })
         this.props.showMessage('Ocurrión un error!')
       }
@@ -398,7 +406,6 @@ export default class TemplateEvent extends Component {
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
-        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     }
