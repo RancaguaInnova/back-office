@@ -125,6 +125,10 @@ tr:nth-child(even) {
   max-height: 120px;
 }
 
+.alert {
+  width: 100%;
+}
+
 @media (max-width: 1020px) {
   .popup-content {
     width: 90% !important

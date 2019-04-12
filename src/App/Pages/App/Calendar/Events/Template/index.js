@@ -27,6 +27,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import es from 'date-fns/locale/es'
 import moment from 'moment'
+import 'bootstrap/dist/css/bootstrap.css'
 
 @withRouter
 @withMessage
@@ -36,7 +37,7 @@ import moment from 'moment'
       _id
     }
   }
-`)
+`)/
 @withMutation(gql`
   mutation updateEvent($event: EventInput!) {
     updateEvent(event: $event) {
@@ -461,407 +462,421 @@ export default class TemplateEvent extends Component {
     } = this.state
     var _this = this
     return (
-      <Section title={this.props.title} description={this.props.description} top>
-        <div className='label'>Nombre</div>
-        <Textbox
-          tabIndex='1'
-          id='name'
-          name='name'
-          type='text'
-          value={name}
-          classNameInput='name'
-          maxLength='500'
-          validate={validate}
-          validationCallback={res => {
-            this.setState({ hasNombreError: res, validate: false })
-          }}
-          onChange={(name, e) => {
-            this.setState({ name })
-          }}
-          validationOption={{
-            name: 'Nombre',
-            check: true,
-            required: true
-          }}
-        />
-        <div className='label'>descripción</div>
-        <Textbox
-          tabIndex='3'
-          id='description'
-          name='description'
-          type='text'
-          value={description}
-          maxLength='200'
-          validate={validate}
-          validationCallback={res => {
-            this.setState({ hasDescriptionError: res, validate: false })
-          }}
-          onChange={(description, e) => {
-            this.setState({ description })
-          }}
-          validationOption={{
-            name: 'Descripción',
-            check: true,
-            required: true
-          }}
-        />
-
-        <div className='label'>Link a información</div>
-        <Textbox
-          tabIndex='3'
-          id='externalUrl'
-          name='externalUrl'
-          type='text'
-          value={externalUrl}
-          maxLength='2500'
-          validate={validate}
-          onChange={(externalUrl, e) => {
-            this.setState({ externalUrl })
-          }}
-          validationOption={{
-            name: 'Link a información',
-            check: false,
-            required: false
-          }}
-        />
-        <div className='label'>Fecha</div>
-        <DatePicker
-          selected={this.state.date}
-          onChange={this.handleChangeDate}
-          strictParsing
-          calendarClassName=''
-          className='os-input-text'
-          dateFormat='dd-MM-YYYY'
-          minDate={new Date()}
-          locale={es}
-          onChangeRaw={this.handleDateChangeRaw}
-        />
-        <div className='label'>Hora de inicio</div>
-        <DatePicker
-          selected={this.state.time}
-          onChange={this.handleChangeTime}
-          showTimeSelect
-          showTimeSelectOnly
-          timeIntervals={5}
-          strictParsing
-          className='os-input-text'
-          dateFormat='HH:mm'
-          timeCaption='Time'
-          locale={es}
-          onChangeRaw={this.handleDateChangeRaw}
-        />
-        <div className='label'>Hora de término</div>
-
-        <DatePicker
-          selected={this.state.endTime}
-          onChange={this.handleChangeEndTime}
-          showTimeSelect
-          showTimeSelectOnly
-          timeIntervals={5}
-          strictParsing
-          className='os-input-text'
-          dateFormat='HH:mm'
-          timeCaption='Time'
-          locale={es}
-          onChangeRaw={this.handleDateChangeRaw}
-        />
-
-        <div className='label'>Dirección </div>
-        <SearchBar
-          handleChangeAddress={this.handleChangeAddress}
-          latitude={latitude}
-          longitude={longitude}
-          address={formattedAddress}
-        />
-        <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
-        <Textbox
-          tabIndex='6'
-          id='optionLabel'
-          name='optionLabel'
-          type='text'
-          value={optionLabel}
-          maxLength='200'
-          validate={validate}
-          classNameInput='os-input-text'
-          validationCallback={res => {
-            this.setState({ hasOptionLabelError: res, validate: false })
-          }}
-          onChange={(optionLabel, e) => {
-            this.setState({ optionLabel })
-          }}
-          validationOption={{
-            name: 'Texto que aparecerá en campos para seleccionar un evento',
-            check: true,
-            required: true
-          }}
-        />
-        <div className='label'>Url con imagen para el evento</div>
-        <Textbox
-          tabIndex='7'
-          id='imageUrl'
-          name='imageUrl'
-          type='text'
-          value={imageUrl}
-          maxLength='200'
-          validate={validate}
-          classNameInput='os-input-text'
-          onChange={(imageUrl, e) => {
-            this.setState({ imageUrl })
-          }}
-          validationOption={{
-            name: 'Texto que aparecerá en campos para seleccionar un evento',
-            check: false,
-            required: false
-          }}
-        />
-        <div className='label'> </div>
-        <Checkbox
-          tabIndex='8'
-          id={'showInCalendar'}
-          name={'showInCalendar'}
-          value={showInCalendar}
-          checked={showInCalendarChecked}
-          disabled={false}
-          validate={validate}
-          onChange={(showInCalendarChecked, e) => {
-            this.setState({ showInCalendarChecked })
-          }}
-          labelHtml={
-            <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
-              Mostrar en calendario (publicar evento)
-            </div>
-          }
-          validationOption={{
-            name: 'agreement',
-            check: false,
-            required: false
-          }}
-        />
-        <div className='label'>Departamento al que pertenece el evento</div>
-        <Select
-          tabIndex='9'
-          id={'departmentId'}
-          name={'departmentId'}
-          value={departmentId}
-          validate={validate}
-          optionList={this.getDepartmentOptions()}
-          validationCallback={res => {
-            this.setState({
-              hasDepartmentIdError: res,
-              validate: false
-            })
-          }}
-          onChange={(departmentId, e) => {
-            this.setState({ departmentId })
-          }}
-          customStyleOptionListContainer={{
-            maxHeight: '200px',
-            overflow: 'auto',
-            fontSize: '14px'
-          }}
-          validationOption={{
-            name: 'Departamento',
-            check: true,
-            required: true
-          }}
-        />
-        <div>
-          <Popup
-            trigger={
-              <Button className='button' style={{ marginTop: 20 }}>
-                <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                {this.state.locations.length < 1 && 'Agregar  ticket al evento'}
-                {this.state.locations.length >= 1 && 'Editar  ticket del evento'}
-              </Button>
-            }
-            modal
+      <div>
+        <div className='alert alert-info' role='alert'>
+          <MaterialIcon icon='information' size='tiny' color={colorPalette.blue._900} /> Si
+          necesitas ayuda para crear o editar un evento haz &nbsp;
+          <a
+            href='https://desarrollorancagua.atlassian.net/wiki/x/AgAYAg'
+            target='_blank'
+            className='alert-link'
+            rel='noopener noreferrer'
           >
-            {close => (
-              <div className='modal'>
-                <a className='close' onClick={close}>
-                  &times;
-                </a>
-                <div className='headerModal'> Información de ticket </div>
-                <div className='label'>
-                  <h4>Detail</h4>
-                </div>
-                <div>
-                  <Editor
-                    wrapperClassName='wrapper-class'
-                    editorClassName='os-input-text'
-                    toolbarClassName='toolbar-class'
-                    editorState={editorState}
-                    onEditorStateChange={this.onEditorStateChange}
-                    toolbar={{
-                      options: [
-                        'inline',
-                        'blockType',
-                        'fontSize',
-                        'fontFamily',
-                        'list',
-                        'textAlign',
-                        'colorPicker',
-                        'link',
-                        'embedded',
-                        'emoji',
-                        'image',
-                        'remove',
-                        'history'
-                      ],
-                      inline: {
-                        inDropdown: true,
-                        options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
-                        bold: { className: 'bordered-option-classname' },
-                        italic: { className: 'bordered-option-classname' },
-                        underline: { className: 'bordered-option-classname' },
-                        strikethrough: { className: 'bordered-option-classname' },
-                        code: { className: 'bordered-option-classname' }
-                      }
-                    }}
-                  />
-                  <br />
-                </div>
-                <div className='contentModal'>
-                  <table className='tableModal'>
-                    <thead>
-                      <tr>
-                        <td className='Headcol2'>Nombre de la ubicación</td>
-                        <td className='Headcol3'>Nº de tickets</td>
-                        <td className='Headcol4'> </td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className='col2'>
-                          <Textbox
-                            tabIndex='10'
-                            id='campoName'
-                            name='campoName'
-                            type='text'
-                            value={campoName}
-                            classNameInput='campoName'
-                            maxLength='50'
-                            validate={validatePop}
-                            validationCallback={res => {
-                              this.setState({ hasCampoNameError: res, validatePop: false })
-                            }}
-                            onChange={(campoName, e) => {
-                              this.setState({ campoName })
-                            }}
-                            validationOption={{
-                              name: 'Nombre de la ubicación',
-                              check: true,
-                              required: true
-                            }}
-                          />
-                        </td>
-                        <td className='col3'>
-                          <Textbox
-                            tabIndex='11'
-                            id='campoQuota'
-                            name='campoQuota'
-                            type='text'
-                            value={campoQuota}
-                            classNameInput='campoQuota'
-                            validate={validatePop}
-                            validationCallback={res => {
-                              this.setState({
-                                hasQuotaCodeError: res,
-                                validatePop: false
-                              })
-                            }}
-                            maxLength='6'
-                            onChange={(campoQuota, e) => {
-                              this.setState({ campoQuota })
-                            }}
-                            validationOption={{
-                              name: 'Nº de tickets disponibles',
-                              check: true,
-                              required: true,
-                              min: 1,
-                              max: 100000,
-                              type: 'number'
-                            }}
-                          />
-                        </td>
-                        <td className='col4'>
-                          <button onClick={this.addLocation} className='button'>
-                            <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                          </button>
-                        </td>
-                      </tr>
-                      {this.state.locations.map(function(item, index) {
-                        return (
-                          <tr key={index}>
-                            <td className='col2'>{item.name}</td>
-                            <td className='col3'>{item.quota}</td>
-                            <td className='col4'>
-                              <button
-                                onClick={() => {
-                                  _this.removeLocation(item)
-                                }}
-                              >
-                                <MaterialIcon
-                                  icon='remove'
-                                  size='tiny'
-                                  color={colorPalette.red._900}
-                                />
-                              </button>
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                  <div />
-                </div>
-                <div className='actions'>
-                  <Button
-                    className='button'
-                    style={{ marginRight: 10 }}
-                    onClick={() => {
-                      close()
-                    }}
-                  >
-                    Cerrar
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Popup>
+            click aquí
+          </a>
         </div>
-        <br />
-        <Button to='/calendario/eventos' style={{ marginRight: 10 }}>
-          Cancelar
-        </Button>
-        {this.props.type === 'create' && (
-          <button
-            onClick={() => this.validateForm()}
-            className='orion_button orion_primary'
-            style={{ marginRight: 10 }}
-          >
-            Crear Evento
-          </button>
-        )}
-        {this.props.type === 'update' && (
-          <button
-            onClick={() => this.validateForm()}
-            className='orion_button orion_primary'
-            style={{ marginRight: 10 }}
-          >
-            Guardar
-          </button>
-        )}
-        {this.props.type === 'update' && (
-          <button
-            style={{ marginRight: 10 }}
-            onClick={() => this.confirmDelete()}
-            className='orion_button orion_danger'
-          >
-            Eliminar
-          </button>
-        )}
-      </Section>
+        <Section title={this.props.title} description={this.props.description} top>
+          <div className='label'>Nombre</div>
+          <Textbox
+            tabIndex='1'
+            id='name'
+            name='name'
+            type='text'
+            value={name}
+            classNameInput='name'
+            maxLength='500'
+            validate={validate}
+            validationCallback={res => {
+              this.setState({ hasNombreError: res, validate: false })
+            }}
+            onChange={(name, e) => {
+              this.setState({ name })
+            }}
+            validationOption={{
+              name: 'Nombre',
+              check: true,
+              required: true
+            }}
+          />
+          <div className='label'>descripción</div>
+          <Textbox
+            tabIndex='3'
+            id='description'
+            name='description'
+            type='text'
+            value={description}
+            maxLength='200'
+            validate={validate}
+            validationCallback={res => {
+              this.setState({ hasDescriptionError: res, validate: false })
+            }}
+            onChange={(description, e) => {
+              this.setState({ description })
+            }}
+            validationOption={{
+              name: 'Descripción',
+              check: true,
+              required: true
+            }}
+          />
+
+          <div className='label'>Link a información</div>
+          <Textbox
+            tabIndex='3'
+            id='externalUrl'
+            name='externalUrl'
+            type='text'
+            value={externalUrl}
+            maxLength='2500'
+            validate={validate}
+            onChange={(externalUrl, e) => {
+              this.setState({ externalUrl })
+            }}
+            validationOption={{
+              name: 'Link a información',
+              check: false,
+              required: false
+            }}
+          />
+          <div className='label'>Fecha</div>
+          <DatePicker
+            selected={this.state.date}
+            onChange={this.handleChangeDate}
+            strictParsing
+            calendarClassName=''
+            className='os-input-text'
+            dateFormat='dd-MM-YYYY'
+            minDate={new Date()}
+            locale={es}
+            onChangeRaw={this.handleDateChangeRaw}
+          />
+          <div className='label'>Hora de inicio</div>
+          <DatePicker
+            selected={this.state.time}
+            onChange={this.handleChangeTime}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={5}
+            strictParsing
+            className='os-input-text'
+            dateFormat='HH:mm'
+            timeCaption='Time'
+            locale={es}
+            onChangeRaw={this.handleDateChangeRaw}
+          />
+          <div className='label'>Hora de término</div>
+
+          <DatePicker
+            selected={this.state.endTime}
+            onChange={this.handleChangeEndTime}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={5}
+            strictParsing
+            className='os-input-text'
+            dateFormat='HH:mm'
+            timeCaption='Time'
+            locale={es}
+            onChangeRaw={this.handleDateChangeRaw}
+          />
+
+          <div className='label'>Dirección </div>
+          <SearchBar
+            handleChangeAddress={this.handleChangeAddress}
+            latitude={latitude}
+            longitude={longitude}
+            address={formattedAddress}
+          />
+          <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
+          <Textbox
+            tabIndex='6'
+            id='optionLabel'
+            name='optionLabel'
+            type='text'
+            value={optionLabel}
+            maxLength='200'
+            validate={validate}
+            classNameInput='os-input-text'
+            validationCallback={res => {
+              this.setState({ hasOptionLabelError: res, validate: false })
+            }}
+            onChange={(optionLabel, e) => {
+              this.setState({ optionLabel })
+            }}
+            validationOption={{
+              name: 'Texto que aparecerá en campos para seleccionar un evento',
+              check: true,
+              required: true
+            }}
+          />
+          <div className='label'>Url con imagen para el evento</div>
+          <Textbox
+            tabIndex='7'
+            id='imageUrl'
+            name='imageUrl'
+            type='text'
+            value={imageUrl}
+            maxLength='200'
+            validate={validate}
+            classNameInput='os-input-text'
+            onChange={(imageUrl, e) => {
+              this.setState({ imageUrl })
+            }}
+            validationOption={{
+              name: 'Texto que aparecerá en campos para seleccionar un evento',
+              check: false,
+              required: false
+            }}
+          />
+          <div className='label'> </div>
+          <Checkbox
+            tabIndex='8'
+            id={'showInCalendar'}
+            name={'showInCalendar'}
+            value={showInCalendar}
+            checked={showInCalendarChecked}
+            disabled={false}
+            validate={validate}
+            onChange={(showInCalendarChecked, e) => {
+              this.setState({ showInCalendarChecked })
+            }}
+            labelHtml={
+              <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
+                Mostrar en calendario (publicar evento)
+              </div>
+            }
+            validationOption={{
+              name: 'agreement',
+              check: false,
+              required: false
+            }}
+          />
+          <div className='label'>Departamento al que pertenece el evento</div>
+          <Select
+            tabIndex='9'
+            id={'departmentId'}
+            name={'departmentId'}
+            value={departmentId}
+            validate={validate}
+            optionList={this.getDepartmentOptions()}
+            validationCallback={res => {
+              this.setState({
+                hasDepartmentIdError: res,
+                validate: false
+              })
+            }}
+            onChange={(departmentId, e) => {
+              this.setState({ departmentId })
+            }}
+            customStyleOptionListContainer={{
+              maxHeight: '200px',
+              overflow: 'auto',
+              fontSize: '14px'
+            }}
+            validationOption={{
+              name: 'Departamento',
+              check: true,
+              required: true
+            }}
+          />
+          <div>
+            <Popup
+              trigger={
+                <Button className='button' style={{ marginTop: 20 }}>
+                  <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
+                  {this.state.locations.length < 1 && 'Agregar  ticket al evento'}
+                  {this.state.locations.length >= 1 && 'Editar  ticket del evento'}
+                </Button>
+              }
+              modal
+            >
+              {close => (
+                <div className='modal'>
+                  <a className='close' onClick={close}>
+                    &times;
+                  </a>
+                  <div className='headerModal'> Información de ticket </div>
+                  <div className='label'>
+                    <h4>Detail</h4>
+                  </div>
+                  <div>
+                    <Editor
+                      wrapperClassName='wrapper-class'
+                      editorClassName='os-input-text'
+                      toolbarClassName='toolbar-class'
+                      editorState={editorState}
+                      onEditorStateChange={this.onEditorStateChange}
+                      toolbar={{
+                        options: [
+                          'inline',
+                          'blockType',
+                          'fontSize',
+                          'fontFamily',
+                          'list',
+                          'textAlign',
+                          'colorPicker',
+                          'link',
+                          'embedded',
+                          'emoji',
+                          'image',
+                          'remove',
+                          'history'
+                        ],
+                        inline: {
+                          inDropdown: true,
+                          options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
+                          bold: { className: 'bordered-option-classname' },
+                          italic: { className: 'bordered-option-classname' },
+                          underline: { className: 'bordered-option-classname' },
+                          strikethrough: { className: 'bordered-option-classname' },
+                          code: { className: 'bordered-option-classname' }
+                        }
+                      }}
+                    />
+                    <br />
+                  </div>
+                  <div className='contentModal'>
+                    <table className='tableModal'>
+                      <thead>
+                        <tr>
+                          <td className='Headcol2'>Nombre de la ubicación</td>
+                          <td className='Headcol3'>Nº de tickets</td>
+                          <td className='Headcol4'> </td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className='col2'>
+                            <Textbox
+                              tabIndex='10'
+                              id='campoName'
+                              name='campoName'
+                              type='text'
+                              value={campoName}
+                              classNameInput='campoName'
+                              maxLength='50'
+                              validate={validatePop}
+                              validationCallback={res => {
+                                this.setState({ hasCampoNameError: res, validatePop: false })
+                              }}
+                              onChange={(campoName, e) => {
+                                this.setState({ campoName })
+                              }}
+                              validationOption={{
+                                name: 'Nombre de la ubicación',
+                                check: true,
+                                required: true
+                              }}
+                            />
+                          </td>
+                          <td className='col3'>
+                            <Textbox
+                              tabIndex='11'
+                              id='campoQuota'
+                              name='campoQuota'
+                              type='text'
+                              value={campoQuota}
+                              classNameInput='campoQuota'
+                              validate={validatePop}
+                              validationCallback={res => {
+                                this.setState({
+                                  hasQuotaCodeError: res,
+                                  validatePop: false
+                                })
+                              }}
+                              maxLength='6'
+                              onChange={(campoQuota, e) => {
+                                this.setState({ campoQuota })
+                              }}
+                              validationOption={{
+                                name: 'Nº de tickets disponibles',
+                                check: true,
+                                required: true,
+                                min: 1,
+                                max: 100000,
+                                type: 'number'
+                              }}
+                            />
+                          </td>
+                          <td className='col4'>
+                            <button onClick={this.addLocation} className='button'>
+                              <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
+                            </button>
+                          </td>
+                        </tr>
+                        {this.state.locations.map(function(item, index) {
+                          return (
+                            <tr key={index}>
+                              <td className='col2'>{item.name}</td>
+                              <td className='col3'>{item.quota}</td>
+                              <td className='col4'>
+                                <button
+                                  onClick={() => {
+                                    _this.removeLocation(item)
+                                  }}
+                                >
+                                  <MaterialIcon
+                                    icon='remove'
+                                    size='tiny'
+                                    color={colorPalette.red._900}
+                                  />
+                                </button>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                    <div />
+                  </div>
+                  <div className='actions'>
+                    <Button
+                      className='button'
+                      style={{ marginRight: 10 }}
+                      onClick={() => {
+                        close()
+                      }}
+                    >
+                      Cerrar
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </Popup>
+          </div>
+          <br />
+          <Button to='/calendario/eventos' style={{ marginRight: 10 }}>
+            Cancelar
+          </Button>
+          {this.props.type === 'create' && (
+            <button
+              onClick={() => this.validateForm()}
+              className='orion_button orion_primary'
+              style={{ marginRight: 10 }}
+            >
+              Crear Evento
+            </button>
+          )}
+          {this.props.type === 'update' && (
+            <button
+              onClick={() => this.validateForm()}
+              className='orion_button orion_primary'
+              style={{ marginRight: 10 }}
+            >
+              Guardar
+            </button>
+          )}
+          {this.props.type === 'update' && (
+            <button
+              style={{ marginRight: 10 }}
+              onClick={() => this.confirmDelete()}
+              className='orion_button orion_danger'
+            >
+              Eliminar
+            </button>
+          )}
+        </Section>
+      </div>
     )
   }
 }
