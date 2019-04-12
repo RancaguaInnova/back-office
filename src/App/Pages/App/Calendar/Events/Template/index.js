@@ -37,7 +37,7 @@ import 'bootstrap/dist/css/bootstrap.css'
       _id
     }
   }
-`)/
+`)
 @withMutation(gql`
   mutation updateEvent($event: EventInput!) {
     updateEvent(event: $event) {
