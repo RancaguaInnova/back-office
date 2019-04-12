@@ -116,9 +116,27 @@ export default class DeveloperInfo extends React.Component {
             <div className={styles.fieldGroup}>
               <SearchBar
                 handleChangeAddress={this.handleChangeAddress}
-                latitude={this.state.profile.address.latitude}
-                longitude={this.state.profile.address.longitude}
-                address={this.state.profile.address.formatted_address}
+                latitude={
+                  this.state.profile &&
+                  this.state.profile.address &&
+                  this.state.profile.address.latitude
+                    ? this.state.profile.address.latitude
+                    : -34.1703131
+                }
+                longitude={
+                  this.state.profile &&
+                  this.state.profile.address &&
+                  this.state.profile.address.longitude
+                    ? this.state.profile.address.longitude
+                    : -70.74064759999999
+                }
+                address={
+                  this.state.profile &&
+                  this.state.profile.address &&
+                  this.state.profile.address.formatted_address
+                    ? this.state.profile.address.formatted_address
+                    : ''
+                }
               />
               <div className={styles.subheaderLabel}>Dirección:</div>
               <div className={styles.label}>Nombre de Calle:</div>
