@@ -37,7 +37,7 @@ import 'bootstrap/dist/css/bootstrap.css'
       _id
     }
   }
-`)
+`)/
 @withMutation(gql`
   mutation updateEvent($event: EventInput!) {
     updateEvent(event: $event) {
@@ -472,7 +472,7 @@ export default class TemplateEvent extends Component {
             className='alert-link'
             rel='noopener noreferrer'
           >
-            click acá
+            click aquí
           </a>
         </div>
         <Section title={this.props.title} description={this.props.description} top>
