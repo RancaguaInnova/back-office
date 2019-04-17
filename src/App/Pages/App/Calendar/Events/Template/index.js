@@ -28,6 +28,13 @@ import 'react-datepicker/dist/react-datepicker.css'
 import es from 'date-fns/locale/es'
 import moment from 'moment'
 import 'bootstrap/dist/css/bootstrap.css'
+import { WithContext as ReactTags } from 'react-tag-input'
+const KeyCodes = {
+  comma: 188,
+  enter: 13
+}
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
 @withRouter
 @withMessage
@@ -114,7 +121,7 @@ export default class TemplateEvent extends Component {
       } else {
         endTime = null
       }
-
+      let eventTags = this.formatBackTags(event.tags)
       this.state = {
         editorState: editorState,
         _id: event._id,
@@ -152,7 +159,9 @@ export default class TemplateEvent extends Component {
         hasNameError: true,
         hasDescriptionError: true,
         hasNombreError: true,
-        hasDepartmentIdError: true
+        hasDepartmentIdError: true,
+        tags: eventTags || [],
+        suggestions: [{ id: 'Noticias', text: 'Noticias' }]
       }
     } else {
       const blocksFromHtml = htmlToDraft('')
@@ -182,14 +191,65 @@ export default class TemplateEvent extends Component {
         hasDepartmentIdError: true,
         latitude: -34.1703131,
         longitude: -70.74064759999999,
-        loading: true
+        loading: true,
+        tags: [],
+        suggestions: [{ id: 'Noticias', text: 'Noticias' }]
       }
     }
     this.handleChangeDate = this.handleChangeDate.bind(this)
     this.handleChangeTime = this.handleChangeTime.bind(this)
     this.handleChangeEndTime = this.handleChangeEndTime.bind(this)
-
+    this.handleDelete = this.handleDelete.bind(this)
+    this.handleAddition = this.handleAddition.bind(this)
+    this.handleDrag = this.handleDrag.bind(this)
     this.validateForm = this.validateForm.bind(this)
+  }
+
+  handleDelete(i) {
+    const { tags } = this.state
+    this.setState({
+      tags: tags.filter((tag, index) => index !== i)
+    })
+  }
+
+  handleAddition(tag) {
+    this.setState(state => ({ tags: [...state.tags, tag] }))
+  }
+  formatApiTags(arrayTags) {
+    let a = arrayTags || []
+    if (a.length === 0) {
+      return []
+    } else {
+      let ar = a.map(function(obj) {
+        var rObj = {}
+        rObj['tag'] = obj.text || ''
+
+        return rObj
+      })
+      return ar
+    }
+  }
+  formatBackTags(arrayTags) {
+    let a = arrayTags || []
+    if (a.length === 0) {
+      return []
+    } else {
+      let ar = a.map(function(obj) {
+        var rObj = {}
+        rObj['text'] = obj.tag || ''
+        rObj['id'] = obj.tag || ''
+
+        return rObj
+      })
+      return ar
+    }
+  }
+  handleDrag(tag, currPos, newPos) {
+    const tags = [...this.state.tags]
+    const newTags = tags.slice()
+    newTags.splice(currPos, 1)
+    newTags.splice(newPos, 0, tag)
+    this.setState({ tags: newTags })
   }
 
   getDepartmentOptions() {
@@ -371,9 +431,8 @@ export default class TemplateEvent extends Component {
       externalUrl: s.externalUrl,
       imageUrl: s.imageUrl,
       showInCalendar: s.showInCalendarChecked,
-      tags: {
-        tag: s.tags
-      },
+      tags: this.formatApiTags(s.tags),
+
       locations: s.locations
     }
     return event
@@ -458,7 +517,9 @@ export default class TemplateEvent extends Component {
       latitude,
       longitude,
       editorState,
-      description
+      description,
+      tags,
+      suggestions
     } = this.state
     var _this = this
     return (
@@ -679,6 +740,20 @@ export default class TemplateEvent extends Component {
               required: true
             }}
           />
+          <div className='label'>Tags</div>
+
+          <div>
+            <ReactTags
+              inline={false}
+              inputFieldPosition='bottom'
+              tags={tags}
+              suggestions={suggestions}
+              handleDelete={this.handleDelete}
+              handleAddition={this.handleAddition}
+              handleDrag={this.handleDrag}
+              delimiters={delimiters}
+            />
+          </div>
           <div>
             <Popup
               trigger={
