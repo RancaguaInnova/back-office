@@ -920,7 +920,7 @@ export default class TemplateEvent extends Component {
               modal
             >
               {close => (
-                <div className='modal'>
+                <div className='ModalEvent'>
                   <a className='close' onClick={close}>
                     &times;
                   </a>
@@ -1084,7 +1084,7 @@ export default class TemplateEvent extends Component {
           {this.props.type === 'create' && (
             <button
               onClick={() => this.validateForm()}
-              className='class="btn btn-primary'
+              className='btn btn-outline-primary'
               style={{ marginRight: 10 }}
             >
               Crear Evento

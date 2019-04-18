@@ -1,29 +1,29 @@
-.modal {
+.ModalEvent {
   font-size: 12px;
 }
 
-.modal>.headerModal {
+.ModalEvent>.headerModalEvent {
   width: 100%;
   font-size: 18px;
   text-align: center;
   padding: 5px;
 }
 
-.modal>.contentModal {
+.ModalEvent>.contentModalEvent {
   width: 100%;
   padding: 1px 1px;
   max-height: 500px;
   overflow: auto;
 }
 
-.modal>.actions {
+.ModalEvent>.actions {
   width: 100%;
   padding: 10px 5px;
   margin: auto;
   text-align: center;
 }
 
-.modal>.close {
+.ModalEvent>.close {
   cursor: pointer;
   position: absolute;
   display: block;
@@ -38,7 +38,7 @@
 }
 
 
-.tableModal {
+.tableModalEvent {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
