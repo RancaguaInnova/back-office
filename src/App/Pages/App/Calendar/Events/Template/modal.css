@@ -207,3 +207,41 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   background: #b7cfe0;
   cursor: pointer;
 }
+
+.small {
+  height: 100px;
+  width: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  border: none;
+  box-shadow: #cfcece
+}
+
+.dialog {
+  box-shadow: #cfcece;
+  position: absolute;
+  z-index: 20000;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 17px rgba(0, 0, 0, 0.7);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+
+}
+
+.UploadImage {
+  margin-top: 10px;
+
+}
+
+.react-inputs-validation__textbox__wrapper___3tnXv {
+  width: 100%
+}

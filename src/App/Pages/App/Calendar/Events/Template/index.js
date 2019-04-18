@@ -29,6 +29,13 @@ import es from 'date-fns/locale/es'
 import moment from 'moment'
 import 'bootstrap/dist/css/bootstrap.css'
 import { WithContext as ReactTags } from 'react-tag-input'
+import config from '/src/App/helpers/auth/firebaseConfig'
+import firebase from 'firebase'
+import FileUploader from 'react-firebase-file-uploader'
+import formatMail from 'App/helpers/format/formatMail'
+
+firebase.initializeApp(config)
+
 const KeyCodes = {
   comma: 188,
   enter: 13
@@ -122,6 +129,7 @@ export default class TemplateEvent extends Component {
         endTime = null
       }
       let eventTags = this.formatBackTags(event.tags)
+      let validators = this.formatBackValidator(event.validators)
       this.state = {
         editorState: editorState,
         _id: event._id,
@@ -161,7 +169,9 @@ export default class TemplateEvent extends Component {
         hasNombreError: true,
         hasDepartmentIdError: true,
         tags: eventTags || [],
-        suggestions: [{ id: 'Noticias', text: 'Noticias' }]
+        suggestions: [{ id: 'Noticias', text: 'Noticias' }],
+        isOpen: false,
+        validators: validators || []
       }
     } else {
       const blocksFromHtml = htmlToDraft('')
@@ -193,7 +203,13 @@ export default class TemplateEvent extends Component {
         longitude: -70.74064759999999,
         loading: true,
         tags: [],
-        suggestions: [{ id: 'Noticias', text: 'Noticias' }]
+        suggestions: [{ id: 'Noticias', text: 'Noticias' }],
+        uploadImageUrl: '',
+        isUploading: false,
+        progress: 0,
+        imageUrl: '',
+        isOpen: false,
+        validators: []
       }
     }
     this.handleChangeDate = this.handleChangeDate.bind(this)
@@ -201,6 +217,10 @@ export default class TemplateEvent extends Component {
     this.handleChangeEndTime = this.handleChangeEndTime.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
     this.handleAddition = this.handleAddition.bind(this)
+
+    this.handleDeleteValidator = this.handleDeleteValidator.bind(this)
+    this.handleAdditionValidator = this.handleAdditionValidator.bind(this)
+
     this.handleDrag = this.handleDrag.bind(this)
     this.validateForm = this.validateForm.bind(this)
   }
@@ -212,9 +232,52 @@ export default class TemplateEvent extends Component {
     })
   }
 
+  handleDeleteValidator(i) {
+    const { validators } = this.state
+    this.setState({
+      validators: validators.filter((tag, index) => index !== i)
+    })
+  }
+  handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
+  handleProgress = progress => this.setState({ progress })
+  handleUploadError = error => {
+    this.setState({ isUploading: false })
+    console.error(error)
+  }
+  handleUploadSuccess = filename => {
+    this.setState({ uploadImageUrl: filename, progress: 100, isUploading: false })
+    firebase
+      .storage()
+      .ref('EventImages')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => {
+        this.setState({ imageUrl: url })
+      })
+  }
+
   handleAddition(tag) {
     this.setState(state => ({ tags: [...state.tags, tag] }))
   }
+
+  handleAdditionValidator(validator) {
+    let res = formatMail(validator.text)
+
+    if (res === true) {
+      this.setState(state => ({ validators: [...state.validators, validator] }))
+    } else {
+      this.props.showMessage(res)
+    }
+  }
+
+  handleDragValidator(validator, currPos, newPos) {
+    const validators = [...this.state.validators]
+    const newTags = validators.slice()
+    newTags.splice(currPos, 1)
+    newTags.splice(newPos, 0, validator)
+    this.setState({ validators: newTags })
+  }
+
   formatApiTags(arrayTags) {
     let a = arrayTags || []
     if (a.length === 0) {
@@ -244,6 +307,36 @@ export default class TemplateEvent extends Component {
       return ar
     }
   }
+  formatBackValidator(arrayTags) {
+    let a = arrayTags || []
+    if (a.length === 0) {
+      return []
+    } else {
+      let ar = a.map(function(obj) {
+        var rObj = {}
+        rObj['text'] = obj || ''
+        rObj['id'] = obj || ''
+
+        return rObj
+      })
+      return ar
+    }
+  }
+  formatApiTagValidator(arrayValidatorTag) {
+    let a = arrayValidatorTag || []
+    if (a.length === 0) {
+      return []
+    } else {
+      let ar = a.map(function(obj) {
+        var rObj = []
+        rObj = obj.text || ''
+
+        return rObj
+      })
+      return ar
+    }
+  }
+
   handleDrag(tag, currPos, newPos) {
     const tags = [...this.state.tags]
     const newTags = tags.slice()
@@ -368,6 +461,9 @@ export default class TemplateEvent extends Component {
     this.props.showMessage('Evento eliminado correctamente')
     this.props.history.push('/calendario/eventos')
   }
+  goBack() {
+    this.props.history.push('/calendario/eventos')
+  }
 
   @autobind
   async onDelete() {
@@ -433,7 +529,8 @@ export default class TemplateEvent extends Component {
       showInCalendar: s.showInCalendarChecked,
       tags: this.formatApiTags(s.tags),
 
-      locations: s.locations
+      locations: s.locations,
+      validators: this.formatApiTagValidator(s.validators)
     }
     return event
   }
@@ -499,6 +596,12 @@ export default class TemplateEvent extends Component {
   handleDateChangeRaw = e => {
     e.preventDefault()
   }
+  handleShowDialog = () => {
+    this.setState({ isOpen: !this.state.isOpen })
+  }
+  HanddleCleanImageUrl = () => {
+    this.setState({ imageUrl: '', uploadImageUrl: '' })
+  }
 
   render() {
     const {
@@ -519,7 +622,8 @@ export default class TemplateEvent extends Component {
       editorState,
       description,
       tags,
-      suggestions
+      suggestions,
+      validators
     } = this.state
     var _this = this
     return (
@@ -580,7 +684,6 @@ export default class TemplateEvent extends Component {
               required: true
             }}
           />
-
           <div className='label'>Link a información</div>
           <Textbox
             tabIndex='3'
@@ -605,7 +708,7 @@ export default class TemplateEvent extends Component {
             onChange={this.handleChangeDate}
             strictParsing
             calendarClassName=''
-            className='os-input-text'
+            className='form-control mr-sm-2'
             dateFormat='dd-MM-YYYY'
             minDate={new Date()}
             locale={es}
@@ -619,14 +722,13 @@ export default class TemplateEvent extends Component {
             showTimeSelectOnly
             timeIntervals={5}
             strictParsing
-            className='os-input-text'
+            className='form-control mr-sm-2'
             dateFormat='HH:mm'
             timeCaption='Time'
             locale={es}
             onChangeRaw={this.handleDateChangeRaw}
           />
           <div className='label'>Hora de término</div>
-
           <DatePicker
             selected={this.state.endTime}
             onChange={this.handleChangeEndTime}
@@ -634,13 +736,12 @@ export default class TemplateEvent extends Component {
             showTimeSelectOnly
             timeIntervals={5}
             strictParsing
-            className='os-input-text'
+            className='form-control mr-sm-2'
             dateFormat='HH:mm'
             timeCaption='Time'
             locale={es}
             onChangeRaw={this.handleDateChangeRaw}
           />
-
           <div className='label'>Dirección </div>
           <SearchBar
             handleChangeAddress={this.handleChangeAddress}
@@ -657,7 +758,7 @@ export default class TemplateEvent extends Component {
             value={optionLabel}
             maxLength='200'
             validate={validate}
-            classNameInput='os-input-text'
+            classNameInput='form-control mr-sm-2'
             validationCallback={res => {
               this.setState({ hasOptionLabelError: res, validate: false })
             }}
@@ -671,24 +772,65 @@ export default class TemplateEvent extends Component {
             }}
           />
           <div className='label'>Url con imagen para el evento</div>
-          <Textbox
-            tabIndex='7'
-            id='imageUrl'
-            name='imageUrl'
-            type='text'
-            value={imageUrl}
-            maxLength='200'
-            validate={validate}
-            classNameInput='os-input-text'
-            onChange={(imageUrl, e) => {
-              this.setState({ imageUrl })
-            }}
-            validationOption={{
-              name: 'Texto que aparecerá en campos para seleccionar un evento',
-              check: false,
-              required: false
-            }}
-          />
+          <div className='os-input-container'>
+            <Textbox
+              tabIndex='7'
+              id='imageUrl'
+              name='imageUrl'
+              type='text'
+              value={imageUrl}
+              maxLength='200'
+              validate={validate}
+              classNameInput='form-control mr-sm-2'
+              onChange={(imageUrl, e) => {
+                this.setState({ imageUrl })
+              }}
+              validationOption={{
+                name: 'Texto que aparecerá en campos para seleccionar un evento',
+                check: false,
+                required: false
+              }}
+            />
+            {this.state.imageUrl && (
+              <button className='clear-button' onClick={this.HanddleCleanImageUrl}>
+                <MaterialIcon icon='clear' size='small' color={colorPalette.red._800} />
+              </button>
+            )}
+          </div>
+          <div className='UploadImage'>
+            {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
+            {this.state.imageUrl && (
+              <div>
+                Vista previa
+                <img src={this.state.imageUrl} onClick={this.handleShowDialog} className='small' />
+              </div>
+            )}
+            {this.state.isOpen && (
+              <dialog
+                className='dialog shadow-lg p-3 mb-5 bg-white rounded'
+                style={{ position: 'absolute' }}
+                open
+                onClick={this.handleShowDialog}
+              >
+                <img
+                  className='image'
+                  src={this.state.imageUrl}
+                  onClick={this.handleShowDialog}
+                  alt='no image'
+                />
+              </dialog>
+            )}
+            <FileUploader
+              accept='image/*'
+              name='uploadImageUrl'
+              randomizeFilename
+              storageRef={firebase.storage().ref('EventImages')}
+              onUploadStart={this.handleUploadStart}
+              onUploadError={this.handleUploadError}
+              onUploadSuccess={this.handleUploadSuccess}
+              onProgress={this.handleProgress}
+            />
+          </div>
           <div className='label'> </div>
           <Checkbox
             tabIndex='8'
@@ -741,16 +883,28 @@ export default class TemplateEvent extends Component {
             }}
           />
           <div className='label'>Tags</div>
-
           <div>
             <ReactTags
-              inline={false}
+              placeholder='Agregar tag'
               inputFieldPosition='bottom'
               tags={tags}
               suggestions={suggestions}
               handleDelete={this.handleDelete}
               handleAddition={this.handleAddition}
               handleDrag={this.handleDrag}
+              delimiters={delimiters}
+            />
+          </div>
+          <div className='label'>Usuarios validators del evento *(Indique mail)</div>
+          <div>
+            <ReactTags
+              placeholder='Agregar email'
+              inputFieldPosition='bottom'
+              tags={validators}
+              suggestions={suggestions}
+              handleDelete={this.handleDeleteValidator}
+              handleAddition={this.handleAdditionValidator}
+              handleDrag={this.handleDragValidator}
               delimiters={delimiters}
             />
           </div>
@@ -777,7 +931,7 @@ export default class TemplateEvent extends Component {
                   <div>
                     <Editor
                       wrapperClassName='wrapper-class'
-                      editorClassName='os-input-text'
+                      editorClassName='form-control mr-sm-2'
                       toolbarClassName='toolbar-class'
                       editorState={editorState}
                       onEditorStateChange={this.onEditorStateChange}
@@ -920,13 +1074,17 @@ export default class TemplateEvent extends Component {
             </Popup>
           </div>
           <br />
-          <Button to='/calendario/eventos' style={{ marginRight: 10 }}>
+          <button
+            onClick={() => this.goBack()}
+            className='btn btn-outline-secondary'
+            style={{ marginRight: 10 }}
+          >
             Cancelar
-          </Button>
+          </button>
           {this.props.type === 'create' && (
             <button
               onClick={() => this.validateForm()}
-              className='orion_button orion_primary'
+              className='class="btn btn-primary'
               style={{ marginRight: 10 }}
             >
               Crear Evento
@@ -935,7 +1093,7 @@ export default class TemplateEvent extends Component {
           {this.props.type === 'update' && (
             <button
               onClick={() => this.validateForm()}
-              className='orion_button orion_primary'
+              className='btn btn-outline-primary'
               style={{ marginRight: 10 }}
             >
               Guardar
@@ -945,7 +1103,7 @@ export default class TemplateEvent extends Component {
             <button
               style={{ marginRight: 10 }}
               onClick={() => this.confirmDelete()}
-              className='orion_button orion_danger'
+              className='btn btn-outline-danger'
             >
               Eliminar
             </button>
