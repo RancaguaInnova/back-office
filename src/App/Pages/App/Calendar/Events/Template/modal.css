@@ -2,6 +2,10 @@
   font-size: 12px;
 }
 
+.ModalEvent td {
+  padding: 2px
+}
+
 .ModalEvent>.headerModalEvent {
   width: 100%;
   font-size: 18px;
@@ -12,7 +16,7 @@
 .ModalEvent>.contentModalEvent {
   width: 100%;
   padding: 1px 1px;
-  max-height: 500px;
+  max-height: 300px;
   overflow: auto;
 }
 
@@ -244,4 +248,11 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
 
 .react-inputs-validation__textbox__wrapper___3tnXv {
   width: 100%
+}
+
+input[type=number].react-inputs-validation__textbox__input___20hDL,
+input[type=password].react-inputs-validation__textbox__input___20hDL,
+input[type=phone].react-inputs-validation__textbox__input___20hDL,
+input[type=text].react-inputs-validation__textbox__input___20hDL {
+  padding: 2px;
 }

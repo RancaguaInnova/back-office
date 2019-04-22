@@ -752,12 +752,16 @@ export default class TemplateEvent extends Component {
           />
           <hr />
           <h4>Detalle del Evento</h4>
-          <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
+          {/*
+            <div className='label' 
+            Texto que aparecerá en campos para seleccionar un evento
+          </div> 
+        */}
           <Textbox
             tabIndex='6'
             id='optionLabel'
             name='optionLabel'
-            type='text'
+            type='hidden'
             value={optionLabel}
             maxLength='200'
             validate={validate}
@@ -770,8 +774,8 @@ export default class TemplateEvent extends Component {
             }}
             validationOption={{
               name: 'Texto que aparecerá en campos para seleccionar un evento',
-              check: true,
-              required: true
+              check: false,
+              required: false
             }}
           />
           <div className='label'>Imagen asociada al evento</div>
@@ -898,19 +902,7 @@ export default class TemplateEvent extends Component {
               delimiters={delimiters}
             />
           </div>
-          <div className='label'>Usuarios validators del evento *(Indique mail)</div>
-          <div>
-            <ReactTags
-              placeholder='Agregar email'
-              inputFieldPosition='bottom'
-              tags={validators}
-              suggestions={suggestions}
-              handleDelete={this.handleDeleteValidator}
-              handleAddition={this.handleAdditionValidator}
-              handleDrag={this.handleDragValidator}
-              delimiters={delimiters}
-            />
-          </div>
+
           <div>
             <Popup
               trigger={
@@ -935,7 +927,7 @@ export default class TemplateEvent extends Component {
                   <div>
                     <Editor
                       wrapperClassName='wrapper-class'
-                      editorClassName='form-control mr-sm-2'
+                      editorClassName='mr-sm-2'
                       toolbarClassName='toolbar-class'
                       editorState={editorState}
                       onEditorStateChange={this.onEditorStateChange}
@@ -1062,6 +1054,19 @@ export default class TemplateEvent extends Component {
                       </tbody>
                     </table>
                     <div />
+                    <div className='label'>Usuarios validadores del evento *(Indique mail)</div>
+                    <div>
+                      <ReactTags
+                        placeholder='Agregar email'
+                        inputFieldPosition='bottom'
+                        tags={validators}
+                        suggestions={suggestions}
+                        handleDelete={this.handleDeleteValidator}
+                        handleAddition={this.handleAdditionValidator}
+                        handleDrag={this.handleDragValidator}
+                        delimiters={delimiters}
+                      />
+                    </div>
                   </div>
                   <div className='actions'>
                     <Button
