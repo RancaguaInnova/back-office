@@ -641,6 +641,7 @@ export default class TemplateEvent extends Component {
           </a>
         </div>
         <Section title={this.props.title} description={this.props.description} top>
+          <h4>Información Básica</h4>
           <div className='label'>Nombre</div>
           <Textbox
             tabIndex='1'
@@ -749,6 +750,8 @@ export default class TemplateEvent extends Component {
             longitude={longitude}
             address={formattedAddress}
           />
+          <hr />
+          <h4>Detalle del Evento</h4>
           <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
           <Textbox
             tabIndex='6'
@@ -913,8 +916,8 @@ export default class TemplateEvent extends Component {
               trigger={
                 <Button className='button' style={{ marginTop: 20 }}>
                   <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                  {this.state.locations.length < 1 && 'Agregar  ticket al evento'}
-                  {this.state.locations.length >= 1 && 'Editar  ticket del evento'}
+                  {this.state.locations.length < 1 && ' Agregar Ticket al evento'}
+                  {this.state.locations.length >= 1 && ' Editar Tickets asociados al evento'}
                 </Button>
               }
               modal
@@ -925,8 +928,8 @@ export default class TemplateEvent extends Component {
                     &times;
                   </a>
                   <div className='headerModal'> Tickets Para el Evento </div>
+                  <h4>Detalle del Ticket</h4>
                   <div className='label'>
-                    <h4>Detalle del Ticket</h4>
                     <p>Información que se muestra al momento de obtener el ticket del evento</p>
                   </div>
                   <div>
@@ -966,7 +969,8 @@ export default class TemplateEvent extends Component {
                     <br />
                   </div>
                   <div className='contentModal'>
-                    <table className='tableModal'>
+                    <h4>Ubicaciones disponibles</h4>
+                    <table className='tableModal col-12'>
                       <thead>
                         <tr>
                           <td className='Headcol2'>Nombre de la ubicación</td>
