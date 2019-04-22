@@ -39,6 +39,7 @@ export default {
       }
       sendFirebase
       firebaseIdEvent
+      validators
     }
   `
 }
