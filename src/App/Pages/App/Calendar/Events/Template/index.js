@@ -663,7 +663,7 @@ export default class TemplateEvent extends Component {
               required: true
             }}
           />
-          <div className='label'>descripción</div>
+          <div className='label'>Descripción</div>
           <Textbox
             tabIndex='3'
             id='description'
@@ -684,7 +684,7 @@ export default class TemplateEvent extends Component {
               required: true
             }}
           />
-          <div className='label'>Link a información</div>
+          <div className='label'>Link al detalle del evento</div>
           <Textbox
             tabIndex='3'
             id='externalUrl'
@@ -771,7 +771,7 @@ export default class TemplateEvent extends Component {
               required: true
             }}
           />
-          <div className='label'>Url con imagen para el evento</div>
+          <div className='label'>Imagen asociada al evento</div>
           <div className='os-input-container'>
             <Textbox
               tabIndex='7'
@@ -798,7 +798,7 @@ export default class TemplateEvent extends Component {
             )}
           </div>
           <div className='UploadImage'>
-            {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
+            {this.state.isUploading && <p>Cargando... {this.state.progress}</p>}
             {this.state.imageUrl && (
               <div>
                 Vista previa
@@ -924,9 +924,10 @@ export default class TemplateEvent extends Component {
                   <a className='close' onClick={close}>
                     &times;
                   </a>
-                  <div className='headerModal'> Información de ticket </div>
+                  <div className='headerModal'> Tickets Para el Evento </div>
                   <div className='label'>
-                    <h4>Detail</h4>
+                    <h4>Detalle del Ticket</h4>
+                    <p>Información que se muestra al momento de obtener el ticket del evento</p>
                   </div>
                   <div>
                     <Editor
@@ -969,7 +970,7 @@ export default class TemplateEvent extends Component {
                       <thead>
                         <tr>
                           <td className='Headcol2'>Nombre de la ubicación</td>
-                          <td className='Headcol3'>Nº de tickets</td>
+                          <td className='Headcol3'>Nº de tickets disponibles</td>
                           <td className='Headcol4'> </td>
                         </tr>
                       </thead>
