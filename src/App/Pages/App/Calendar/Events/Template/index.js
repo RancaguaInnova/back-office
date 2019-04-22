@@ -691,412 +691,406 @@ export default class TemplateEvent extends Component {
           </a>
         </div>
         <Section title={this.props.title} description={this.props.description} top>
-          <form>
-            <div className='label'>Nombre</div>
+          <div className='label'>Nombre</div>
+          <InputText
+            value={name}
+            onChange={e => {
+              this.setState({ name: e.target.value })
+            }}
+            className='p-inputtext'
+            required={true}
+            tabIndex={1}
+          />
+          <div className='label'>Descripción</div>
+          <InputText
+            value={description}
+            onChange={e => {
+              this.setState({ description: e.target.value })
+            }}
+            className='p-inputtext'
+            required={true}
+            tabIndex={2}
+          />
+
+          <div className='label'>Link a información</div>
+          <InputText
+            value={externalUrl}
+            onChange={e => {
+              this.setState({ externalUrl: e.target.value })
+            }}
+            className='p-inputtext'
+            required={true}
+            tabIndex={3}
+          />
+
+          <div className='label'>Fecha</div>
+          <Calendar
+            locale={es}
+            dateFormat='dd/mm/yy'
+            value={date}
+            onChange={e => this.setState({ date: e.value })}
+          />
+
+          <div className='label'>Hora de inicio</div>
+          <Calendar
+            required={true}
+            timeOnly={true}
+            showTime={true}
+            hourFormat='24'
+            value={time}
+            onChange={e => this.setState({ time: e.value })}
+          />
+
+          <div className='label'>Hora de término</div>
+          <Calendar
+            required={true}
+            timeOnly={true}
+            showTime={true}
+            hourFormat='24'
+            value={endTime}
+            onChange={e => this.setState({ endTime: e.value })}
+          />
+
+          <div className='label'>Dirección </div>
+          <SearchBar
+            handleChangeAddress={this.handleChangeAddress}
+            latitude={latitude}
+            longitude={longitude}
+            address={formattedAddress}
+          />
+          <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
+
+          <InputText
+            type='text'
+            value={optionLabel}
+            onChange={e => {
+              this.setState({ optionLabel: e.target.value })
+            }}
+            className='p-inputtext'
+            required={true}
+            tabIndex={6}
+          />
+
+          <div className='label'>Url con imagen para el evento</div>
+          <div className='os-input-container'>
             <InputText
-              value={name}
+              type='url'
+              value={imageUrl}
               onChange={e => {
-                this.setState({ name: e.target.value })
+                this.setState({ imageUrl: e.target.value })
               }}
               className='p-inputtext'
               required={true}
-              tabIndex={1}
-            />
-            <div className='label'>Descripción</div>
-            <InputText
-              value={description}
-              onChange={e => {
-                this.setState({ description: e.target.value })
-              }}
-              className='p-inputtext'
-              required={true}
-              tabIndex={2}
+              tabIndex={7}
             />
 
-            <div className='label'>Link a información</div>
-            <InputText
-              value={externalUrl}
-              onChange={e => {
-                this.setState({ externalUrl: e.target.value })
-              }}
-              className='p-inputtext'
-              required={true}
-              tabIndex={3}
-            />
-
-            <div className='label'>Fecha</div>
-            <Calendar
-              locale={es}
-              dateFormat='dd/mm/yy'
-              value={date}
-              onChange={e => this.setState({ date: e.value })}
-            />
-
-            <div className='label'>Hora de inicio</div>
-            <Calendar
-              required={true}
-              timeOnly={true}
-              showTime={true}
-              hourFormat='24'
-              value={time}
-              onChange={e => this.setState({ time: e.value })}
-            />
-
-            <div className='label'>Hora de término</div>
-            <Calendar
-              required={true}
-              timeOnly={true}
-              showTime={true}
-              hourFormat='24'
-              value={endTime}
-              onChange={e => this.setState({ endTime: e.value })}
-            />
-
-            <div className='label'>Dirección </div>
-            <SearchBar
-              handleChangeAddress={this.handleChangeAddress}
-              latitude={latitude}
-              longitude={longitude}
-              address={formattedAddress}
-            />
-            <div className='label'>Texto que aparecerá en campos para seleccionar un evento</div>
-
-            <InputText
-              type='text'
-              value={optionLabel}
-              onChange={e => {
-                this.setState({ optionLabel: e.target.value })
-              }}
-              className='p-inputtext'
-              required={true}
-              tabIndex={6}
-            />
-
-            <div className='label'>Url con imagen para el evento</div>
-            <div className='os-input-container'>
-              <InputText
-                type='url'
-                value={imageUrl}
-                onChange={e => {
-                  this.setState({ imageUrl: e.target.value })
-                }}
-                className='p-inputtext'
-                required={true}
-                tabIndex={7}
-              />
-
-              {this.state.imageUrl && (
-                <button className='clear-button' onClick={this.HanddleCleanImageUrl}>
-                  <i className='pi pi-times size3' />
-                </button>
-              )}
-            </div>
-            <div className='UploadImage'>
-              {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
-              {this.state.imageUrl && (
-                <div>
-                  Vista previa
-                  <img
-                    src={this.state.imageUrl}
-                    onClick={this.handleShowDialog}
-                    className='small'
-                  />
-                </div>
-              )}
-              {this.state.isOpen && (
-                <dialog
-                  className='dialog shadow-lg p-3 mb-5 bg-white rounded'
-                  style={{ position: 'absolute' }}
-                  open
-                  onClick={this.handleShowDialog}
-                >
-                  <img
-                    className='image'
-                    src={this.state.imageUrl}
-                    onClick={this.handleShowDialog}
-                    alt='no image'
-                  />
-                </dialog>
-              )}
-
-              <span className='p-button p-fileupload-choose p-component p-button-text-icon-left'>
-                <span className='p-button-icon-left pi pi-plus' />
-                <span className='p-button-text p-clickable'>Seleccionar Imagen</span>
-                <FileUploader
-                  accept='image/*'
-                  name='uploadImageUrl'
-                  className='p-inputtext p-component p-inputtext p-filled'
-                  randomizeFilename
-                  storageRef={firebase.storage().ref('EventImages')}
-                  onUploadStart={this.handleUploadStart}
-                  onUploadError={this.handleUploadError}
-                  onUploadSuccess={this.handleUploadSuccess}
-                  onProgress={this.handleProgress}
-                />
-              </span>
-            </div>
-            <div className='label'> </div>
-            <Checkbox
-              tabIndex='8'
-              id={'showInCalendar'}
-              name={'showInCalendar'}
-              value={showInCalendar}
-              checked={showInCalendarChecked}
-              disabled={false}
-              validate={validate}
-              onChange={(showInCalendarChecked, e) => {
-                this.setState({ showInCalendarChecked })
-              }}
-              labelHtml={
-                <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
-                  Mostrar en calendario (publicar evento)
-                </div>
-              }
-              validationOption={{
-                name: 'agreement',
-                check: false,
-                required: false
-              }}
-            />
-            <div className='label'>Departamento al que pertenece el evento</div>
-            <Select
-              tabIndex='9'
-              id={'departmentId'}
-              name={'departmentId'}
-              value={departmentId}
-              validate={validate}
-              optionList={this.getDepartmentOptions()}
-              validationCallback={res => {
-                this.setState({
-                  hasDepartmentIdError: res,
-                  validate: false
-                })
-              }}
-              onChange={(departmentId, e) => {
-                this.setState({ departmentId })
-              }}
-              customStyleOptionListContainer={{
-                maxHeight: '200px',
-                overflow: 'auto',
-                fontSize: '14px'
-              }}
-              validationOption={{
-                name: 'Departamento',
-                check: true,
-                required: true
-              }}
-            />
-            <div className='label'>Tags</div>
-            <div>
-              <ReactTags
-                placeholder='Agregar tag'
-                inputFieldPosition='bottom'
-                tags={tags}
-                suggestions={suggestions}
-                handleDelete={this.handleDelete}
-                handleAddition={this.handleAddition}
-                handleDrag={this.handleDrag}
-                delimiters={delimiters}
-              />
-            </div>
-            <div className='label'>Usuarios validators del evento *(Indique mail)</div>
-            <div>
-              <ReactTags
-                placeholder='Agregar email'
-                inputFieldPosition='bottom'
-                tags={validators}
-                suggestions={suggestions}
-                handleDelete={this.handleDeleteValidator}
-                handleAddition={this.handleAdditionValidator}
-                handleDrag={this.handleDragValidator}
-                delimiters={delimiters}
-              />
-            </div>
-            <div>
-              <Popup
-                modal
-                trigger={
-                  <Button label={this.infoButton()} className='button' style={{ marginTop: 20 }} />
-                }
+            {this.state.imageUrl && (
+              <button className='clear-button' onClick={this.HanddleCleanImageUrl}>
+                <i className='pi pi-times size3' />
+              </button>
+            )}
+          </div>
+          <div className='UploadImage'>
+            {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
+            {this.state.imageUrl && (
+              <div>
+                Vista previa
+                <img src={this.state.imageUrl} onClick={this.handleShowDialog} className='small' />
+              </div>
+            )}
+            {this.state.isOpen && (
+              <dialog
+                className='dialog shadow-lg p-3 mb-5 bg-white rounded'
+                style={{ position: 'absolute' }}
+                open
+                onClick={this.handleShowDialog}
               >
-                {close => (
-                  <div className='ModalEvent'>
-                    <a className='close' onClick={close}>
-                      &times;
-                    </a>
-                    <div className='headerModal'> Información de ticket </div>
-                    <div className='label'>
-                      <h4>Detail</h4>
-                    </div>
-                    <div>
-                      <Editor
-                        wrapperClassName='wrapper-class'
-                        editorClassName='form-control mr-sm-2'
-                        toolbarClassName='toolbar-class'
-                        editorState={editorState}
-                        onEditorStateChange={this.onEditorStateChange}
-                        toolbar={{
-                          options: [
-                            'inline',
-                            'blockType',
-                            'fontSize',
-                            'fontFamily',
-                            'list',
-                            'textAlign',
-                            'colorPicker',
-                            'link',
-                            'embedded',
-                            'emoji',
-                            'image',
-                            'remove',
-                            'history'
-                          ],
-                          inline: {
-                            inDropdown: true,
-                            options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
-                            bold: { className: 'bordered-option-classname' },
-                            italic: { className: 'bordered-option-classname' },
-                            underline: { className: 'bordered-option-classname' },
-                            strikethrough: { className: 'bordered-option-classname' },
-                            code: { className: 'bordered-option-classname' }
-                          }
-                        }}
-                      />
-                      <br />
-                    </div>
-                    <div className='contentModal'>
-                      <table className='tableModal'>
-                        <thead>
-                          <tr>
-                            <td className='Headcol2'>Nombre de la ubicación</td>
-                            <td className='Headcol3'>Nº de tickets</td>
-                            <td className='Headcol4'> </td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className='col2'>
-                              <Textbox
-                                tabIndex='10'
-                                id='campoName'
-                                name='campoName'
-                                type='text'
-                                value={campoName}
-                                classNameInput='campoName'
-                                maxLength='50'
-                                validate={validatePop}
-                                validationCallback={res => {
-                                  this.setState({ hasCampoNameError: res, validatePop: false })
-                                }}
-                                onChange={(campoName, e) => {
-                                  this.setState({ campoName })
-                                }}
-                                validationOption={{
-                                  name: 'Nombre de la ubicación',
-                                  check: true,
-                                  required: true
-                                }}
-                              />
-                            </td>
-                            <td className='col3'>
-                              <Textbox
-                                tabIndex='11'
-                                id='campoQuota'
-                                name='campoQuota'
-                                type='text'
-                                value={campoQuota}
-                                classNameInput='campoQuota'
-                                validate={validatePop}
-                                validationCallback={res => {
-                                  this.setState({
-                                    hasQuotaCodeError: res,
-                                    validatePop: false
-                                  })
-                                }}
-                                maxLength='6'
-                                onChange={(campoQuota, e) => {
-                                  this.setState({ campoQuota })
-                                }}
-                                validationOption={{
-                                  name: 'Nº de tickets disponibles',
-                                  check: true,
-                                  required: true,
-                                  min: 1,
-                                  max: 100000,
-                                  type: 'number'
-                                }}
-                              />
-                            </td>
-                            <td className='col4'>
-                              <Button onClick={this.addLocation} className='button'>
-                                <i className='pi pi-plus information' />
-                              </Button>
-                            </td>
-                          </tr>
-                          {this.state.locations.map(function(item, index) {
-                            return (
-                              <tr key={index}>
-                                <td className='col2'>{item.name}</td>
-                                <td className='col3'>{item.quota}</td>
-                                <td className='col4'>
-                                  <Button
-                                    onClick={() => {
-                                      _this.removeLocation(item)
-                                    }}
-                                  >
-                                    <i className='pi pi-minus information' />
-                                  </Button>
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                      <div />
-                    </div>
-                    <div className='actions'>
-                      <Button
-                        className='button'
-                        label='Cerrar'
-                        style={{ marginRight: 10 }}
-                        onClick={() => {
-                          close()
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </Popup>
-            </div>
-            <br />
-            <Button
-              onClick={() => this.goBack()}
-              style={{ marginRight: 10 }}
-              label='Cancelar'
-              className='p-button-secondary'
+                <img
+                  className='image'
+                  src={this.state.imageUrl}
+                  onClick={this.handleShowDialog}
+                  alt='no image'
+                />
+              </dialog>
+            )}
+
+            <span className='p-button p-fileupload-choose p-component p-button-text-icon-left'>
+              <span className='p-button-icon-left pi pi-plus' />
+              <span className='p-button-text p-clickable'>Seleccionar Imagen</span>
+              <FileUploader
+                accept='image/*'
+                name='uploadImageUrl'
+                className='p-inputtext p-component p-inputtext p-filled'
+                randomizeFilename
+                storageRef={firebase.storage().ref('EventImages')}
+                onUploadStart={this.handleUploadStart}
+                onUploadError={this.handleUploadError}
+                onUploadSuccess={this.handleUploadSuccess}
+                onProgress={this.handleProgress}
+              />
+            </span>
+          </div>
+          <div className='label'> </div>
+          <Checkbox
+            tabIndex='8'
+            id={'showInCalendar'}
+            name={'showInCalendar'}
+            value={showInCalendar}
+            checked={showInCalendarChecked}
+            disabled={false}
+            validate={validate}
+            onChange={(showInCalendarChecked, e) => {
+              this.setState({ showInCalendarChecked })
+            }}
+            labelHtml={
+              <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
+                Mostrar en calendario (publicar evento)
+              </div>
+            }
+            validationOption={{
+              name: 'agreement',
+              check: false,
+              required: false
+            }}
+          />
+          <div className='label'>Departamento al que pertenece el evento</div>
+          <Select
+            tabIndex='9'
+            id={'departmentId'}
+            name={'departmentId'}
+            value={departmentId}
+            validate={validate}
+            optionList={this.getDepartmentOptions()}
+            validationCallback={res => {
+              this.setState({
+                hasDepartmentIdError: res,
+                validate: false
+              })
+            }}
+            onChange={(departmentId, e) => {
+              this.setState({ departmentId })
+            }}
+            customStyleOptionListContainer={{
+              maxHeight: '200px',
+              overflow: 'auto',
+              fontSize: '14px'
+            }}
+            validationOption={{
+              name: 'Departamento',
+              check: true,
+              required: true
+            }}
+          />
+          <div className='label'>Tags</div>
+          <div>
+            <ReactTags
+              placeholder='Agregar tag'
+              inputFieldPosition='bottom'
+              tags={tags}
+              suggestions={suggestions}
+              handleDelete={this.handleDelete}
+              handleAddition={this.handleAddition}
+              handleDrag={this.handleDrag}
+              delimiters={delimiters}
             />
-            {this.props.type === 'create' && (
-              <Button
-                label='Crear Evento'
-                onClick={() => this.validateForm()}
-                style={{ marginRight: 10 }}
-              />
-            )}
-            {this.props.type === 'update' && (
-              <Button
-                label='Guardar'
-                onClick={() => this.validateForm()}
-                style={{ marginRight: 10 }}
-              />
-            )}
-            {this.props.type === 'update' && (
-              <Button
-                label='Eliminar'
-                style={{ marginRight: 10 }}
-                onClick={() => this.confirmDelete()}
-              />
-            )}
-          </form>
+          </div>
+          <div className='label'>Usuarios validators del evento *(Indique mail)</div>
+          <div>
+            <ReactTags
+              placeholder='Agregar email'
+              inputFieldPosition='bottom'
+              tags={validators}
+              suggestions={suggestions}
+              handleDelete={this.handleDeleteValidator}
+              handleAddition={this.handleAdditionValidator}
+              handleDrag={this.handleDragValidator}
+              delimiters={delimiters}
+            />
+          </div>
+          <div>
+            <Popup
+              modal
+              trigger={
+                <Button label={this.infoButton()} className='button' style={{ marginTop: 20 }} />
+              }
+            >
+              {close => (
+                <div className='ModalEvent'>
+                  <a className='close' onClick={close}>
+                    &times;
+                  </a>
+                  <div className='headerModal'> Información de ticket </div>
+                  <div className='label'>
+                    <h4>Detail</h4>
+                  </div>
+                  <div>
+                    <Editor
+                      wrapperClassName='wrapper-class'
+                      editorClassName='form-control mr-sm-2'
+                      toolbarClassName='toolbar-class'
+                      editorState={editorState}
+                      onEditorStateChange={this.onEditorStateChange}
+                      toolbar={{
+                        options: [
+                          'inline',
+                          'blockType',
+                          'fontSize',
+                          'fontFamily',
+                          'list',
+                          'textAlign',
+                          'colorPicker',
+                          'link',
+                          'embedded',
+                          'emoji',
+                          'image',
+                          'remove',
+                          'history'
+                        ],
+                        inline: {
+                          inDropdown: true,
+                          options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
+                          bold: { className: 'bordered-option-classname' },
+                          italic: { className: 'bordered-option-classname' },
+                          underline: { className: 'bordered-option-classname' },
+                          strikethrough: { className: 'bordered-option-classname' },
+                          code: { className: 'bordered-option-classname' }
+                        }
+                      }}
+                    />
+                    <br />
+                  </div>
+                  <div className='contentModal'>
+                    <table className='tableModal'>
+                      <thead>
+                        <tr>
+                          <td className='Headcol2'>Nombre de la ubicación</td>
+                          <td className='Headcol3'>Nº de tickets</td>
+                          <td className='Headcol4'> </td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className='col2'>
+                            <Textbox
+                              tabIndex='10'
+                              id='campoName'
+                              name='campoName'
+                              type='text'
+                              value={campoName}
+                              classNameInput='campoName'
+                              maxLength='50'
+                              validate={validatePop}
+                              validationCallback={res => {
+                                this.setState({ hasCampoNameError: res, validatePop: false })
+                              }}
+                              onChange={(campoName, e) => {
+                                this.setState({ campoName })
+                              }}
+                              validationOption={{
+                                name: 'Nombre de la ubicación',
+                                check: true,
+                                required: true
+                              }}
+                            />
+                          </td>
+                          <td className='col3'>
+                            <Textbox
+                              tabIndex='11'
+                              id='campoQuota'
+                              name='campoQuota'
+                              type='text'
+                              value={campoQuota}
+                              classNameInput='campoQuota'
+                              validate={validatePop}
+                              validationCallback={res => {
+                                this.setState({
+                                  hasQuotaCodeError: res,
+                                  validatePop: false
+                                })
+                              }}
+                              maxLength='6'
+                              onChange={(campoQuota, e) => {
+                                this.setState({ campoQuota })
+                              }}
+                              validationOption={{
+                                name: 'Nº de tickets disponibles',
+                                check: true,
+                                required: true,
+                                min: 1,
+                                max: 100000,
+                                type: 'number'
+                              }}
+                            />
+                          </td>
+                          <td className='col4'>
+                            <Button onClick={this.addLocation} className='button'>
+                              <i className='pi pi-plus information' />
+                            </Button>
+                          </td>
+                        </tr>
+                        {this.state.locations.map(function(item, index) {
+                          return (
+                            <tr key={index}>
+                              <td className='col2'>{item.name}</td>
+                              <td className='col3'>{item.quota}</td>
+                              <td className='col4'>
+                                <Button
+                                  onClick={() => {
+                                    _this.removeLocation(item)
+                                  }}
+                                >
+                                  <i className='pi pi-minus information' />
+                                </Button>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                    <div />
+                  </div>
+                  <div className='actions'>
+                    <Button
+                      className='button'
+                      label='Cerrar'
+                      style={{ marginRight: 10 }}
+                      onClick={() => {
+                        close()
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </Popup>
+          </div>
+          <br />
+          <Button
+            onClick={() => this.goBack()}
+            style={{ marginRight: 10 }}
+            label='Cancelar'
+            className='p-button-secondary'
+          />
+          {this.props.type === 'create' && (
+            <Button
+              label='Crear Evento'
+              onClick={() => this.validateForm()}
+              style={{ marginRight: 10 }}
+            />
+          )}
+          {this.props.type === 'update' && (
+            <Button
+              label='Guardar'
+              onClick={() => this.validateForm()}
+              style={{ marginRight: 10 }}
+            />
+          )}
+          {this.props.type === 'update' && (
+            <Button
+              label='Eliminar'
+              style={{ marginRight: 10 }}
+              onClick={() => this.confirmDelete()}
+            />
+          )}
         </Section>
       </div>
     )
