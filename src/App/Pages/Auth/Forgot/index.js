@@ -19,7 +19,7 @@ export default class ForgotPassword extends React.Component {
 
   @autobind
   onSuccess() {
-    this.props.showMessage('Te hemos enviado instrucciones a tu email!')
+    this.props.showMessage('Te hemos enviado instrucciones a tu email')
   }
 
   render() {
@@ -35,13 +35,13 @@ export default class ForgotPassword extends React.Component {
           <Field
             fieldName="email"
             type={Text}
-            placeholder="The email of your account"
+            placeholder="El email de tu cuenta"
             fieldType="email"
           />
         </AutoForm>
         <br />
         <Button onClick={() => this.refs.form.submit()} primary>
-          Reset Password
+          Cambiar contraseña
         </Button>
         <br />
         <br />
