@@ -753,9 +753,9 @@ export default class TemplateEvent extends Component {
           <hr />
           <h4>Detalle del Evento</h4>
           {/*
-            <div className='label' 
+            <div className='label'
             Texto que aparecerá en campos para seleccionar un evento
-          </div> 
+          </div>
         */}
           <Textbox
             tabIndex='6'
@@ -915,7 +915,7 @@ export default class TemplateEvent extends Component {
               modal
             >
               {close => (
-                <div className='ModalEvent'>
+                <div className='ModalEvent container'>
                   <a className='close' onClick={close}>
                     &times;
                   </a>
@@ -960,8 +960,15 @@ export default class TemplateEvent extends Component {
                     />
                     <br />
                   </div>
+                  <hr />
                   <div className='contentModal'>
                     <h4>Ubicaciones disponibles</h4>
+
+                    <p>
+                      Ingrese las ubicaciones disponibles para el evento (Ej: Entrada General,
+                      Tribuna, Galería, etc.)
+                    </p>
+
                     <table className='tableModal col-12'>
                       <thead>
                         <tr>
@@ -1054,8 +1061,16 @@ export default class TemplateEvent extends Component {
                       </tbody>
                     </table>
                     <div />
-                    <div className='label'>Usuarios validadores del evento *(Indique mail)</div>
-                    <div>
+                    <hr />
+                    <h4>Usuarios Validadores</h4>
+                    <p>
+                      Los usuarios ingresados acá recibirán un link de acceso para validar los
+                      tickets del evento
+                    </p>
+                    <div className='label'>
+                      Ingrese el email de cada uno de los validadores autorizados para el evento
+                    </div>
+                    <div className='col-12'>
                       <ReactTags
                         placeholder='Agregar email'
                         inputFieldPosition='bottom'
@@ -1069,15 +1084,15 @@ export default class TemplateEvent extends Component {
                     </div>
                   </div>
                   <div className='actions'>
-                    <Button
-                      className='button'
+                    <button
+                      className='btn btn-outline-primary'
                       style={{ marginRight: 10 }}
                       onClick={() => {
                         close()
                       }}
                     >
                       Cerrar
-                    </Button>
+                    </button>
                   </div>
                 </div>
               )}
