@@ -1,0 +1,262 @@
+.p-inputtext {
+  width: 100%;
+}
+
+.ModalEvent {
+  font-size: 12px;
+}
+
+.ModalEvent>.headerModalEvent {
+  width: 100%;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+}
+
+.ModalEvent>.contentModalEvent {
+  width: 100%;
+  padding: 1px 1px;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.ModalEvent>.actions {
+  width: 100%;
+  padding: 10px 5px;
+  margin: auto;
+  text-align: center;
+}
+
+.ModalEvent>.close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
+}
+
+
+.tableModalEvent {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+
+.campoID {
+  width: 20px;
+}
+
+.campoName {
+  width: 98%;
+
+}
+
+.campoQuota {
+  width: 95%;
+
+}
+
+
+
+.col2 {
+  width: 55%;
+
+}
+
+.col3 {
+  width: 30%;
+
+
+}
+
+.col4 {
+  width: 15%;
+
+}
+
+
+
+.Headcol2 {
+  width: 55%;
+  background: #c2bfbfd3;
+  border: none;
+
+
+}
+
+.Headcol3 {
+  width: 30%;
+  background: #c2bfbfd3;
+  border: none;
+
+
+}
+
+.Headcol4 {
+  width: 15%;
+  background: #c2bfbfd3;
+  border: none;
+}
+
+.help-block {
+  color: red;
+  margin-bottom: 10px;
+
+
+}
+
+.rdw-editor-main {
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  max-height: 120px;
+}
+
+.alert {
+  width: 100%;
+}
+
+@media (max-width: 1020px) {
+  .popup-content {
+    width: 90% !important
+  }
+}
+
+/* Example Styles for React Tags*/
+#app {
+  padding: 40px;
+}
+
+div.ReactTags__tags {
+  position: relative;
+}
+
+/* Styles for the input */
+div.ReactTags__tagInput {
+  width: 200px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+div.ReactTags__tagInput input.ReactTags__tagInputField,
+div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
+  height: 31px;
+  margin-top: 10px;
+  font-size: 12px;
+  width: 100%;
+  border: 1px solid #eee;
+  padding: 0 4px;
+}
+
+/* Styles for selected tags */
+div.ReactTags__selected span.ReactTags__tag {
+  border: 1px solid #ddd;
+  background: #eee;
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px;
+  margin: 0 5px;
+  cursor: move;
+  border-radius: 2px;
+}
+
+div.ReactTags__selected a.ReactTags__remove {
+  color: #aaa;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* Styles for suggestions */
+div.ReactTags__suggestions {
+  position: absolute;
+}
+
+div.ReactTags__suggestions ul {
+  list-style-type: none;
+  box-shadow: .05em .01em .5em rgba(0, 0, 0, .2);
+  background: white;
+  width: 200px;
+}
+
+div.ReactTags__suggestions li {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 0;
+}
+
+div.ReactTags__suggestions li mark {
+  text-decoration: underline;
+  background: none;
+  font-weight: 600;
+}
+
+div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
+  background: #b7cfe0;
+  cursor: pointer;
+}
+
+.small {
+  height: 100px;
+  width: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  border: none;
+  box-shadow: #cfcece
+}
+
+.dialog {
+  box-shadow: #cfcece;
+  position: absolute;
+  z-index: 20000;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 17px rgba(0, 0, 0, 0.7);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+
+}
+
+.UploadImage {
+  margin-top: 10px;
+
+}
+
+.react-inputs-validation__textbox__wrapper___3tnXv {
+  width: 100%
+}
+
+.size3 {
+  font-size: 3em;
+  color: red
+}
+
+.information {
+
+  font-size: 3em;
+  color: blue;
+}

@@ -9539,6 +9539,16 @@ pretty-format@^23.0.1, pretty-format@^23.6.0:
     ansi-regex "^3.0.0"
     ansi-styles "^3.2.0"
 
+primeicons@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-1.0.0.tgz#90061f168ef6227f21f0a7db8204ffa85cd27aec"
+  integrity sha512-p/hzIjUVccW4eJPhuORHI3AUkDpqfvCQVrjxbFEejnTEdWY4C8fomVfjiaA9jCu83fSQnBHuRIGB96iAR8R6uA==
+
+primereact@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/primereact/-/primereact-3.1.2.tgz#d5866515268618039f1a960734195073d8ac1269"
+  integrity sha512-QpCtSwPHsskkYSVNBx/uSs0gHbOAKVlm2UZacU8IUMMkVpCEhuwAIb09OsgYxotzwgzwVD9MEVS03kE5tamy+g==
+
 private@^0.1.6, private@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"

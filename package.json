@@ -50,6 +50,8 @@
     "orionsoft-parts": "^1.15.4",
     "payment-icons": "^1.1.0",
     "popper.js": "^1.14.7",
+    "primeicons": "^1.0.0",
+    "primereact": "^3.1.2",
     "prop-types": "^15.6.2",
     "react": "^16.2.0",
     "react-addons-css-transition-group": "^15.6.2",
