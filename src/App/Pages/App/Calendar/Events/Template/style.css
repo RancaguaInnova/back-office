@@ -6,11 +6,12 @@
   font-size: 12px;
 }
 
-.ModalEvent>.headerModalEvent {
+.headerModal {
   width: 100%;
   font-size: 18px;
   text-align: center;
   padding: 5px;
+  background-color: darkgray
 }
 
 .ModalEvent>.contentModalEvent {
@@ -259,4 +260,52 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
 
   font-size: 3em;
   color: blue;
+}
+
+.ModalEvent td {
+  padding: 2px;
+}
+
+.tableModal {
+  width: 100%
+}
+
+.react-inputs-validation__textbox__input___20hDL {
+  height: 34px;
+}
+
+.alert-primary {
+  color: #004085;
+  background-color: #cce5ff;
+  border-color: #b8daff;
+}
+
+.alert {
+  position: relative;
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+}
+
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+.p-dropdown {
+  width: 100%;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.hidden {
+  display: none
+}
+
+.react-inputs-validation__error___2aXSp {
+  color: red
 }
