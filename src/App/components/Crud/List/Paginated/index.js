@@ -75,9 +75,13 @@ export default class Fetch extends React.Component {
      */
     params: PropTypes.object,
     /**
-     * When use choose the item
+     * When use select/click the item
      */
     onPress: PropTypes.func,
+    /**
+     * Ignore the onPress event on this columns
+     */
+    ignoreOnSelectColumns: PropTypes.arrayOf(PropTypes.string),
     /**
      * Apollo poll interval for refetch, default to 20s. Set to null to deactivate. In seconds
      */
@@ -106,10 +110,11 @@ export default class Fetch extends React.Component {
     onPress: () => {},
     pollInterval: 0,
     defaultLimit: 10,
-    loadingComponent: LoadingIndicator
+    loadingComponent: LoadingIndicator,
+    ignoreOnSelectColumns: []
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       page: 1,
@@ -119,12 +124,12 @@ export default class Fetch extends React.Component {
   }
 
   // public reload function
-  async reload() {
+  async reload () {
     return this.refs.child.refs.child.queryObservable.refetch()
   }
 
   // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     const newVariables = this.getVariables(nextProps)
     const currentVariables = this.getVariables(this.props)
     if (!isEqual(newVariables, currentVariables) && this.state.page !== 1) {
@@ -132,10 +137,9 @@ export default class Fetch extends React.Component {
     }
   }
 
-  getQuery(props) {
-    return `query ${props.queryFunctionName || 'paginated_' + props.queryName} (${getArguments(
-      props.params
-    )}) {
+  getQuery (props) {
+    return `query ${props.queryFunctionName ||
+      'paginated_' + props.queryName} (${getArguments(props.params)}) {
       result: ${props.queryName} (
         ${getParams(props.params)}
       ) {
@@ -149,7 +153,7 @@ export default class Fetch extends React.Component {
     }`
   }
 
-  getDefaultSort() {
+  getDefaultSort () {
     for (const field of this.props.fields) {
       if (field.defaultSort) {
         return {
@@ -161,7 +165,7 @@ export default class Fetch extends React.Component {
     return {}
   }
 
-  getVariables(props) {
+  getVariables (props) {
     const defaultSort = this.getDefaultSort()
     const variables = {
       limit: this.state.limit,
@@ -175,18 +179,18 @@ export default class Fetch extends React.Component {
   }
 
   @autobind
-  setVariable(key, value) {
+  setVariable (key, value) {
     const variables = this.state.variables
     variables[key] = value
     this.setState({ variables, page: 1 })
   }
 
   @autobind
-  setSort(sortBy, sortType) {
+  setSort (sortBy, sortType) {
     this.setState({ sortBy, sortType })
   }
 
-  render() {
+  render () {
     const variables = this.getVariables(this.props)
     return (
       <div className='paginated-root'>
@@ -212,6 +216,7 @@ export default class Fetch extends React.Component {
               data={data}
               selectedItemId={this.props.selectedItemId}
               onPress={this.props.onPress}
+              ignoreOnSelectColumns={this.props.ignoreOnSelectColumns}
               fields={this.props.fields}
               sortBy={variables.sortBy}
               sortType={variables.sortType}

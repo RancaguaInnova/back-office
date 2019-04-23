@@ -22,6 +22,7 @@ export default class List extends React.Component {
     allowSearch: PropTypes.bool,
     params: PropTypes.object,
     onSelect: PropTypes.func,
+    ignoreOnSelectColumns: PropTypes.arrayOf(PropTypes.string),
     setRef: PropTypes.func,
     queryFunctionName: PropTypes.string,
     extraFields: PropTypes.object,
@@ -33,11 +34,12 @@ export default class List extends React.Component {
     fields: [{ title: 'ID', name: '_id' }],
     basePath: '',
     params: {},
-    setRef: () => {}
+    setRef: () => {},
+    ignoreOnSelectColumns: []
   }
 
   @autobind
-  onSelect(item) {
+  onSelect(item, index) {
     if (this.props.onSelect) {
       this.props.onSelect(item)
     } else {
@@ -83,6 +85,7 @@ export default class List extends React.Component {
                 }
                 extraFields={this.props.extraFields}
                 footer={this.props.footer}
+                ignoreOnSelectColumns={this.props.ignoreOnSelectColumns}
               />
             )}
           </WithParams>

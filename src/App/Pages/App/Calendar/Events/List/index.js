@@ -1,16 +1,19 @@
 import React from 'react'
 import PaginatedList from 'App/components/Crud/List'
 import moment from 'moment'
+import { Button } from 'primereact/button'
 
 export default class Events extends React.Component {
-  getFields() {
+  getFields () {
     return [
       {
         name: 'date',
         title: 'Fecha',
         sort: 'desc',
         render: (value, doc, index) => (
-          <span>{value && value.date ? moment(value.date).format('DD-MM-YYYY') : ''} </span>
+          <span>
+            {value && value.date ? moment(value.date).format('DD-MM-YYYY') : ''}{' '}
+          </span>
         )
       },
       {
@@ -18,16 +21,36 @@ export default class Events extends React.Component {
         title: 'Nombre',
         render: (value, doc, index) => <span>{value.name} </span>
       },
-
       {
         name: 'externalUrl',
         title: 'Link',
         render: (value, doc, index) => <span>{value.externalUrl} </span>
+      },
+      {
+        name: 'firebaseIdEvent',
+        title: 'Detalle Tickets',
+        render: (value, doc, index) => <span>{this.summaryButton(value)}</span>
       }
     ]
   }
 
-  render() {
+  summaryButton (fields) {
+    if (!fields.firebaseIdEvent) return 'Evento sin Tickets'
+    return (
+      <Button
+        type='button'
+        label='Detalle'
+        onClick={() => this.renderSummaryModal()}
+      />
+    )
+  }
+
+  renderSummaryModal () {
+    // Implement summary modal
+    console.log('TESTING BUTTON:')
+  }
+
+  render () {
     return (
       <PaginatedList
         title='Eventos'
@@ -37,6 +60,7 @@ export default class Events extends React.Component {
         canCreate
         canUpdate
         allowSearch
+        ignoreOnSelectColumns={['firebaseIdEvent']}
       />
     )
   }

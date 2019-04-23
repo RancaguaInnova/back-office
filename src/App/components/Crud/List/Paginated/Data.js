@@ -10,6 +10,7 @@ export default class Data extends React.Component {
     data: PropTypes.object,
     fields: PropTypes.array,
     onPress: PropTypes.func,
+    ignoreOnSelectColumns: PropTypes.arrayOf(PropTypes.string),
     sortBy: PropTypes.string,
     sortType: PropTypes.string,
     setSort: PropTypes.func,
@@ -21,35 +22,37 @@ export default class Data extends React.Component {
 
   state = {}
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState(this.props)
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps (props, state) {
     if (isEmpty(state)) {
-      return {props}
+      return { props }
     }
     if (!props.data.data) {
       return
     }
     if (
-      JSON.stringify(props.data.data.result) !== JSON.stringify(state.props.data.data.result) ||
-      JSON.stringify(props.data.variables) !== JSON.stringify(state.props.data.variables)
+      JSON.stringify(props.data.data.result) !==
+        JSON.stringify(state.props.data.data.result) ||
+      JSON.stringify(props.data.variables) !==
+        JSON.stringify(state.props.data.variables)
     ) {
-      return {props}
+      return { props }
     }
   }
 
-  renderLoading() {
+  renderLoading () {
     if (!this.props.loadingComponent) return <span />
     return <this.props.loadingComponent />
   }
 
-  renderNotFound() {
-    return <Message message="No se encontraron datos" />
+  renderNotFound () {
+    return <Message message='No se encontraron datos' />
   }
 
-  renderError() {
+  renderError () {
     const error = this.props.data.error
     console.error('Error in paginated', this.props.data)
     if (!error) return
@@ -60,22 +63,26 @@ export default class Data extends React.Component {
     return <Message message={message} />
   }
 
-  renderTable() {
+  renderTable () {
     if (this.props.debouncing) return this.renderLoading()
     if (this.props.data.loading) {
       this.props.data.refetch()
       return this.renderLoading()
     }
-    if (!this.props.data.data.result.items || this.props.data.data.result.items.length === 0) {
+    if (
+      !this.props.data.data.result.items ||
+      this.props.data.data.result.items.length === 0
+    ) {
       return this.renderNotFound()
     }
     return (
-      <div ref="items" className="paginated-table-items">
+      <div ref='items' className='paginated-table-items'>
         <Table
           sortBy={this.props.sortBy}
           sortType={this.props.sortType}
           setSort={this.props.setSort}
           onSelect={this.props.onPress}
+          ignoreOnSelectColumns={this.props.ignoreOnSelectColumns}
           selectedItemId={this.props.selectedItemId}
           items={this.props.data.data.result.items}
           fields={this.props.fields}
@@ -85,7 +92,7 @@ export default class Data extends React.Component {
     )
   }
 
-  render() {
+  render () {
     if (!this.state || isEmpty(this.state)) return null
     if (this.state.props.data.error) {
       return this.renderError()
@@ -100,9 +107,12 @@ export default class Data extends React.Component {
       return ''
     }
     return (
-      <div className="paginated-container box">
+      <div className='paginated-container box'>
         {this.renderTable()}
-        <Pagination {...this.props} result={this.state.props.data.data.result} />
+        <Pagination
+          {...this.props}
+          result={this.state.props.data.data.result}
+        />
       </div>
     )
   }
