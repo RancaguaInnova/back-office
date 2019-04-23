@@ -636,6 +636,7 @@ export default class TemplateEvent extends Component {
                   </button>
                 )}
               </div>
+
               <div className='UploadImage'>
                 {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
                 {this.state.imageUrl && (
@@ -806,6 +807,7 @@ export default class TemplateEvent extends Component {
                                 <Button onClick={this.addLocation} className='button' label='+' />
                               </td>
                             </tr>
+
                             {this.state.locations.map(function(item, index) {
                               return (
                                 <tr key={index}>
@@ -859,6 +861,7 @@ export default class TemplateEvent extends Component {
               />
               {this.props.type === 'create' && (
                 <Button label='Crear Evento' style={{ marginRight: 10 }} type='submit' />
+
               )}
               {this.props.type === 'update' && (
                 <Button label='Guardar' style={{ marginRight: 10 }} type='submit' />
