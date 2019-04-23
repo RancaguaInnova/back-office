@@ -1,7 +1,11 @@
+import * as firebase from 'firebase'
+
 const config = {
-  apiKey: 'AIzaSyAn0Xsm2h07oo35fe5Wq1LqBLxMyvXkY',
-  authDomain: 'cdir-tickets.firebaseapp.com',
-  databaseURL: 'https://cdir-tickets.firebaseio.com',
-  storageBucket: 'gs://cdir-tickets.appspot.com'
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASED_DATABASE_URL,
+  storageBucket: process.env.FIREBASE_BUCKET
 }
-export default config
+firebase.initializeApp(config)
+
+export default firebase

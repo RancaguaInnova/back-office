@@ -1,47 +1,32 @@
 import React, { Component } from 'react'
 import Section from 'App/components/Section'
-import Button from 'orionsoft-parts/lib/components/Button'
 import SearchBar from 'App/components/fields/GooglePlaces'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
+import Popup from 'reactjs-popup'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import gql from 'graphql-tag'
 import autobind from 'autobind-decorator'
 import reduce from 'lodash/reduce'
-import Popup from 'reactjs-popup'
-import { Textbox, Checkbox, Select } from 'react-inputs-validation'
-import 'react-inputs-validation/lib/react-inputs-validation.min.css'
-import './modal.css'
-import MaterialIcon, { colorPalette } from 'material-icons-react'
+import { Textbox } from 'react-inputs-validation'
+import './style.css'
 import EventFragments from 'App/fragments/Event'
 import { confirmAlert } from 'react-confirm-alert'
-import 'react-confirm-alert/src/react-confirm-alert.css'
-import { EditorState, convertToRaw, ContentState } from 'draft-js'
-import { Editor } from 'react-draft-wysiwyg'
-import draftToHtml from 'draftjs-to-html'
-import htmlToDraft from 'html-to-draftjs'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import es from 'date-fns/locale/es'
 import moment from 'moment'
-import 'bootstrap/dist/css/bootstrap.css'
-import { WithContext as ReactTags } from 'react-tag-input'
-import config from '/src/App/helpers/auth/firebaseConfig'
-import firebase from 'firebase'
-import FileUploader from 'react-firebase-file-uploader'
+import firebase from '/src/App/helpers/auth/firebaseConfig'
 import formatMail from 'App/helpers/format/formatMail'
-
-firebase.initializeApp(config)
-
-const KeyCodes = {
-  comma: 188,
-  enter: 13
-}
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter]
+import horaValida from 'App/helpers/format/horaValida'
+import { InputText } from 'primereact/inputtext'
+import { Calendar } from 'primereact/calendar'
+import { Button } from 'primereact/button'
+import { Dropdown } from 'primereact/dropdown'
+import FileUploader from 'react-firebase-file-uploader'
+import { Editor } from 'primereact/editor'
+import Es from '../../../../../i18n/calendarEs'
+import { Checkbox } from 'primereact/checkbox'
+import { Chips } from 'primereact/chips'
 
 @withRouter
 @withMessage
@@ -109,12 +94,8 @@ export default class TemplateEvent extends Component {
         }
       }
 
-      const blocksFromHtml = htmlToDraft(event.detail || '')
-      const { contentBlocks, entityMap } = blocksFromHtml
-      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
-      const editorState = EditorState.createWithContent(contentState)
       let time = new Date()
-      if (event.time !== null && this.HoraValida(event.time)) {
+      if (event.time !== null && horaValida(event.time)) {
         let aux = event.time.split(':')
         time.setHours(aux[0], aux[1])
       } else {
@@ -122,16 +103,18 @@ export default class TemplateEvent extends Component {
       }
 
       let endTime = new Date()
-      if (event.endTime !== null && this.HoraValida(event.endTime)) {
+      if (event.endTime !== null && horaValida(event.endTime)) {
         let aux2 = event.endTime.split(':')
         endTime.setHours(aux2[0], aux2[1])
       } else {
         endTime = null
       }
       let eventTags = this.formatBackTags(event.tags)
-      let validators = this.formatBackValidator(event.validators)
+      let validators = event.validators
+
       this.state = {
-        editorState: editorState,
+        visible: false,
+        detail: event.detail,
         _id: event._id,
         firebaseIdEvent: event.firebaseIdEvent,
         name: event.name || '',
@@ -169,18 +152,14 @@ export default class TemplateEvent extends Component {
         hasNombreError: true,
         hasDepartmentIdError: true,
         tags: eventTags || [],
-        suggestions: [{ id: 'Noticias', text: 'Noticias' }],
         isOpen: false,
         validators: validators || []
       }
     } else {
-      const blocksFromHtml = htmlToDraft('')
-      const { contentBlocks, entityMap } = blocksFromHtml
-      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
-      const editorState = EditorState.createWithContent(contentState)
-
       this.state = {
-        editorState: editorState,
+        visible: false,
+
+        detail: '',
         event: {},
         errorMessages: {},
         date: new Date(),
@@ -203,7 +182,6 @@ export default class TemplateEvent extends Component {
         longitude: -70.74064759999999,
         loading: true,
         tags: [],
-        suggestions: [{ id: 'Noticias', text: 'Noticias' }],
         uploadImageUrl: '',
         isUploading: false,
         progress: 0,
@@ -215,34 +193,14 @@ export default class TemplateEvent extends Component {
     this.handleChangeDate = this.handleChangeDate.bind(this)
     this.handleChangeTime = this.handleChangeTime.bind(this)
     this.handleChangeEndTime = this.handleChangeEndTime.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
-    this.handleAddition = this.handleAddition.bind(this)
-
-    this.handleDeleteValidator = this.handleDeleteValidator.bind(this)
     this.handleAdditionValidator = this.handleAdditionValidator.bind(this)
-
-    this.handleDrag = this.handleDrag.bind(this)
-    this.validateForm = this.validateForm.bind(this)
+    this.onSuccessUpdate = this.onSuccessUpdate.bind(this)
   }
 
-  handleDelete(i) {
-    const { tags } = this.state
-    this.setState({
-      tags: tags.filter((tag, index) => index !== i)
-    })
-  }
-
-  handleDeleteValidator(i) {
-    const { validators } = this.state
-    this.setState({
-      validators: validators.filter((tag, index) => index !== i)
-    })
-  }
   handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
   handleProgress = progress => this.setState({ progress })
-  handleUploadError = error => {
+  handleUploadError = () => {
     this.setState({ isUploading: false })
-    console.error(error)
   }
   handleUploadSuccess = filename => {
     this.setState({ uploadImageUrl: filename, progress: 100, isUploading: false })
@@ -256,36 +214,24 @@ export default class TemplateEvent extends Component {
       })
   }
 
-  handleAddition(tag) {
-    this.setState(state => ({ tags: [...state.tags, tag] }))
-  }
-
-  handleAdditionValidator(validator) {
-    let res = formatMail(validator.text)
-
-    if (res === true) {
-      this.setState(state => ({ validators: [...state.validators, validator] }))
+  handleAdditionValidator(e) {
+    var ultimo = e.value[e.value.length - 1]
+    let res = formatMail(ultimo)
+    if (res === true || e.value.length === 0) {
+      this.setState({ validators: e.value })
     } else {
       this.props.showMessage(res)
     }
   }
 
-  handleDragValidator(validator, currPos, newPos) {
-    const validators = [...this.state.validators]
-    const newTags = validators.slice()
-    newTags.splice(currPos, 1)
-    newTags.splice(newPos, 0, validator)
-    this.setState({ validators: newTags })
-  }
-
-  formatApiTags(arrayTags) {
+  formatApiTag(arrayTags) {
     let a = arrayTags || []
     if (a.length === 0) {
       return []
     } else {
       let ar = a.map(function(obj) {
         var rObj = {}
-        rObj['tag'] = obj.text || ''
+        rObj['tag'] = obj || ''
 
         return rObj
       })
@@ -299,56 +245,20 @@ export default class TemplateEvent extends Component {
     } else {
       let ar = a.map(function(obj) {
         var rObj = {}
-        rObj['text'] = obj.tag || ''
-        rObj['id'] = obj.tag || ''
+        rObj = obj.tag || ''
 
         return rObj
       })
       return ar
     }
-  }
-  formatBackValidator(arrayTags) {
-    let a = arrayTags || []
-    if (a.length === 0) {
-      return []
-    } else {
-      let ar = a.map(function(obj) {
-        var rObj = {}
-        rObj['text'] = obj || ''
-        rObj['id'] = obj || ''
-
-        return rObj
-      })
-      return ar
-    }
-  }
-  formatApiTagValidator(arrayValidatorTag) {
-    let a = arrayValidatorTag || []
-    if (a.length === 0) {
-      return []
-    } else {
-      let ar = a.map(function(obj) {
-        var rObj = []
-        rObj = obj.text || ''
-
-        return rObj
-      })
-      return ar
-    }
-  }
-
-  handleDrag(tag, currPos, newPos) {
-    const tags = [...this.state.tags]
-    const newTags = tags.slice()
-    newTags.splice(currPos, 1)
-    newTags.splice(newPos, 0, tag)
-    this.setState({ tags: newTags })
   }
 
   getDepartmentOptions() {
-    return this.props.departments.items.map(department => {
-      return { name: department.name, id: department._id }
+    const Departaments = this.props.departments.items.map(department => {
+      return { label: department.name, value: department._id }
     })
+
+    return Departaments
   }
 
   getValidationErrors(error) {
@@ -359,28 +269,6 @@ export default class TemplateEvent extends Component {
       },
       {}
     )
-  }
-
-  HoraValida(lahora) {
-    if (lahora !== '') {
-      var arrHora = lahora.split(':')
-
-      if (arrHora.length !== 2) {
-        return false
-      }
-
-      if (parseInt(arrHora[0]) < 0 || parseInt(arrHora[0]) > 23) {
-        return false
-      }
-
-      if (parseInt(arrHora[1]) < 0 || parseInt(arrHora[1]) > 59) {
-        return false
-      }
-
-      return true
-    } else {
-      return false
-    }
   }
 
   renderErrorMessages() {
@@ -447,16 +335,6 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  async validateForm(e) {
-    await this.toggleValidating(true)
-    const { hasNombreError, hasDepartmentIdError, hasDescriptionError } = this.state
-    if (!hasNombreError && !hasDepartmentIdError && !hasDescriptionError) {
-      this.onSubmit()
-    } else {
-      this.props.showMessage('Verifique que todos los datos estén correctos')
-    }
-  }
-
   onSuccessDelete() {
     this.props.showMessage('Evento eliminado correctamente')
     this.props.history.push('/calendario/eventos')
@@ -495,16 +373,13 @@ export default class TemplateEvent extends Component {
   }
 
   getEvent() {
-    let detail = ''
-    detail = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
-
     let s = this.state
     var event = {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
       description: s.description,
-      detail: detail,
+      detail: s.detail,
       date: s.date,
       time: moment(s.time).format('HH:mm'),
       endTime: moment(s.endTime).format('HH:mm'),
@@ -527,10 +402,10 @@ export default class TemplateEvent extends Component {
       externalUrl: s.externalUrl,
       imageUrl: s.imageUrl,
       showInCalendar: s.showInCalendarChecked,
-      tags: this.formatApiTags(s.tags),
+      tags: this.formatApiTag(s.tags),
 
       locations: s.locations,
-      validators: this.formatApiTagValidator(s.validators)
+      validators: s.validators
     }
     return event
   }
@@ -541,12 +416,25 @@ export default class TemplateEvent extends Component {
   }
 
   onSuccessUpdate() {
-    this.props.showMessage('Cambios guardados!')
+    this.props.showMessage(
+      'El evento fue registrado correctamente , sera redireccionado al home de eventos'
+    )
     this.props.history.push('/calendario/eventos')
+  }
+  @autobind
+  infoButton() {
+    let res = ''
+    if (this.state.locations.length < 1) {
+      res = 'Agregar  ticket al evento'
+    } else {
+      res = 'Editar  ticket del evento'
+    }
+    return res
   }
 
   @autobind
-  async onSubmit() {
+  async handleSubmit(event) {
+    event.preventDefault()
     if (this.props.type === 'create') {
       try {
         let event = this.getEvent()
@@ -563,6 +451,8 @@ export default class TemplateEvent extends Component {
         await this.props.updateEvent({ event: event })
         this.onSuccessUpdate()
       } catch (error) {
+        this.setState({ errorMessages: this.getValidationErrors(error) })
+
         this.props.showMessage('Ocurrión un error!')
       }
     }
@@ -603,34 +493,43 @@ export default class TemplateEvent extends Component {
     this.setState({ imageUrl: '', uploadImageUrl: '' })
   }
 
+  customChip(item) {
+    return (
+      <div>
+        <span>{item} </span>
+        <i className='pi pi-user-plus' />
+      </div>
+    )
+  }
+
   render() {
     const {
       campoName,
       validatePop,
       campoQuota,
-      validate,
       name,
+      date,
+      time,
+      endTime,
       externalUrl,
       optionLabel,
       showInCalendar,
-      showInCalendarChecked,
       departmentId,
       imageUrl,
       formattedAddress,
       latitude,
       longitude,
-      editorState,
       description,
       tags,
-      suggestions,
-      validators
+      validators,
+      detail
     } = this.state
     var _this = this
     return (
       <div>
-        <div className='alert alert-info' role='alert'>
-          <MaterialIcon icon='information' size='tiny' color={colorPalette.blue._900} /> Si
-          necesitas ayuda para crear o editar un evento haz &nbsp;
+        <div className='alert alert-info uppercase' role='alert'>
+          <i className='pi pi-info information ' />
+          Si necesitas ayuda para crear o editar un evento haz &nbsp;
           <a
             href='https://desarrollorancagua.atlassian.net/wiki/x/AgAYAg'
             target='_blank'
@@ -640,500 +539,345 @@ export default class TemplateEvent extends Component {
             click aquí
           </a>
         </div>
-        <Section title={this.props.title} description={this.props.description} top>
-          <h4>Información Básica</h4>
-          <div className='label'>Nombre</div>
-          <Textbox
-            tabIndex='1'
-            id='name'
-            name='name'
-            type='text'
-            value={name}
-            classNameInput='name'
-            maxLength='500'
-            validate={validate}
-            validationCallback={res => {
-              this.setState({ hasNombreError: res, validate: false })
-            }}
-            onChange={(name, e) => {
-              this.setState({ name })
-            }}
-            validationOption={{
-              name: 'Nombre',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Descripción</div>
-          <Textbox
-            tabIndex='3'
-            id='description'
-            name='description'
-            type='text'
-            value={description}
-            maxLength='200'
-            validate={validate}
-            validationCallback={res => {
-              this.setState({ hasDescriptionError: res, validate: false })
-            }}
-            onChange={(description, e) => {
-              this.setState({ description })
-            }}
-            validationOption={{
-              name: 'Descripción',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Link al detalle del evento</div>
-          <Textbox
-            tabIndex='3'
-            id='externalUrl'
-            name='externalUrl'
-            type='text'
-            value={externalUrl}
-            maxLength='2500'
-            validate={validate}
-            onChange={(externalUrl, e) => {
-              this.setState({ externalUrl })
-            }}
-            validationOption={{
-              name: 'Link a información',
-              check: false,
-              required: false
-            }}
-          />
-          <div className='label'>Fecha</div>
-          <DatePicker
-            selected={this.state.date}
-            onChange={this.handleChangeDate}
-            strictParsing
-            calendarClassName=''
-            className='form-control mr-sm-2'
-            dateFormat='dd-MM-YYYY'
-            minDate={new Date()}
-            locale={es}
-            onChangeRaw={this.handleDateChangeRaw}
-          />
-          <div className='label'>Hora de inicio</div>
-          <DatePicker
-            selected={this.state.time}
-            onChange={this.handleChangeTime}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={5}
-            strictParsing
-            className='form-control mr-sm-2'
-            dateFormat='HH:mm'
-            timeCaption='Time'
-            locale={es}
-            onChangeRaw={this.handleDateChangeRaw}
-          />
-          <div className='label'>Hora de término</div>
-          <DatePicker
-            selected={this.state.endTime}
-            onChange={this.handleChangeEndTime}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={5}
-            strictParsing
-            className='form-control mr-sm-2'
-            dateFormat='HH:mm'
-            timeCaption='Time'
-            locale={es}
-            onChangeRaw={this.handleDateChangeRaw}
-          />
-          <div className='label'>Dirección </div>
-          <SearchBar
-            handleChangeAddress={this.handleChangeAddress}
-            latitude={latitude}
-            longitude={longitude}
-            address={formattedAddress}
-          />
-          <hr />
-          <h4>Detalle del Evento</h4>
-          {/*
-            <div className='label'
-            Texto que aparecerá en campos para seleccionar un evento
-          </div>
-        */}
-          <Textbox
-            tabIndex='6'
-            id='optionLabel'
-            name='optionLabel'
-            type='hidden'
-            value={optionLabel}
-            maxLength='200'
-            validate={validate}
-            classNameInput='form-control mr-sm-2'
-            validationCallback={res => {
-              this.setState({ hasOptionLabelError: res, validate: false })
-            }}
-            onChange={(optionLabel, e) => {
-              this.setState({ optionLabel })
-            }}
-            validationOption={{
-              name: 'Texto que aparecerá en campos para seleccionar un evento',
-              check: false,
-              required: false
-            }}
-          />
-          <div className='label'>Imagen asociada al evento</div>
-          <div className='os-input-container'>
-            <Textbox
-              tabIndex='7'
-              id='imageUrl'
-              name='imageUrl'
-              type='text'
-              value={imageUrl}
-              maxLength='200'
-              validate={validate}
-              classNameInput='form-control mr-sm-2'
-              onChange={(imageUrl, e) => {
-                this.setState({ imageUrl })
-              }}
-              validationOption={{
-                name: 'Texto que aparecerá en campos para seleccionar un evento',
-                check: false,
-                required: false
-              }}
-            />
-            {this.state.imageUrl && (
-              <button className='clear-button' onClick={this.HanddleCleanImageUrl}>
-                <MaterialIcon icon='clear' size='small' color={colorPalette.red._800} />
-              </button>
-            )}
-          </div>
-          <div className='UploadImage'>
-            {this.state.isUploading && <p>Cargando... {this.state.progress}</p>}
-            {this.state.imageUrl && (
-              <div>
-                Vista previa
-                <img src={this.state.imageUrl} onClick={this.handleShowDialog} className='small' />
+        <div>
+          <form onSubmit={this.handleSubmit}>
+            <Section title={this.props.title} description={this.props.description} top>
+              <div className='label'>Nombre</div>
+              <InputText
+                value={name}
+                onChange={e => {
+                  this.setState({ name: e.target.value })
+                }}
+                className='p-inputtext'
+                required={true}
+                tabIndex={1}
+              />
+              <div className='label'>Descripción</div>
+              <InputText
+                value={description}
+                onChange={e => {
+                  this.setState({ description: e.target.value })
+                }}
+                className='p-inputtext'
+                required={true}
+                tabIndex={2}
+              />
+              <div className='label'>Link a información</div>
+              <InputText
+                value={externalUrl}
+                onChange={e => {
+                  this.setState({ externalUrl: e.target.value })
+                }}
+                className='p-inputtext'
+                required={true}
+                tabIndex={3}
+              />
+              <div className='label'>Fecha</div>
+              <Calendar
+                locale={Es}
+                dateFormat='dd-mm-yy'
+                value={date}
+                onChange={e => this.setState({ date: e.value })}
+              />
+              <div className='label'>Hora de inicio</div>
+              <Calendar
+                required={true}
+                timeOnly={true}
+                showTime={true}
+                hourFormat='24'
+                value={time}
+                onChange={e => this.setState({ time: e.value })}
+              />
+              <div className='label'>Hora de término</div>
+              <Calendar
+                required={true}
+                timeOnly={true}
+                showTime={true}
+                hourFormat='24'
+                value={endTime}
+                onChange={e => this.setState({ endTime: e.value })}
+              />
+              <div className='label'>Dirección </div>
+              <SearchBar
+                handleChangeAddress={this.handleChangeAddress}
+                latitude={latitude}
+                longitude={longitude}
+                address={formattedAddress}
+              />
+              <div className='label hidden'>
+                Texto que aparecerá en campos para seleccionar un evento
               </div>
-            )}
-            {this.state.isOpen && (
-              <dialog
-                className='dialog shadow-lg p-3 mb-5 bg-white rounded'
-                style={{ position: 'absolute' }}
-                open
-                onClick={this.handleShowDialog}
-              >
-                <img
-                  className='image'
-                  src={this.state.imageUrl}
-                  onClick={this.handleShowDialog}
-                  alt='no image'
+              <InputText
+                type='hiiden'
+                value={optionLabel}
+                onChange={e => {
+                  this.setState({ optionLabel: e.target.value })
+                }}
+                className='p-inputtext'
+                required={true}
+                tabIndex={6}
+              />
+              <div className='label'>Url con imagen para el evento</div>
+              <div className='os-input-container'>
+                <InputText
+                  type='url'
+                  value={imageUrl}
+                  onChange={e => {
+                    this.setState({ imageUrl: e.target.value })
+                  }}
+                  className='p-inputtext'
+                  required={true}
+                  tabIndex={7}
                 />
-              </dialog>
-            )}
-            <FileUploader
-              accept='image/*'
-              name='uploadImageUrl'
-              randomizeFilename
-              storageRef={firebase.storage().ref('EventImages')}
-              onUploadStart={this.handleUploadStart}
-              onUploadError={this.handleUploadError}
-              onUploadSuccess={this.handleUploadSuccess}
-              onProgress={this.handleProgress}
-            />
-          </div>
-          <div className='label'> </div>
-          <Checkbox
-            tabIndex='8'
-            id={'showInCalendar'}
-            name={'showInCalendar'}
-            value={showInCalendar}
-            checked={showInCalendarChecked}
-            disabled={false}
-            validate={validate}
-            onChange={(showInCalendarChecked, e) => {
-              this.setState({ showInCalendarChecked })
-            }}
-            labelHtml={
-              <div style={{ color: '#4a4a4a', marginTop: '2px' }}>
-                Mostrar en calendario (publicar evento)
+
+                {this.state.imageUrl && (
+                  <button className='clear-button' onClick={this.HanddleCleanImageUrl}>
+                    <i className='pi pi-times size3' />
+                  </button>
+                )}
               </div>
-            }
-            validationOption={{
-              name: 'agreement',
-              check: false,
-              required: false
-            }}
-          />
-          <div className='label'>Departamento al que pertenece el evento</div>
-          <Select
-            tabIndex='9'
-            id={'departmentId'}
-            name={'departmentId'}
-            value={departmentId}
-            validate={validate}
-            optionList={this.getDepartmentOptions()}
-            validationCallback={res => {
-              this.setState({
-                hasDepartmentIdError: res,
-                validate: false
-              })
-            }}
-            onChange={(departmentId, e) => {
-              this.setState({ departmentId })
-            }}
-            customStyleOptionListContainer={{
-              maxHeight: '200px',
-              overflow: 'auto',
-              fontSize: '14px'
-            }}
-            validationOption={{
-              name: 'Departamento',
-              check: true,
-              required: true
-            }}
-          />
-          <div className='label'>Tags</div>
-          <div>
-            <ReactTags
-              placeholder='Agregar tag'
-              inputFieldPosition='bottom'
-              tags={tags}
-              suggestions={suggestions}
-              handleDelete={this.handleDelete}
-              handleAddition={this.handleAddition}
-              handleDrag={this.handleDrag}
-              delimiters={delimiters}
-            />
-          </div>
 
-          <div>
-            <Popup
-              trigger={
-                <Button className='button' style={{ marginTop: 20 }}>
-                  <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                  {this.state.locations.length < 1 && ' Agregar Ticket al evento'}
-                  {this.state.locations.length >= 1 && ' Editar Tickets asociados al evento'}
-                </Button>
-              }
-              modal
-            >
-              {close => (
-                <div className='ModalEvent container'>
-                  <a className='close' onClick={close}>
-                    &times;
-                  </a>
-                  <div className='headerModal'> Tickets Para el Evento </div>
-                  <h4>Detalle del Ticket</h4>
-                  <div className='label'>
-                    <p>Información que se muestra al momento de obtener el ticket del evento</p>
-                  </div>
+              <div className='UploadImage'>
+                {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
+                {this.state.imageUrl && (
                   <div>
-                    <Editor
-                      wrapperClassName='wrapper-class'
-                      editorClassName='mr-sm-2'
-                      toolbarClassName='toolbar-class'
-                      editorState={editorState}
-                      onEditorStateChange={this.onEditorStateChange}
-                      toolbar={{
-                        options: [
-                          'inline',
-                          'blockType',
-                          'fontSize',
-                          'fontFamily',
-                          'list',
-                          'textAlign',
-                          'colorPicker',
-                          'link',
-                          'embedded',
-                          'emoji',
-                          'image',
-                          'remove',
-                          'history'
-                        ],
-                        inline: {
-                          inDropdown: true,
-                          options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
-                          bold: { className: 'bordered-option-classname' },
-                          italic: { className: 'bordered-option-classname' },
-                          underline: { className: 'bordered-option-classname' },
-                          strikethrough: { className: 'bordered-option-classname' },
-                          code: { className: 'bordered-option-classname' }
-                        }
-                      }}
+                    Vista previa
+                    <img
+                      src={this.state.imageUrl}
+                      onClick={this.handleShowDialog}
+                      className='small'
                     />
-                    <br />
                   </div>
-                  <hr />
-                  <div className='contentModal'>
-                    <h4>Ubicaciones disponibles</h4>
+                )}
+                {this.state.isOpen && (
+                  <dialog
+                    className='dialog shadow-lg p-3 mb-5 bg-white rounded'
+                    style={{ position: 'absolute' }}
+                    open
+                    onClick={this.handleShowDialog}
+                  >
+                    <img
+                      className='image'
+                      src={this.state.imageUrl}
+                      onClick={this.handleShowDialog}
+                      alt='no image'
+                    />
+                  </dialog>
+                )}
 
-                    <p>
-                      Ingrese las ubicaciones disponibles para el evento (Ej: Entrada General,
-                      Tribuna, Galería, etc.)
-                    </p>
+                <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
+                  <span className='p-button-icon-left pi pi-plus' />
+                  <span className='p-button-text p-clickable'>Seleccionar Imagen</span>
+                  <FileUploader
+                    accept='image/*'
+                    name='uploadImageUrl'
+                    className='p-inputtext p-component p-inputtext p-filled'
+                    randomizeFilename
+                    storageRef={firebase.storage().ref('EventImages')}
+                    onUploadStart={this.handleUploadStart}
+                    onUploadError={this.handleUploadError}
+                    onUploadSuccess={this.handleUploadSuccess}
+                    onProgress={this.handleProgress}
+                  />
+                </span>
+              </div>
+              <div className='label'> </div>
+              <Checkbox
+                onChange={e => this.setState({ showInCalendar: e.checked })}
+                checked={showInCalendar}
+                tabIndex='8'
+              />
+              <label htmlFor='showInCalendar' className='p-checkbox-label'>
+                Mostrar en calendario (publicar evento)
+              </label>
+              <div className='label'>Departamento al que pertenece el evento</div>
+              <Dropdown
+                value={departmentId}
+                options={this.getDepartmentOptions()}
+                onChange={e => this.setState({ departmentId: e.target.value })}
+                editable={false}
+                placeholder='Seleccione un departamento'
+              />
+              <div className='label'>Tags</div>
+              <div>
+                <Chips
+                  value={tags}
+                  onChange={e => {
+                    this.setState({ tags: e.value })
+                  }}
+                />
+              </div>
+              <div>
+                <Popup
+                  modal
+                  trigger={
+                    <Button
+                      type='button'
+                      className='p-button-success'
+                      label={this.infoButton()}
+                      style={{ marginTop: 20 }}
+                    />
+                  }
+                >
+                  {close => (
+                    <div className='ModalEvent'>
+                      <a className='close' onClick={close}>
+                        &times;
+                      </a>
+                      <div className='headerModal'> Información de ticket </div>
+                      <div className='label'>
+                        <h4>Detalle del evento</h4>
+                      </div>
+                      <div>
+                        <Editor
+                          style={{ height: '320px' }}
+                          value={detail}
+                          onTextChange={e => this.setState({ detail: e.htmlValue })}
+                        />
 
-                    <table className='tableModal col-12'>
-                      <thead>
-                        <tr>
-                          <td className='Headcol2'>Nombre de la ubicación</td>
-                          <td className='Headcol3'>Nº de tickets disponibles</td>
-                          <td className='Headcol4'> </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className='col2'>
-                            <Textbox
-                              tabIndex='10'
-                              id='campoName'
-                              name='campoName'
-                              type='text'
-                              value={campoName}
-                              classNameInput='campoName'
-                              maxLength='50'
-                              validate={validatePop}
-                              validationCallback={res => {
-                                this.setState({ hasCampoNameError: res, validatePop: false })
-                              }}
-                              onChange={(campoName, e) => {
-                                this.setState({ campoName })
-                              }}
-                              validationOption={{
-                                name: 'Nombre de la ubicación',
-                                check: true,
-                                required: true
-                              }}
-                            />
-                          </td>
-                          <td className='col3'>
-                            <Textbox
-                              tabIndex='11'
-                              id='campoQuota'
-                              name='campoQuota'
-                              type='text'
-                              value={campoQuota}
-                              classNameInput='campoQuota'
-                              validate={validatePop}
-                              validationCallback={res => {
-                                this.setState({
-                                  hasQuotaCodeError: res,
-                                  validatePop: false
-                                })
-                              }}
-                              maxLength='6'
-                              onChange={(campoQuota, e) => {
-                                this.setState({ campoQuota })
-                              }}
-                              validationOption={{
-                                name: 'Nº de tickets disponibles',
-                                check: true,
-                                required: true,
-                                min: 1,
-                                max: 100000,
-                                type: 'number'
-                              }}
-                            />
-                          </td>
-                          <td className='col4'>
-                            <button onClick={this.addLocation} className='button'>
-                              <MaterialIcon icon='add' size='tiny' color={colorPalette.blue._800} />
-                            </button>
-                          </td>
-                        </tr>
-                        {this.state.locations.map(function(item, index) {
-                          return (
-                            <tr key={index}>
-                              <td className='col2'>{item.name}</td>
-                              <td className='col3'>{item.quota}</td>
-                              <td className='col4'>
-                                <button
-                                  onClick={() => {
-                                    _this.removeLocation(item)
+                        <br />
+                      </div>
+                      <div className='contentModal'>
+                        <table className='tableModal'>
+                          <thead>
+                            <tr>
+                              <td className='Headcol2'>Nombre de la ubicación</td>
+                              <td className='Headcol3'>Nº de tickets</td>
+                              <td className='Headcol4'> </td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td className='col2'>
+                                <Textbox
+                                  tabIndex='10'
+                                  id='campoName'
+                                  name='campoName'
+                                  type='text'
+                                  value={campoName}
+                                  classNameInput='campoName'
+                                  maxLength='50'
+                                  validate={validatePop}
+                                  validationCallback={res => {
+                                    this.setState({
+                                      hasCampoNameError: res,
+                                      validatePop: false
+                                    })
                                   }}
-                                >
-                                  <MaterialIcon
-                                    icon='remove'
-                                    size='tiny'
-                                    color={colorPalette.red._900}
-                                  />
-                                </button>
+                                  onChange={(campoName, e) => {
+                                    this.setState({ campoName })
+                                  }}
+                                  validationOption={{
+                                    name: 'Nombre de la ubicación',
+                                    check: true,
+                                    required: true
+                                  }}
+                                />
+                              </td>
+                              <td className='col3'>
+                                <Textbox
+                                  tabIndex='11'
+                                  id='campoQuota'
+                                  name='campoQuota'
+                                  type='text'
+                                  value={campoQuota}
+                                  classNameInput='campoQuota'
+                                  validate={validatePop}
+                                  validationCallback={res => {
+                                    this.setState({
+                                      hasQuotaCodeError: res,
+                                      validatePop: false
+                                    })
+                                  }}
+                                  maxLength='6'
+                                  onChange={(campoQuota, e) => {
+                                    this.setState({ campoQuota })
+                                  }}
+                                  validationOption={{
+                                    name: 'Nº de tickets disponibles',
+                                    check: true,
+                                    required: true,
+                                    min: 1,
+                                    max: 100000,
+                                    type: 'number'
+                                  }}
+                                />
+                              </td>
+                              <td className='col4'>
+                                <Button onClick={this.addLocation} className='button' label='+' />
                               </td>
                             </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                    <div />
-                    <hr />
-                    <h4>Usuarios Validadores</h4>
-                    <p>
-                      Los usuarios ingresados acá recibirán un link de acceso para validar los
-                      tickets del evento
-                    </p>
-                    <div className='label'>
-                      Ingrese el email de cada uno de los validadores autorizados para el evento
+
+                            {this.state.locations.map(function(item, index) {
+                              return (
+                                <tr key={index}>
+                                  <td className='col2'>{item.name}</td>
+                                  <td className='col3'>{item.quota}</td>
+                                  <td className='col4'>
+                                    <Button
+                                      className='button'
+                                      label='-'
+                                      onClick={() => {
+                                        _this.removeLocation(item)
+                                      }}
+                                    />
+                                  </td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                        <div />
+                        <div className='label'>Usuarios validadores del evento *(Indique mail)</div>
+                        <div>
+                          <Chips
+                            value={validators}
+                            placeholder='Agregar email'
+                            onChange={this.handleAdditionValidator}
+                          />
+                        </div>
+                      </div>
+                      <div className='actions'>
+                        <Button
+                          className='p-button-secondary'
+                          label='Cerrar'
+                          style={{ marginRight: 10 }}
+                          onClick={() => {
+                            close()
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className='col-12'>
-                      <ReactTags
-                        placeholder='Agregar email'
-                        inputFieldPosition='bottom'
-                        tags={validators}
-                        suggestions={suggestions}
-                        handleDelete={this.handleDeleteValidator}
-                        handleAddition={this.handleAdditionValidator}
-                        handleDrag={this.handleDragValidator}
-                        delimiters={delimiters}
-                      />
-                    </div>
-                  </div>
-                  <div className='actions'>
-                    <button
-                      className='btn btn-outline-primary'
-                      style={{ marginRight: 10 }}
-                      onClick={() => {
-                        close()
-                      }}
-                    >
-                      Cerrar
-                    </button>
-                  </div>
-                </div>
+                  )}
+                </Popup>
+              </div>
+              <br />
+              <Button
+                onClick={() => this.goBack()}
+                style={{ marginRight: 10 }}
+                label='Cancelar'
+                className='p-button-secondary'
+                type='button'
+              />
+              {this.props.type === 'create' && (
+                <Button label='Crear Evento' style={{ marginRight: 10 }} type='submit' />
+
               )}
-            </Popup>
-          </div>
-          <br />
-          <button
-            onClick={() => this.goBack()}
-            className='btn btn-outline-secondary'
-            style={{ marginRight: 10 }}
-          >
-            Cancelar
-          </button>
-          {this.props.type === 'create' && (
-            <button
-              onClick={() => this.validateForm()}
-              className='btn btn-outline-primary'
-              style={{ marginRight: 10 }}
-            >
-              Crear Evento
-            </button>
-          )}
-          {this.props.type === 'update' && (
-            <button
-              onClick={() => this.validateForm()}
-              className='btn btn-outline-primary'
-              style={{ marginRight: 10 }}
-            >
-              Guardar
-            </button>
-          )}
-          {this.props.type === 'update' && (
-            <button
-              style={{ marginRight: 10 }}
-              onClick={() => this.confirmDelete()}
-              className='btn btn-outline-danger'
-            >
-              Eliminar
-            </button>
-          )}
-        </Section>
+              {this.props.type === 'update' && (
+                <Button label='Guardar' style={{ marginRight: 10 }} type='submit' />
+              )}
+              {this.props.type === 'update' && (
+                <Button
+                  className='p-button-danger'
+                  type='button'
+                  label='Eliminar'
+                  style={{ marginRight: 10 }}
+                  onClick={() => this.confirmDelete()}
+                />
+              )}
+            </Section>
+          </form>
+        </div>
       </div>
     )
   }
