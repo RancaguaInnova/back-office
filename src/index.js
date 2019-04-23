@@ -8,6 +8,11 @@ import { AppContainer } from 'react-hot-loader'
 import 'primereact/resources/themes/nova-light/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
+
+// .env file to store environmental variables and sensitive info
+import dotenv from 'dotenv'
+dotenv.config()
+
 ReactDOM.render(
   <AppContainer>
     <App />
