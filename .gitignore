@@ -9,4 +9,4 @@ src/googleApiKey.js
 .package_master.json.icloud
 yarn-error.log
 
-src/apiKeys.js
+.env

@@ -6,7 +6,7 @@
 
 :local(.content) {
   composes: shadow from global;
-  width: 400px;
+  width: 600px;
   padding: 40px 20px;
   background-color: #fff;
   display: flex;

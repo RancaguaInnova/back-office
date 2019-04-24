@@ -30,6 +30,7 @@
     "autobind-decorator": "^2.4.0",
     "babel-polyfill": "^6.26.0",
     "date-fns": "^2.0.0-alpha.27",
+    "dotenv": "^7.0.0",
     "evaporate": "^2.1.4",
     "firebase": "^5.9.4",
     "graphql": "^14.0.2",
