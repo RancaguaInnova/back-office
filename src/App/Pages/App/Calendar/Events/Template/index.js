@@ -147,10 +147,7 @@ export default class TemplateEvent extends Component {
         campoQuota: 0,
         hasQuotaCodeError: true,
         hasCampoNameError: true,
-        hasNameError: true,
-        hasDescriptionError: true,
-        hasNombreError: true,
-        hasDepartmentIdError: true,
+
         tags: eventTags || [],
         isOpen: false,
         validators: validators || []
@@ -158,8 +155,10 @@ export default class TemplateEvent extends Component {
     } else {
       this.state = {
         visible: false,
-
+        name: '',
+        description: '',
         detail: '',
+        externalUrl: '',
         event: {},
         errorMessages: {},
         date: new Date(),
@@ -172,12 +171,7 @@ export default class TemplateEvent extends Component {
         campoQuota: 0,
         hasQuotaCodeError: true,
         hasCampoNameError: true,
-        hasNameError: true,
-        hasDescriptionError: true,
-        hasNombreError: true,
-        hastimeError: true,
-        hasendTimeError: true,
-        hasDepartmentIdError: true,
+
         latitude: -34.1703131,
         longitude: -70.74064759999999,
         loading: true,
@@ -507,22 +501,10 @@ export default class TemplateEvent extends Component {
       campoName,
       validatePop,
       campoQuota,
-      name,
-      date,
-      time,
-      endTime,
-      externalUrl,
-      optionLabel,
-      showInCalendar,
-      departmentId,
-      imageUrl,
       formattedAddress,
       latitude,
       longitude,
-      description,
-      tags,
-      validators,
-      detail
+      validators
     } = this.state
     var _this = this
     return (
@@ -544,7 +526,7 @@ export default class TemplateEvent extends Component {
             <Section title={this.props.title} description={this.props.description} top>
               <div className='label'>Nombre</div>
               <InputText
-                value={name}
+                value={this.state.name}
                 onChange={e => {
                   this.setState({ name: e.target.value })
                 }}
@@ -554,7 +536,7 @@ export default class TemplateEvent extends Component {
               />
               <div className='label'>Descripción</div>
               <InputText
-                value={description}
+                value={this.state.description}
                 onChange={e => {
                   this.setState({ description: e.target.value })
                 }}
@@ -564,7 +546,7 @@ export default class TemplateEvent extends Component {
               />
               <div className='label'>Link a información</div>
               <InputText
-                value={externalUrl}
+                value={this.state.externalUrl}
                 onChange={e => {
                   this.setState({ externalUrl: e.target.value })
                 }}
@@ -576,7 +558,7 @@ export default class TemplateEvent extends Component {
               <Calendar
                 locale={Es}
                 dateFormat='dd-mm-yy'
-                value={date}
+                value={this.state.date}
                 onChange={e => this.setState({ date: e.value })}
               />
               <div className='label'>Hora de inicio</div>
@@ -585,7 +567,7 @@ export default class TemplateEvent extends Component {
                 timeOnly={true}
                 showTime={true}
                 hourFormat='24'
-                value={time}
+                value={this.state.time}
                 onChange={e => this.setState({ time: e.value })}
               />
               <div className='label'>Hora de término</div>
@@ -594,7 +576,7 @@ export default class TemplateEvent extends Component {
                 timeOnly={true}
                 showTime={true}
                 hourFormat='24'
-                value={endTime}
+                value={this.state.endTime}
                 onChange={e => this.setState({ endTime: e.value })}
               />
               <div className='label'>Dirección </div>
@@ -608,8 +590,8 @@ export default class TemplateEvent extends Component {
                 Texto que aparecerá en campos para seleccionar un evento
               </div>
               <InputText
-                type='hiiden'
-                value={optionLabel}
+                type='hidden'
+                value={this.state.optionLabel}
                 onChange={e => {
                   this.setState({ optionLabel: e.target.value })
                 }}
@@ -621,7 +603,7 @@ export default class TemplateEvent extends Component {
               <div className='os-input-container'>
                 <InputText
                   type='url'
-                  value={imageUrl}
+                  value={this.state.imageUrl}
                   onChange={e => {
                     this.setState({ imageUrl: e.target.value })
                   }}
@@ -684,7 +666,7 @@ export default class TemplateEvent extends Component {
               <div className='label'> </div>
               <Checkbox
                 onChange={e => this.setState({ showInCalendar: e.checked })}
-                checked={showInCalendar}
+                checked={this.state.showInCalendar}
                 tabIndex='8'
               />
               <label htmlFor='showInCalendar' className='p-checkbox-label'>
@@ -692,7 +674,7 @@ export default class TemplateEvent extends Component {
               </label>
               <div className='label'>Departamento al que pertenece el evento</div>
               <Dropdown
-                value={departmentId}
+                value={this.state.departmentId}
                 options={this.getDepartmentOptions()}
                 onChange={e => this.setState({ departmentId: e.target.value })}
                 editable={false}
@@ -701,7 +683,7 @@ export default class TemplateEvent extends Component {
               <div className='label'>Tags</div>
               <div>
                 <Chips
-                  value={tags}
+                  value={this.state.tags}
                   onChange={e => {
                     this.setState({ tags: e.value })
                   }}
@@ -730,8 +712,8 @@ export default class TemplateEvent extends Component {
                       </div>
                       <div>
                         <Editor
-                          style={{ height: '320px' }}
-                          value={detail}
+                          style={{ height: '200px' }}
+                          value={this.state.detail}
                           onTextChange={e => this.setState({ detail: e.htmlValue })}
                         />
 
@@ -861,7 +843,6 @@ export default class TemplateEvent extends Component {
               />
               {this.props.type === 'create' && (
                 <Button label='Crear Evento' style={{ marginRight: 10 }} type='submit' />
-
               )}
               {this.props.type === 'update' && (
                 <Button label='Guardar' style={{ marginRight: 10 }} type='submit' />
