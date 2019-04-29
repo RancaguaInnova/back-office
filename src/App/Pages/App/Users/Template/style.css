@@ -1,0 +1,11 @@
+.w100 {
+  width: 100%;
+}
+
+.IdentifierDiv {
+  display: flex
+}
+
+.p-inputtextIdentifier {
+  margin-left: 10px;
+}
