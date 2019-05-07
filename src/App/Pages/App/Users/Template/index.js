@@ -19,6 +19,7 @@ import { Calendar } from 'primereact/calendar'
 import Es from '../../../../i18n/calendarEs'
 import _merge from 'lodash/merge'
 import formatRut from 'App/helpers/format/formatRut'
+import getSession from 'App/helpers/auth/getSession'
 
 import './style.css'
 
@@ -35,6 +36,10 @@ import './style.css'
         _id
         name
       }
+    }
+    Roles {
+      _id
+      name
     }
   }
 
@@ -70,6 +75,7 @@ export default class TemplateUsers extends Component {
     userId: PropTypes.string,
     departments: PropTypes.object,
     user: PropTypes.object,
+    Roles: PropTypes.array,
     createUser: PropTypes.func,
     updateUser: PropTypes.func,
     deleteUser: PropTypes.func,
@@ -105,7 +111,8 @@ export default class TemplateUsers extends Component {
           number: '',
           areaCode: ''
         }
-      }
+      },
+      roles: []
     }
   }
   goBack() {
@@ -126,11 +133,18 @@ export default class TemplateUsers extends Component {
       if (phone === null) {
         phone = {}
       }
-      var profile = _merge(state.profile, { birthdate: birthdate, address: address, phone: phone })
-
-      state.profile = profile
+      let departmentIds = this.formatTagsDepartaments(state.profile.departmentIds)
       console.log(state)
+      let roles = this.formatRolesToSelect(state.roles || [])
 
+      var profile = _merge(state.profile, {
+        birthdate: birthdate,
+        address: address,
+        phone: phone,
+        departmentIds: departmentIds
+      })
+      state.profile = profile
+      state.roles = roles
       this.setState(state)
     }
   }
@@ -140,7 +154,6 @@ export default class TemplateUsers extends Component {
       await this.props.deleteUser({ _id: this.state._id })
       this.onSuccessDelete()
     } catch (error) {
-      console.log(error)
       this.props.showMessage('Ocurrió un error al eliminar el usuario')
     }
   }
@@ -173,6 +186,9 @@ export default class TemplateUsers extends Component {
 
     let departmentIds = this.formatBackTags(user.profile.departmentIds)
     user.profile.departmentIds = departmentIds
+    let roles = this.formatApiRoles(user.roles)
+    user.roles = roles
+
     delete user.email
     if (this.props.type === 'create') {
       try {
@@ -180,11 +196,10 @@ export default class TemplateUsers extends Component {
         const emails = Object.assign({
           emails: [{ address: email, verified: false }]
         })
-
+        user.emails = emails
         await this.props.createUser({ user: user })
         this.onSuccessInsert()
       } catch (error) {
-        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     } else {
@@ -192,8 +207,6 @@ export default class TemplateUsers extends Component {
         await this.props.updateUser({ user: user })
         this.onSuccessUpdate()
       } catch (error) {
-        console.log(error)
-
         this.props.showMessage('Ocurrión un error!')
       }
     }
@@ -225,10 +238,63 @@ export default class TemplateUsers extends Component {
       return ar
     }
   }
+  formatTagsDepartaments() {
+    let a = this.state.profile.departmentIds || []
+    let departments = this.props.departments.items
+    if (a.length === 0) {
+      return []
+    } else {
+      let departmentsSelect = departments.map(function(obj) {
+        var rObj = {}
+        let select = a.indexOf(obj._id)
+        if (select !== -1) {
+          rObj = obj
+          return rObj
+        }
+      })
+      var filtered = departmentsSelect.filter(function(el) {
+        return el !== null && el !== undefined
+      })
+      return filtered
+    }
+  }
+  formatRolesToSelect(ArrayRoles) {
+    if (ArrayRoles.length > 0) {
+      let Roles = this.props.Roles.map(function(obj) {
+        var rObj = {}
+        let select = ArrayRoles.indexOf(obj.name)
+        if (select !== -1) {
+          rObj = obj
+          return rObj
+        }
+      })
+
+      var filtered = Roles.filter(function(el) {
+        return el !== null && el !== undefined
+      })
+      return filtered
+    } else {
+      return []
+    }
+  }
+  formatApiRoles(arrayRoles) {
+    let a = arrayRoles || []
+    if (a.length === 0) {
+      return []
+    } else {
+      let ar = a.map(function(obj) {
+        var rObj = {}
+        rObj = obj.name || ''
+
+        return rObj
+      })
+      return ar
+    }
+  }
 
   render() {
     const arrayGender = [{ label: 'Hombre', value: 'hombre' }, { label: 'Mujer', value: 'mujer' }]
-
+    const Session = getSession()
     return (
       <form onSubmit={this.onSubmit}>
         <Section title={this.props.title} description={this.props.description} top>
@@ -420,9 +486,11 @@ export default class TemplateUsers extends Component {
                 value={this.state.profile.phone.number || ''}
                 type='number'
                 onChange={e => {
-                  let phone = { ...this.state }
+                  let profile = { ...this.state.profile }
+                  let phone = { ...profile.phone }
                   phone.number = e.target.value
-                  this.setState({ phone })
+                  profile.phone = phone
+                  this.setState({ profile })
                 }}
               />
             </div>
@@ -453,12 +521,27 @@ export default class TemplateUsers extends Component {
               options={this.props.departments.items}
               onChange={e => {
                 let profile = { ...this.state.profile }
-                console.log(e.value)
                 profile.departmentIds = e.value
                 this.setState({ profile })
               }}
               filter={true}
             />
+            {Session.roles.indexOf('admin') > -1 && <div className='label'>Rol(es)</div>}
+            {Session.roles.indexOf('admin') > -1 && (
+              <MultiSelect
+                className='w100'
+                optionLabel='name'
+                dataKey='_id'
+                value={this.state.roles}
+                options={this.props.Roles}
+                onChange={e => {
+                  let roles = { ...this.state }
+                  roles = e.value
+                  this.setState({ roles })
+                }}
+                filter={true}
+              />
+            )}
             <p />
             <WarningFrame warningMessage='Un usuario desactivado no podrá ingresar a la aplicación'>
               <div className='label'>Usuario Activo:</div>
