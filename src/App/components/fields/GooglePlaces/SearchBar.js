@@ -26,7 +26,7 @@ class SearchPlaceBar extends React.Component {
       lg = props.longitude
     }
     this.state = {
-      address: props.address || '',
+      address: this.props.address || '',
       errorMessage: '',
       latitude: l,
       longitude: lg,
@@ -39,25 +39,14 @@ class SearchPlaceBar extends React.Component {
         administrative_area_level_1: 'short_name',
         country: 'long_name',
         postal_code: 'short_name',
-        administrative_area_level_2: 'short_name'
+        administrative_area_level_2: 'short_name',
+        establishment: 'long_name',
+        park: 'long_name',
+        point_of_interest: 'long_name',
+        stadium: 'long_name'
       },
-      street_number: '',
-      route: '',
-      locality: '',
-      administrative_area_level_1: '',
-      country: '',
-      postal_code: '',
-      administrative_area_level_2: '',
-      marker: null,
-      contactInformationAddress: {
-        streetName: '',
-        streetNumber: '',
-        departmentNumber: '',
-        city: '',
-        postalCode: '',
-        administrativeAreaLevel1: '',
-        administrativeAreaLevel2: ''
-      }
+
+      marker: null
     }
   }
 
@@ -70,9 +59,17 @@ class SearchPlaceBar extends React.Component {
     })
   }
 
-  fillInAddress = place => {
+  fillInAddress = (place, site) => {
     return new Promise((resolve, reject) => {
       try {
+        var streetNumber = ''
+        var departmentNumber = ''
+        var streetName = ''
+        var city = ''
+        var postalCode = ''
+        var administrativeAreaLevel1 = ''
+        var administrativeAreaLevel2 = ''
+        var country = ''
         for (var i = 0; i < place.address_components.length; i++) {
           var addressType = place.address_components[i].types[0]
 
@@ -80,72 +77,68 @@ class SearchPlaceBar extends React.Component {
             if (addressType === 'street_number') {
               let cadena = place.address_components[i][this.state.componentForm[addressType]]
               let aux = cadena.split(',')
-              this.setState({
-                street_number: aux[0]
-              })
+              streetNumber = aux[0]
               try {
-                this.setState({
-                  departmentNumber: aux[1]
-                })
+                departmentNumber = aux[1]
               } catch (e) {
-                this.setState({
-                  departmentNumber: ''
-                })
+                departmentNumber = ''
               }
             } else if (addressType === 'route') {
-              let val = place.address_components[i][this.state.componentForm[addressType]]
-              this.setState({
-                streetName: val
-              })
+              streetName =
+                streetName + place.address_components[i][this.state.componentForm[addressType]]
+            } else if (
+              addressType === 'establishment' ||
+              addressType === 'park' ||
+              addressType === 'point_of_interest' ||
+              addressType === 'stadium'
+            ) {
+              streetName =
+                place.address_components[i][this.state.componentForm[addressType]] +
+                ' - ' +
+                streetName
             } else if (addressType === 'locality') {
-              let val = place.address_components[i][this.state.componentForm[addressType]]
-              this.setState({
-                city: val
-              })
+              city = place.address_components[i][this.state.componentForm[addressType]]
             } else if (addressType === 'postal_code') {
-              let val = place.address_components[i][this.state.componentForm[addressType]]
-              this.setState({
-                postalCode: val
-              })
+              postalCode = place.address_components[i][this.state.componentForm[addressType]]
             } else if (addressType === 'administrative_area_level_1') {
-              let val = place.address_components[i][this.state.componentForm[addressType]]
-              this.setState({
-                administrative_area_level_1: val
-              })
+              administrativeAreaLevel1 =
+                place.address_components[i][this.state.componentForm[addressType]]
             } else if (addressType === 'administrative_area_level_2') {
-              let val = place.address_components[i][this.state.componentForm[addressType]]
-              this.setState({
-                administrative_area_level_2: val
-              })
+              administrativeAreaLevel2 =
+                place.address_components[i][this.state.componentForm[addressType]]
             } else if (addressType === 'country') {
-              let val = place.address_components[i][this.state.componentForm[addressType]]
-              this.setState({
-                country: val
-              })
+              country = place.address_components[i][this.state.componentForm[addressType]]
             }
           }
         }
-
-        this.setState({
+        let contactInformationAddress = {
+          streetName: streetName,
+          streetNumber: streetNumber,
+          departmentNumber: departmentNumber,
+          city: city,
+          postalCode: postalCode,
+          administrativeAreaLevel1: administrativeAreaLevel1,
+          administrativeAreaLevel2: administrativeAreaLevel2,
+          country: country,
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-          contactInformationAddress: {
-            streetName: this.state.streetName,
-            streetNumber: this.state.street_number,
-            departmentNumber: this.state.departmentNumber,
-            city: this.state.city,
-            postalCode: this.state.postal_code,
-            administrativeAreaLevel1: this.state.administrative_area_level_1,
-            administrativeAreaLevel2: this.state.administrative_area_level_2,
-            country: this.state.country,
+          formatted_address: place.formatted_address,
+          place_id: place.place_id
+        }
+
+        if (site === 'marker') {
+          this.setState({
             latitude: place.geometry.location.lat(),
             longitude: place.geometry.location.lng(),
-            formatted_address: place.formatted_address,
-            place_id: place.place_id
-          }
-        })
-
-        this.props.handleChangeAddress(this.state.contactInformationAddress)
+            address: place.formatted_address
+          })
+        } else {
+          this.setState({
+            latitude: place.geometry.location.lat(),
+            longitude: place.geometry.location.lng()
+          })
+        }
+        this.props.handleChangeAddress(contactInformationAddress)
 
         this.initMap()
         resolve(1)
@@ -157,7 +150,9 @@ class SearchPlaceBar extends React.Component {
 
   handleSelect = selected => {
     this.setState({ isGeocoding: true, address: selected })
-    geocodeByAddress(selected).then(res => this.fillInAddress(res[0]))
+    geocodeByAddress(selected).then(res => {
+      this.fillInAddress(res[0], 'select')
+    })
   }
 
   handleCloseClick = () => {
@@ -183,6 +178,21 @@ class SearchPlaceBar extends React.Component {
       administrative_area_level_2: '',
       maker: null
     })
+    let contactInformationAddress = {
+      streetName: '',
+      streetNumber: '',
+      departmentNumber: '',
+      city: '',
+      postalCode: '',
+      administrativeAreaLevel1: '',
+      administrativeAreaLevel2: '',
+      country: '',
+      latitude: -34.1703131,
+      longitude: -70.74064759999999,
+      formatted_address: '',
+      place_id: ''
+    }
+    this.props.handleChangeAddress(contactInformationAddress)
   }
 
   handleError = (status, clearSuggestions) => {
@@ -196,7 +206,7 @@ class SearchPlaceBar extends React.Component {
       lng: e.latLng.lng()
     }
     geocodeByPlaceLocation(LatLng).then(res => {
-      this.fillInAddress(res[0])
+      this.fillInAddress(res[0], 'marker')
     })
   }
 

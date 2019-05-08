@@ -8,7 +8,10 @@ export default {
       profile {
         firstName
         lastName
+        typeIdentificationDocument
         identifier
+        birthdate
+        gender
         address {
           streetName
           streetNumber
@@ -26,6 +29,7 @@ export default {
           mobilePhone
         }
         educationalLevel
+        departmentIds
       }
       active
       roles

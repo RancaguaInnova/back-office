@@ -27,7 +27,6 @@ import { Editor } from 'primereact/editor'
 import Es from '../../../../../i18n/calendarEs'
 import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
-
 @withRouter
 @withMessage
 @withMutation(gql`

@@ -1,36 +1,19 @@
 import React from 'react'
-import Section from 'App/components/Section'
-import Button from 'orionsoft-parts/lib/components/Button'
-import AutoForm from 'App/components/AutoForm'
-import { withRouter } from 'react-router'
+import Template from '../Template/'
 import PropTypes from 'prop-types'
-import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
-
-@withRouter
-@withMessage
 export default class CreateUser extends React.Component {
   static propTypes = {
-    history: PropTypes.object,
-    showMessage: PropTypes.func
+    history: PropTypes.object
   }
-
-  onSuccess(user) {
-    this.props.showMessage('Usuario creado')
-    this.props.history.push(`/usuarios/lista`)
-  }
-
   render() {
     return (
-      <Section title="Crear Usuario" description="Crear un nuevo usuario" top>
-        <AutoForm mutation="createUser" ref="form" onSuccess={this.onSuccess} />
-        <br />
-        <Button to="/usuarios/lista" style={{ marginRight: 10 }}>
-          Cancelar
-        </Button>
-        <Button onClick={() => this.refs.form.submit()} primary>
-          Crear Usuario
-        </Button>
-      </Section>
+      <Template
+        type='create'
+        userId=''
+        title='Crear Usuario'
+        description='Creación de usuarios'
+        history={this.props.history}
+      />
     )
   }
 }
