@@ -403,7 +403,6 @@ export default class TemplateEvent extends Component {
       locations: s.locations,
       validators: s.validators
     }
-    console.log(event)
     return event
   }
 
