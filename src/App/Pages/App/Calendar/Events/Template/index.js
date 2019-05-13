@@ -735,6 +735,7 @@ export default class TemplateEvent extends Component {
                   onChange={e => {
                     this.setState({ tags: e.value })
                   }}
+                  tooltip='Para agregar un nuevo tag debe ingresar el valor  y dar enter'
                 />
               </div>
               <div>
@@ -864,6 +865,7 @@ export default class TemplateEvent extends Component {
                             value={validators}
                             placeholder='Agregar email'
                             onChange={this.handleAdditionValidator}
+                            tooltip='Para agregar un nuevo validador debe ingresar el email  y dar enter'
                           />
                         </div>
                       </div>
