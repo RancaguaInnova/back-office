@@ -113,14 +113,15 @@ export default class TemplateEvent extends Component {
 
       this.state = {
         visible: false,
-        detail: event.detail,
+        detail: event.detail || '',
+        place: event.place || '',
         _id: event._id,
         firebaseIdEvent: event.firebaseIdEvent,
         name: event.name || '',
         description: event.description || '',
         date: new Date(event.date),
-        time: time,
-        endTime: endTime,
+        time: time || '',
+        endTime: endTime || '',
         streetName: event.address.streetName || '',
         streetNumber: event.address.streetNumber || '',
         departmentNumber: event.address.departmentNumber || '',
@@ -154,6 +155,7 @@ export default class TemplateEvent extends Component {
     } else {
       this.state = {
         visible: false,
+        place: '',
         name: '',
         description: '',
         detail: '',
@@ -390,6 +392,7 @@ export default class TemplateEvent extends Component {
         latitude: s.latitude,
         longitude: s.longitude
       },
+      place: s.place,
       optionLabel: s.optionLabel,
       departmentId: s.departmentId,
       externalUrl: s.externalUrl,
@@ -400,6 +403,7 @@ export default class TemplateEvent extends Component {
       locations: s.locations,
       validators: s.validators
     }
+    console.log(event)
     return event
   }
 
@@ -571,7 +575,7 @@ export default class TemplateEvent extends Component {
               />
               <div className='label'>Hora de término</div>
               <Calendar
-                required={true}
+                required={false}
                 timeOnly={true}
                 showTime={true}
                 hourFormat='24'
@@ -585,6 +589,52 @@ export default class TemplateEvent extends Component {
                 longitude={longitude}
                 address={formattedAddress}
               />
+              <div className='label'>Lugar</div>
+              <InputText
+                value={this.state.place}
+                onChange={e => {
+                  this.setState({ place: e.target.value })
+                }}
+                className='p-inputtext'
+                required={false}
+              />
+              <div className='label'>Calle</div>
+              <InputText
+                value={this.state.streetName}
+                onChange={e => {
+                  this.setState({ streetName: e.target.value })
+                }}
+                className='p-inputtext'
+                required={false}
+              />
+              <div className='label'>Número</div>
+              <InputText
+                value={this.state.streetNumber}
+                onChange={e => {
+                  this.setState({ streetNumber: e.target.value })
+                }}
+                className='p-inputtext'
+                required={false}
+              />
+              <div className='label'>Departamento</div>
+              <InputText
+                value={this.state.departmentNumber}
+                onChange={e => {
+                  this.setState({ departmentNumber: e.target.value })
+                }}
+                className='p-inputtext'
+                required={false}
+              />
+              <div className='label'>Ciudad</div>
+              <InputText
+                value={this.state.city}
+                onChange={e => {
+                  this.setState({ city: e.target.value })
+                }}
+                className='p-inputtext'
+                required={false}
+              />
+
               <div className='label hidden'>
                 Texto que aparecerá en campos para seleccionar un evento
               </div>
