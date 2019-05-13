@@ -134,7 +134,6 @@ export default class TemplateUsers extends Component {
         phone = {}
       }
       let departmentIds = this.formatTagsDepartaments(state.profile.departmentIds)
-      console.log(state)
       let roles = this.formatRolesToSelect(state.roles || [])
 
       var profile = _merge(state.profile, {

@@ -40,6 +40,7 @@ export default {
       sendFirebase
       firebaseIdEvent
       validators
+      place
     }
   `
 }
