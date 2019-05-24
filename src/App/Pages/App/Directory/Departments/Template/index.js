@@ -3,20 +3,23 @@ import PropTypes from 'prop-types'
 import Section from 'App/components/Section'
 import { withRouter } from 'react-router'
 import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
-import styles from './styles.css'
 import SearchBar from 'App/components/fields/GooglePlaces'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import autobind from 'autobind-decorator'
-import { Textbox, Select } from 'react-inputs-validation'
-import 'react-inputs-validation/lib/react-inputs-validation.min.css'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import DepartmentFragments from 'App/fragments/Department'
-import OfficialsFragments from 'App/fragments/Official'
-import ServiceAreasFragments from 'App/fragments/ServiceArea'
-import FormatEmail from 'App/helpers/format/formatMail'
 import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import { InputText } from 'primereact/inputtext'
+import { Dropdown } from 'primereact/dropdown'
+import _mergeWith from 'lodash/mergeWith'
+import { Button } from 'primereact/button'
+import './styles.css'
+import FileUploader from 'react-firebase-file-uploader'
+import { ProgressSpinner } from 'primereact/progressspinner'
+import firebase from '/src/App/helpers/auth/firebaseConfig'
+import { Chips } from 'primereact/chips'
 
 @withRouter
 @withMessage
@@ -45,15 +48,17 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
       ...FullDepartment
     }
     officials {
-      ...SelectOfficial
+      items {
+        value: _id
+        label: optionLabel
+      }
     }
-    serviceAreas {
-      ...SelectServiceArea
+    informationCategoriesList {
+      value: _id
+      label: name
     }
   }
   ${DepartmentFragments.FullDepartment}
-  ${OfficialsFragments.Officials}
-  ${ServiceAreasFragments.ServiceAreas}
 `)
 class TemplateDepartment extends React.Component {
   static propTypes = {
@@ -64,77 +69,61 @@ class TemplateDepartment extends React.Component {
     updateDepartment: PropTypes.func,
     deleteDepartment: PropTypes.func,
     officials: PropTypes.object,
-    serviceAreas: PropTypes.object,
+    informationCategoriesList: PropTypes.array,
     type: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string
   }
   constructor(props) {
     super(props)
-    if (this.props.type === 'update') {
-      let department = this.props.department
-      let address =
-        department && department.contactInformation ? department.contactInformation.address : []
-      let phone =
-        department && department.contactInformation ? department.contactInformation.phone : []
-
-      this.state = {
-        _id: department._id,
-        validate: false,
-        name: department.name || '',
-        optionLabel: department.optionLabel || '',
-        managerId: department.managerId || '',
-        serviceAreaId: department.serviceAreaId || '',
-        businessHours: department.businessHours || '',
-        description: department.description || '',
-        imageUrl: department.imageUrl || '',
-        city: address.city || '',
-        address: department.address || '',
-        country: address.country || '',
-        streetNumber: address.streetNumber || '',
-        departmentNumber: address.departmentNumber || '',
-        streetName: address.streetName || '',
-        administrativeAreaLevel2: address.administrativeAreaLevel2 || '',
-        administrativeAreaLevel1: address.administrativeAreaLevel1 || '',
-        formatted_address: address.formatted_address,
-        place_id: address.place_id || '',
-        latitude: address.latitude,
-        longitude: address.longitude,
-        postalCode: address.postalCode || '',
-        areaCode: phone.areaCode || null,
-        number: phone.number || '',
-        mobilePhone: phone.mobilePhone || '',
-        email: department.contactInformation.email || ''
-      }
-    } else {
-      this.state = {
-        validate: false,
-        officialsArray: this.props.officials.items,
-        serviceAreasArray: this.props.serviceAreas.items,
-        name: '',
-        optionLabel: '',
-        managerId: '',
-        serviceAreaId: '',
-        businessHours: '',
-        description: '',
-        imageUrl: '',
-        city: '',
-        address: '',
-        country: '',
-        streetNumber: '',
-        streetName: '',
-        administrativeAreaLevel2: '',
-        administrativeAreaLevel1: '',
-        postalCode: '',
-        hasNameError: true,
-        hasEmailCodeError: true
+    var department = {
+      _id: '',
+      name: '',
+      optionLabel: '',
+      managerId: '',
+      serviceAreaId: '',
+      businessHours: '',
+      description: '',
+      imageUrl: '',
+      address: '',
+      tags: [],
+      contactInformation: {
+        phone: {
+          areaCode: null,
+          number: null,
+          mobilePhone: null
+        },
+        address: {
+          streetName: '',
+          streetNumber: '',
+          departmentNumber: '',
+          city: '',
+          postalCode: '',
+          administrativeAreaLevel1: '',
+          administrativeAreaLevel2: '',
+          country: '',
+          formatted_address: '',
+          place_id: '',
+          latitude: null,
+          longitude: null
+        },
+        email: ''
       }
     }
-    this.validateForm = this.validateForm.bind(this)
-    this.validateFormUpdate = this.validateFormUpdate.bind(this)
+    this.state = {
+      department: department,
+      officialsArray: this.props.officials.items,
+      informationCategoriesList: this.props.informationCategoriesList
+    }
   }
-  componentDidMount() {}
-
+  componentDidMount() {
+    if (this.props.type === 'update') {
+      var department = _mergeWith(this.state.department, this.props.department, (a, b) =>
+        b === null ? a : undefined
+      )
+      this.setState(department)
+    }
+  }
   onSuccessInsert() {
     this.props.showMessage('Departamento creado')
     this.props.history.push(`/directorio/departamentos/`)
@@ -148,67 +137,7 @@ class TemplateDepartment extends React.Component {
     this.props.history.push(`/directorio/departamentos/`)
   }
 
-  setDepartment() {
-    let s = this.state
-    var department = {
-      _id: s._id,
-      name: s.name,
-      optionLabel: s.optionLabel,
-      managerId: s.managerId,
-      serviceAreaId: s.serviceAreaId,
-      businessHours: s.businessHours,
-      description: s.description,
-      imageUrl: s.imageUrl,
-      address: s.address,
-      tags: null,
-      contactInformation: {
-        phone: {
-          areaCode: s.areaCode,
-          number: s.number,
-          mobilePhone: s.mobilePhone
-        },
-        address: {
-          streetName: s.streetName,
-          streetNumber: s.streetNumber,
-          departmentNumber: s.departmentNumber,
-          city: s.city,
-          postalCode: s.postalCode,
-          administrativeAreaLevel1: s.administrativeAreaLevel1,
-          administrativeAreaLevel2: s.administrativeAreaLevel2,
-          country: s.country,
-          formatted_address: s.formatted_address,
-          place_id: s.place_id,
-          latitude: s.latitude,
-          longitude: s.longitude
-        },
-        email: s.email
-      }
-    }
-    return department
-  }
-
   @autobind
-  async onSubmitInsert() {
-    try {
-      var department = this.setDepartment()
-      await this.props.createDepartment({ department: department })
-      this.onSuccessInsert()
-    } catch (error) {
-      this.props.showMessage('Ocurrió un error al registrar el departamento')
-    }
-  }
-
-  @autobind
-  async onSubmitUpdate() {
-    try {
-      var department = this.setDepartment()
-      await this.props.updateDepartment({ department: department })
-      this.onSuccessUpdate()
-    } catch (error) {
-      this.props.showMessage('Ocurrió un error al editar el departamento')
-    }
-  }
-
   onSuccessDelete() {
     this.props.showMessage('Departamento eliminado correctamente')
     this.props.history.push(`/directorio/departamentos/`)
@@ -217,7 +146,7 @@ class TemplateDepartment extends React.Component {
   @autobind
   async onDelete() {
     try {
-      var department = this.setDepartment()
+      var department = this.state.departament
       await this.props.deleteDepartment({ _id: department._id })
       this.onSuccessDelete()
     } catch (error) {
@@ -226,20 +155,14 @@ class TemplateDepartment extends React.Component {
   }
 
   handleChangeAddress = contactInformationAddress => {
-    this.setState({
-      streetName: contactInformationAddress.streetName,
-      administrativeAreaLevel1: contactInformationAddress.administrativeAreaLevel1,
-      administrativeAreaLevel2: contactInformationAddress.administrativeAreaLevel2,
-      city: contactInformationAddress.city,
-      departmentNumber: contactInformationAddress.departmentNumber,
-      postalCode: contactInformationAddress.postalCode,
-      streetNumber: contactInformationAddress.streetNumber,
-      country: contactInformationAddress.country,
-      formatted_address: contactInformationAddress.formatted_address,
-      place_id: contactInformationAddress.place_id || '',
-      latitude: contactInformationAddress.latitude || '',
-      longitude: contactInformationAddress.longitude || ''
-    })
+    let department = { ...this.state.department }
+
+    department.contactInformation.address = _mergeWith(
+      department.contactInformation.address,
+      contactInformationAddress,
+      (a, b) => (b === null ? a : undefined)
+    )
+    this.setState({ department })
   }
 
   toggleValidating(validate) {
@@ -261,473 +184,413 @@ class TemplateDepartment extends React.Component {
     })
   }
 
-  async validateForm() {
-    await this.toggleValidating(true)
-    const { hasNameError, hasEmailCodeError } = this.state
-    if (!hasNameError && !hasEmailCodeError) {
-      this.props.showMessage('Campos validados correctamente')
-      this.onSubmitInsert()
-    } else {
-      this.props.showMessage('Verifique que todos los datos estén correctos')
-    }
+  handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
+  handleProgress = progress => this.setState({ progress })
+  handleUploadError = () => {
+    this.setState({ isUploading: false })
+  }
+  handleUploadSuccess = filename => {
+    this.setState({
+      uploadImageUrl: filename,
+      progress: 100,
+      isUploading: false
+    })
+    firebase
+      .storage()
+      .ref('DepartmentImages')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => {
+        let department = { ...this.state.department }
+        department.imageUrl = url
+        this.setState({ department })
+      })
+  }
+  handleUploadImage() {
+    return (
+      <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
+        <span className='p-button-icon-center pi pi-plus m6' />
+        <FileUploader
+          accept='image/*'
+          name='uploadImageUrl'
+          className='p-inputtext p-component p-inputtext p-filled'
+          randomizeFilename
+          storageRef={firebase.storage().ref('DepartmentImages')}
+          onUploadStart={this.handleUploadStart}
+          onUploadError={this.handleUploadError}
+          onUploadSuccess={this.handleUploadSuccess}
+          onProgress={this.handleProgress}
+        />
+      </span>
+    )
+  }
+  handleSpinner() {
+    return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
   }
 
-  async validateFormUpdate() {
-    await this.toggleValidating(true)
-    const { hasNameError, hasEmailCodeError } = this.state
-    if (!hasNameError && !hasEmailCodeError) {
-      this.props.showMessage('Campos validados correctamente')
-      this.onSubmitUpdate()
+  @autobind
+  async handleSubmit(e) {
+    e.preventDefault()
+    var department = this.state.department
+    console.log(department)
+    if (this.props.type === 'create') {
+      try {
+        await this.props.createDepartment({ department: department })
+        this.onSuccessInsert()
+      } catch (error) {
+        console.log(error)
+        this.props.showMessage('Ocurrión un error!')
+      }
     } else {
-      this.props.showMessage('Verifique que todos los datos estén correctos')
+      try {
+        await this.props.updateDepartment({ department: department })
+        this.onSuccessUpdate()
+      } catch (error) {
+        console.log(error)
+        this.props.showMessage('Ocurrión un error!')
+      }
     }
   }
 
   render() {
-    const {
-      name,
-      optionLabel,
-      managerId,
-      serviceAreaId,
-      Number,
-      validate,
-      contactInformationPhoneAreaCode,
-      departmentNumber,
-      PhoneMobile,
-      email,
-      country,
-      description,
-      imageUrl,
-      address,
-      businessHours,
-      streetName,
-      streetNumber,
-      city,
-      administrativeAreaLevel2,
-      administrativeAreaLevel1,
-      postalCode
-    } = this.state
     return (
-      <Section title={this.props.title} description={this.props.description} top>
-        <div className={styles.fieldGroup}>
-          <div className={styles.label}>Nombre</div>
-          <Textbox
-            tabIndex='1'
-            id={'Name'}
-            name={'Name'}
-            maxLength='300'
-            type='text'
-            value={name}
-            validate={validate}
-            validationCallback={res => {
-              this.setState({ hasNameError: res, validate: false })
-            }}
-            onChange={(name, e) => {
-              this.setState({ name })
-            }}
-            validationOption={{ name: 'Nombre', check: true, required: true }}
-          />
-          <div className={styles.label}>
-            Texto que aparecerá en campos para seleccionar departamentos
+      <form onSubmit={this.handleSubmit}>
+        <Section title={this.props.title} description={this.props.description} top>
+          <div className='fieldGroup'>
+            <div className='label'>Nombre</div>
+            <InputText
+              value={this.state.department.name}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.name = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              required
+              tabIndex={1}
+            />
+
+            <div className='label'>
+              Texto que aparecerá en campos para seleccionar departamentos
+            </div>
+            <InputText
+              value={this.state.department.optionLabel}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.optionLabel = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={2}
+            />
+
+            <div className='label'>Director(a) de este departamento</div>
+            <Dropdown
+              name='department.managerId'
+              value={this.state.department.managerId}
+              options={this.state.officialsArray}
+              className='p-inputtext'
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.managerId = e.target.value
+                this.setState({ department })
+              }}
+              filter={true}
+              filterPlaceholder='Seleccione un director'
+              placeholder='Seleccione un director'
+            />
+            <div className='label'>Categoria a la que pertenece el departamento</div>
+            <Dropdown
+              name='department.informationCategory'
+              value={this.state.department.informationCategoryId || ''}
+              options={this.props.informationCategoriesList}
+              className='p-inputtext'
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.informationCategoryId = e.target.value
+                this.setState({ department })
+              }}
+              filter={true}
+              filterPlaceholder='Seleccione una categoría'
+              placeholder='Seleccionar categoría'
+            />
           </div>
-          <Textbox
-            tabIndex='2'
-            id={'optionLabel'}
-            name='optionLabel'
-            type='text'
-            maxLength='600'
-            value={optionLabel}
-            placeholder=''
-            onChange={(optionLabel, e) => {
-              this.setState({ optionLabel })
-            }}
-            validationOption={{
-              name: 'optionLabel',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Director(a) de este departamento</div>
-          <Select
-            tabIndex='3'
-            id={'managerId'}
-            name={'managerId'}
-            value={managerId}
-            optionList={this.state.officialsArray}
-            onChange={(managerId, e) => {
-              this.setState({ managerId })
-            }}
-            customStyleOptionListContainer={{
-              maxHeight: '200px',
-              overflow: 'auto',
-              fontSize: '14px'
-            }}
-            validationOption={{
-              name: 'Director',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Area de servicio a la que pertenece este departamento</div>
-          <Select
-            tabIndex='4'
-            id={'serviceAreaId'}
-            name={'serviceAreaId'}
-            value={serviceAreaId}
-            optionList={this.state.serviceAreasArray} // Required.[Array of Object(s)].Default: [].
-            onChange={(serviceAreaId, e) => {
-              this.setState({ serviceAreaId })
-            }}
-            customStyleOptionListContainer={{
-              maxHeight: '200px',
-              overflow: 'auto',
-              fontSize: '14px'
-            }}
-            validationOption={{
-              name: 'Area de servicio',
-              check: false,
-              required: false
-            }}
-          />
-        </div>
-        <div className={styles.subheaderLabel}>INFORMACIÓN DE CONTACTO:</div>
-        <div>
-          <b>DIRECCIÓN</b>
-        </div>
-        <div className={styles.fieldGroup}>
-          <SearchBar
-            handleChangeAddress={this.handleChangeAddress}
-            latitude={this.state.latitude}
-            longitude={this.state.longitude}
-            address={this.state.formatted_address}
-          />
-          <div className={styles.label}>Calle</div>
-          <Textbox
-            tabIndex='5'
-            id='streetName'
-            name='streetName'
-            type='text'
-            value={streetName}
-            disabled={false}
-            maxLength='300'
-            onChange={(streetName, e) => {
-              this.setState({ streetName })
-            }}
-            validationOption={{
-              name: 'Calle',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Numero</div>
-          <Textbox
-            tabIndex='6'
-            id='streetNumber'
-            name='streetNumber'
-            type='text'
-            value={streetNumber}
-            maxLength='30'
-            onChange={(streetNumber, e) => {
-              this.setState({ streetNumber })
-            }}
-            validationOption={{
-              name: 'Calle',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Numero Departamento/Otro</div>
-          <Textbox
-            tabIndex='7'
-            id='departmentNumber'
-            name='departmentNumber'
-            type='text'
-            value={departmentNumber}
-            maxLength='30'
-            validationCallback={res =>
-              this.setState({
-                hasdepartmentNumberCodeError: res,
-                validate: false
-              })
-            }
-            onChange={(departmentNumber, e) => {
-              this.setState({ departmentNumber })
-            }}
-            validationOption={{
-              name: 'Número de departamento',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Ciudad</div>
-          <Textbox
-            tabIndex='8'
-            id='city'
-            name='city'
-            type='text'
-            value={city}
-            maxLength='30'
-            onChange={(city, e) => {
-              this.setState({
-                city: city
-              })
-            }}
-            validationOption={{
-              name: 'Número de departamento',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Provincia</div>
-          <Textbox
-            tabIndex='9'
-            id='administrativeAreaLevel2'
-            name='administrativeAreaLevel2'
-            type='text'
-            value={administrativeAreaLevel2}
-            maxLength='300'
-            onChange={(administrativeAreaLevel2, e) => {
-              this.setState({ administrativeAreaLevel2 })
-            }}
-            validationOption={{
-              name: 'Provincia',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Región</div>
-          <Textbox
-            tabIndex='10'
-            id='administrativeAreaLevel1'
-            name='administrativeAreaLevel1'
-            type='text'
-            value={administrativeAreaLevel1}
-            maxLength='300'
-            onChange={(administrativeAreaLevel1, e) => {
-              this.setState({ administrativeAreaLevel1 })
-            }}
-            validationOption={{
-              name: 'Región',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>País</div>
-          <Textbox
-            tabIndex='11'
-            id='country'
-            name='country'
-            type='text'
-            value={country}
-            disabled={false}
-            maxLength='300'
-            onChange={(country, e) => {
-              this.setState({ country })
-            }}
-            validationOption={{
-              name: 'País',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Código Postal</div>
-          <Textbox
-            tabIndex='12'
-            id='postalCode'
-            name='postalCode'
-            type='text'
-            value={postalCode}
-            maxLength='300'
-            onChange={(postalCode, e) => {
-              this.setState({ postalCode })
-            }}
-            validationOption={{
-              name: 'Código Postal',
-              check: false,
-              required: false
-            }}
-          />
-        </div>
-        <div>
-          <b>TELÉFONO</b>
-        </div>
-        <div className={styles.fieldGroup}>
-          <div className={styles.label}>Código de área</div>
-          <Textbox
-            tabIndex='13'
-            id='areaCode'
-            name='areaCode'
-            type='number'
-            value={contactInformationPhoneAreaCode}
-            maxLength='5'
-            onChange={(contactInformationPhoneAreaCode, e) => {
-              this.setState({ contactInformationPhoneAreaCode })
-            }}
-            validationOption={{
-              name: 'Código de Área',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Número</div>
-          <Textbox
-            tabIndex='14'
-            id='number'
-            name='number'
-            type='number'
-            value={Number}
-            maxLength='12'
-            onChange={(Number, e) => {
-              this.setState({ Number })
-            }}
-            validationOption={{
-              name: 'Número de Teléfono',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Celular</div>
-          <Textbox
-            tabIndex='15'
-            id='PhoneMobile'
-            name='PhoneMobile'
-            type='number'
-            value={PhoneMobile}
-            disabled={false}
-            maxLength='13'
-            onChange={(PhoneMobile, e) => {
-              this.setState({ PhoneMobile })
-            }}
-            validationOption={{
-              name: 'Número de Celular',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Email</div>
-          <Textbox
-            tabIndex='16'
-            id='email'
-            name='email'
-            type='text'
-            value={email}
-            disabled={false}
-            maxLength='100'
-            placeholder=''
-            validate={validate}
-            validationCallback={res => {
-              this.setState({
-                hasEmailCodeError: res,
-                validate: false
-              })
-            }}
-            onChange={(email, e) => {
-              this.setState({ email })
-            }}
-            validationOption={{
-              name: 'Email',
-              check: true,
-              required: true,
-              customFunc: email => {
-                return FormatEmail(email)
-              }
-            }}
-          />
-          <div className={styles.label}>
-            Horarios de atención (Ej: lunes a jueves / 08:30 a 13:30 / Viernes 08:30 a 16:30)
+          <div className='subheaderLabel'>INFORMACIÓN DE CONTACTO:</div>
+          <div>
+            <b>DIRECCIÓN</b>
           </div>
-          <Textbox
-            tabIndex='17'
-            id='businessHours'
-            name='businessHours'
-            type='text'
-            value={businessHours}
-            maxLength='300'
-            onChange={(businessHours, e) => {
-              this.setState({ businessHours })
-            }}
+          <div className='fieldGroup'>
+            <SearchBar
+              handleChangeAddress={this.handleChangeAddress}
+              latitude={this.state.department.contactInformation.address.latitude}
+              longitude={this.state.department.contactInformation.address.longitude}
+              address={this.state.department.contactInformation.address.formatted_address}
+            />
+            <div className='label'>Calle</div>
+            <InputText
+              value={this.state.department.contactInformation.address.streetName}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.streetName = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={5}
+            />
+
+            <div className='label'>Numero</div>
+            <InputText
+              name='department.contactInformation.address.streetNumber'
+              value={this.state.department.contactInformation.address.streetNumber}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.streetNumber = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={6}
+            />
+
+            <div className='label'>Numero Departamento/Otro</div>
+            <InputText
+              name='department.contactInformation.address.departmentNumber'
+              value={this.state.department.contactInformation.address.departmentNumber}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.departmentNumber = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={7}
+            />
+
+            <div className='label'>Ciudad</div>
+            <InputText
+              name='department.contactInformation.address.city'
+              value={this.state.department.contactInformation.address.city}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.city = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={8}
+            />
+
+            <div className='label'>Provincia</div>
+            <InputText
+              name='department.contactInformation.address.administrativeAreaLevel2'
+              value={this.state.department.contactInformation.address.administrativeAreaLevel2}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.administrativeAreaLevel2 = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={9}
+            />
+
+            <div className='label'>Región</div>
+            <InputText
+              name='department.contactInformation.address.administrativeAreaLevel1'
+              value={this.state.department.contactInformation.address.administrativeAreaLevel1}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.administrativeAreaLevel1 = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={10}
+            />
+
+            <div className='label'>País</div>
+            <InputText
+              name='contactInformation.address.country'
+              value={this.state.department.contactInformation.address.country}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.country = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={11}
+            />
+
+            <div className='label'>Código Postal</div>
+            <InputText
+              name='department.contactInformation.address.postalCode'
+              value={this.state.department.contactInformation.address.postalCode}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.address.postalCode = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={11}
+            />
+          </div>
+          <div>
+            <b>TELÉFONO</b>
+          </div>
+          <div className='fieldGroup'>
+            <div className='label'>Código de área</div>
+            <InputText
+              type='number'
+              name='department.contactInformation.phone.areaCode'
+              value={this.state.department.contactInformation.phone.areaCode || ''}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.phone.areaCode = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={13}
+            />
+
+            <div className='label'>Número</div>
+            <InputText
+              type='number'
+              name='department.contactInformation.phone.number'
+              value={this.state.department.contactInformation.phone.number || ''}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.phone.number = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={14}
+            />
+
+            <div className='label'>Celular</div>
+            <InputText
+              name='department.contactInformation.phone.mobile'
+              value={this.state.department.contactInformation.phone.mobile || ''}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.phone.mobile = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={15}
+            />
+
+            <div className='label'>Email</div>
+            <InputText
+              name='department.contactInformation.email'
+              type='email'
+              value={this.state.department.contactInformation.email || ''}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.contactInformation.email = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={16}
+            />
+
+            <div className='label'>
+              Horarios de atención (Ej: lunes a jueves / 08:30 a 13:30 / Viernes 08:30 a 16:30)
+            </div>
+            <InputText
+              name='department.businessHours'
+              type='text'
+              value={this.state.department.businessHours}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.businessHours = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={17}
+            />
+
+            <div className='label'>Descripción de funciones del departamento</div>
+            <InputText
+              name='department.description'
+              type='text'
+              value={this.state.department.description}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.description = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={18}
+            />
+
+            <div className='label'>Imagen del edificio donde se encuentra el departamento</div>
+
+            <div className='flex-cols'>
+              <InputText
+                name='department.imageUrl'
+                type='url'
+                value={this.state.department.imageUrl}
+                onChange={e => {
+                  let department = { ...this.state.department }
+                  department.imageUrl = e.target.value
+                  this.setState({ department })
+                }}
+                className='inputtextIconUrl'
+                tabIndex={19}
+              />
+              <div className='UploadImage m6'>
+                {this.state.isUploading ? this.handleSpinner() : this.handleUploadImage()}
+              </div>
+            </div>
+
+            <div className='label'>Dirección del departamento de tránsito</div>
+            <InputText
+              name='department.address'
+              type='text'
+              value={this.state.department.address}
+              onChange={e => {
+                let department = { ...this.state.department }
+                department.address = e.target.value
+                this.setState({ department })
+              }}
+              className='p-inputtext'
+              tabIndex={20}
+            />
+            <div className='label'>Tags</div>
+            <div>
+              <Chips
+                value={this.state.department.tags}
+                placeholder='Agregar tag'
+                onChange={e => {
+                  console.log(e)
+                  let department = { ...this.state.department }
+                  department.tags = e.value
+                  this.setState({ department })
+                }}
+                tooltip='Para agregar un nuevo tag debe ingresar el tag  y dar enter'
+              />
+            </div>
+          </div>
+          <br />
+          <Button
+            onClick={() => this.BackList()}
+            style={{ marginRight: 10 }}
+            label='Cancelar'
+            className='p-button-secondary'
+            type='button'
           />
-          <div className={styles.label}>Descripción de funciones del departamento</div>
-          <Textbox
-            tabIndex='18'
-            id='description'
-            name='description'
-            type='text'
-            value={description}
-            maxLength='300'
-            onChange={(description, e) => {
-              this.setState({ description })
-            }}
-            validationOption={{
-              name: 'Descripción de funciones del departamento',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Imagen del edificio donde se encuentra el departamento</div>
-          <Textbox
-            tabIndex='19'
-            id='imageUrl'
-            name='imageUrl'
-            type='text'
-            value={imageUrl}
-            maxLength='300'
-            onChange={(imageUrl, e) => {
-              this.setState({ imageUrl })
-            }}
-            validationOption={{
-              name: 'Imagen del edificio',
-              check: false,
-              required: false
-            }}
-          />
-          <div className={styles.label}>Dirección del departamento de tránsito</div>
-          <Textbox
-            tabIndex='20'
-            id='address'
-            name='address'
-            type='text'
-            value={address}
-            maxLength='300'
-            onChange={(address, e) => {
-              this.setState({ address })
-            }}
-            validationOption={{
-              name: 'Dirección del departamento',
-              check: false,
-              required: false
-            }}
-          />
-        </div>
-        <div className='os_button_container padding'>
-          <button style={{ marginRight: 10 }} className='orion_button ' onClick={this.BackList}>
-            Volver
-          </button>
-          {this.props.type === 'update' && (
-            <button
-              style={{ marginRight: 10 }}
-              onClick={this.Delete}
-              className='orion_button orion_danger'
-            >
-              Eliminar Departamento
-            </button>
-          )}
-          {this.props.type === 'update' && (
-            <button
-              style={{ marginRight: 10 }}
-              onClick={this.validateFormUpdate}
-              className='orion_button orion_primary'
-            >
-              Actualizar Departamento
-            </button>
-          )}
           {this.props.type === 'create' && (
-            <button onClick={this.validateForm} className='orion_button orion_primary'>
-              Crear Departamento
-            </button>
+            <Button label='Crear Departamento' style={{ marginRight: 10 }} type='submit' />
           )}
-        </div>
-      </Section>
+          {this.props.type === 'update' && (
+            <Button label='Guardar' style={{ marginRight: 10 }} type='submit' />
+          )}
+          {this.props.type === 'update' && (
+            <Button
+              className='p-button-danger'
+              type='button'
+              label='Eliminar'
+              style={{ marginRight: 10 }}
+              onClick={() => this.confirmDelete()}
+            />
+          )}
+        </Section>
+      </form>
     )
   }
 }

@@ -85,6 +85,8 @@ export default class TemplateUsers extends Component {
     super(props)
     this.state = {
       email: '',
+      car2: 'BMW',
+
       profile: {
         typeIdentificationDocument: '1',
         firstName: '',
@@ -114,6 +116,8 @@ export default class TemplateUsers extends Component {
       },
       roles: []
     }
+    this.onCarChange2 = this.onCarChange2.bind(this)
+    this.onGenderChange = this.onGenderChange.bind(this)
   }
   goBack() {
     this.props.history.push('/usuarios/lista')
@@ -291,14 +295,55 @@ export default class TemplateUsers extends Component {
     }
   }
 
+  onCarChange2(e) {
+    console.log(e)
+    this.setState({ car2: e.value })
+  }
+  onGenderChange(e) {
+    console.log(e)
+
+    let profile = { ...this.state.profile }
+
+    console.log(e)
+    profile.gender = e.value
+    this.setState({ profile })
+  }
+
   render() {
     const arrayGender = [{ label: 'Hombre', value: 'hombre' }, { label: 'Mujer', value: 'mujer' }]
     const Session = getSession()
+    const cars = [
+      { label: 'Audi', value: 'Audi' },
+      { label: 'BMW', value: 'BMW' },
+      { label: 'Fiat', value: 'Fiat' },
+      { label: 'Honda', value: 'Honda' },
+      { label: 'Jaguar', value: 'Jaguar' },
+      { label: 'Mercedes', value: 'Mercedes' },
+      { label: 'Renault', value: 'Renault' },
+      { label: 'VW', value: 'VW' },
+      { label: 'Volvo', value: 'Volvo' }
+    ]
     return (
       <form onSubmit={this.onSubmit}>
         <Section title={this.props.title} description={this.props.description} top>
           <div>
             <div className='label'>Email:</div>
+            <h3>Advanced</h3>
+            {console.log(this.state.car2)}
+            <Dropdown
+              value={this.state.car2}
+              options={cars}
+              onChange={this.onCarChange2}
+              itemTemplate={this.carTemplate}
+              filter={true}
+              filterPlaceholder='Select Car'
+              filterBy='label,value'
+              showClear={true}
+            />
+            <div style={{ marginTop: '.5em' }}>
+              {this.state.car2 ? 'Selected Car: ' + this.state.car2 : 'No car selected'}
+            </div>
+
             <InputText
               value={this.state.email || ''}
               type='email'
@@ -357,6 +402,7 @@ export default class TemplateUsers extends Component {
                 ]}
                 onChange={e => {
                   let profile = { ...this.state.profile }
+                  console.log(e)
                   profile.typeIdentificationDocument = e.value
                   this.setState({ profile })
                 }}
@@ -385,17 +431,11 @@ export default class TemplateUsers extends Component {
             </div>
             <div className='label'>Género:</div>
             <Dropdown
-              dataKey='value'
               className='w100'
-              value={this.state.profile.gender || ''}
+              value={this.state.profile.gender}
               options={arrayGender}
-              filterBy='label,value'
               showClear={true}
-              onChange={e => {
-                let profile = { ...this.state.profile }
-                profile.gender = e.value
-                this.setState({ profile })
-              }}
+              onChange={this.onGenderChange}
               placeholder='Seleccione Género'
             />
 
@@ -507,6 +547,7 @@ export default class TemplateUsers extends Component {
               onChange={e => {
                 let profile = { ...this.state.profile }
                 profile.educationalLevel = e.value
+                console.log(e)
                 this.setState({ profile })
               }}
               placeholder='Seleccione Nivel Educacional'
