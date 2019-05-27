@@ -12,7 +12,7 @@ export default class ListDepartment extends React.Component {
       },
       {
         name: 'optionLabel',
-        title: 'Description',
+        title: 'Descripción',
         sort: 'DESC',
         render: (value, doc, index) => <span>{value.optionLabel} </span>
       }
