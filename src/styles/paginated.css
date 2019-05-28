@@ -39,22 +39,23 @@
 }
 
 .paginated-table thead tr {
-  background-color: #327187 !important;
+  background-color: #607D8B !important;
   text-align: left;
+  color: #8BC34A;
 }
 
 .paginated-table tr {
-  border-bottom: 1px solid #e6ebf1;
-  border: 1px solid #cacaca;
+  border-bottom: 1px solid #CFD8DC;
+  border: 1px solid #CFD8DC;
   padding: 0.625em 0.875em;
-  background-color: #fff;
-  color: #000000;
+  background-color: rgb(255, 255, 255);
+  color: #8BC34A;
 }
 
 
 
 .paginated-table tr:nth-child(even) {
-  background-color: #f4f4f4;
+  background-color: rgb(246, 250, 242);
 }
 
 .paginated-table thead tr th {
@@ -73,8 +74,8 @@
 
 .paginated-table tbody tr:hover td {
 
-  background-color: #ccc;
-  color: #fff;
+  background-color: #CFD8DC;
+  color: #000;
 }
 
 .paginated-table td {
@@ -132,12 +133,12 @@
 }
 
 .paginated-sort-arrow-up {
-  color: #fff;
+  color: #8BC34A;
   margin: -8px;
   margin-bottom: 0px;
 }
 
 .paginated-sort-arrow-down {
-  color: #fff;
+  color: #8BC34A;
   margin: -8px;
 }

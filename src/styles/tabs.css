@@ -4,7 +4,7 @@
 }
 
 .os-tabs-item a {
-  color: #111;
+  color: #8BC34A;
 }
 
 
@@ -13,11 +13,11 @@
 }
 
 .os-tabs-container {
-  background-color: #327187;
+  background-color: #455A64;
 
 
-  color: #ffffff;
-  border: 1px solid #327187;
+  color: rgb(117, 165, 63);
+  border: 1px solid #455A64;
   border: 0 none;
   border-bottom: none;
   padding: 0.625em 1em;
@@ -37,7 +37,7 @@
 }
 
 .os-tabs-item.os-tabs-itemActive a {
-  color: #fff !important;
+  color: #8BC34A !important;
   border-color: none !important;
   text-decoration: none !important;
 }
@@ -51,7 +51,7 @@
   display: flex;
   align-items: center;
   height: 100%;
-  color: #111;
+  color: #fff;
   font-size: 18px;
   border-bottom: none !important;
   box-sizing: border-box;
@@ -61,7 +61,7 @@
   display: flex;
   align-items: center;
   height: 100%;
-  color: #4AACDB;
+  color: #fff;
   font-size: 18px;
   border-bottom: none !important;
   box-sizing: border-box;
