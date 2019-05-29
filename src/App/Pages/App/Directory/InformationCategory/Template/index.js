@@ -70,7 +70,7 @@ export default class Template extends Component {
     if (this.props.type === 'create') {
       this.state = {
         name: '',
-        parentID: [],
+        parent: [],
         description: '',
         iconURL: '',
         optionLabel: '',
@@ -244,13 +244,13 @@ export default class Template extends Component {
           </div>
           <div className='label'>Categoría Padre</div>
           <Dropdown
-            value={this.state.parentID || ''}
+            value={this.state.parent || ''}
             optionLabel='name'
             dataKey='_id'
             options={categorias}
             className='p-inputtext'
             onChange={e => {
-              this.setState({ parentID: e.value })
+              this.setState({ parent: e.value })
             }}
             filter={true}
             filterPlaceholder='Seleccione una categoría'

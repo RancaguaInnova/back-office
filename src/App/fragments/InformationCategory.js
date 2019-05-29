@@ -8,7 +8,7 @@ export default {
       description
       optionLabel
       iconURL
-      parentID {
+      parent {
         _id
         name
       }
