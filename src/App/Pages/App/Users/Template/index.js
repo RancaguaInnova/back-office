@@ -114,6 +114,7 @@ export default class TemplateUsers extends Component {
       },
       roles: []
     }
+    this.onGenderChange = this.onGenderChange.bind(this)
   }
   goBack() {
     this.props.history.push('/usuarios/lista')
@@ -291,9 +292,16 @@ export default class TemplateUsers extends Component {
     }
   }
 
+  onGenderChange(e) {
+    let profile = { ...this.state.profile }
+    profile.gender = e.value
+    this.setState({ profile })
+  }
+
   render() {
     const arrayGender = [{ label: 'Hombre', value: 'hombre' }, { label: 'Mujer', value: 'mujer' }]
     const Session = getSession()
+
     return (
       <form onSubmit={this.onSubmit}>
         <Section title={this.props.title} description={this.props.description} top>
@@ -349,14 +357,14 @@ export default class TemplateUsers extends Component {
               <Dropdown
                 required={true}
                 className='p-inputtextDocumento'
-                dataKey='value'
-                value={this.state.profile.typeIdentificationDocument || 'rut'}
+                value={this.state.profile.typeIdentificationDocument || 'Rut'}
                 options={[
-                  { label: 'Rut', value: 'rut' },
-                  { label: 'Pasaporte', value: 'pasaporte' }
+                  { label: 'Rut', value: 'Rut' },
+                  { label: 'Pasaporte', value: 'Pasaporte' }
                 ]}
                 onChange={e => {
                   let profile = { ...this.state.profile }
+                  console.log(e)
                   profile.typeIdentificationDocument = e.value
                   this.setState({ profile })
                 }}
@@ -385,17 +393,11 @@ export default class TemplateUsers extends Component {
             </div>
             <div className='label'>Género:</div>
             <Dropdown
-              dataKey='value'
               className='w100'
-              value={this.state.profile.gender || ''}
+              value={this.state.profile.gender}
               options={arrayGender}
-              filterBy='label,value'
               showClear={true}
-              onChange={e => {
-                let profile = { ...this.state.profile }
-                profile.gender = e.value
-                this.setState({ profile })
-              }}
+              onChange={this.onGenderChange}
               placeholder='Seleccione Género'
             />
 
@@ -496,7 +498,6 @@ export default class TemplateUsers extends Component {
             <div className='label'>Nivel Educacional:</div>
             <Dropdown
               className='w100'
-              dataKey='value'
               showClear={true}
               value={this.state.profile.educationalLevel || ''}
               options={[
@@ -507,6 +508,7 @@ export default class TemplateUsers extends Component {
               onChange={e => {
                 let profile = { ...this.state.profile }
                 profile.educationalLevel = e.value
+                console.log(e)
                 this.setState({ profile })
               }}
               placeholder='Seleccione Nivel Educacional'

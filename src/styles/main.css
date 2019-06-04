@@ -8,3 +8,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+body .p-button {
+  margin: 0;
+  color: #fff;
+  background-color: #1976D2;
+  border: 1px solid #1976D2;
+  font-size: 14px;
+  -webkit-transition: background-color 0.2s, box-shadow 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  border-radius: 3px;
+}
+
+body .p-button.p-button-success,
+body .p-buttonset.p-button-success>.p-button {
+  color: #212121;
+  background-color: #8BC34A;
+  border: 1px solid #8BC34A;
+}
+
+body .p-button.p-button-danger,
+body .p-buttonset.p-button-danger>.p-button {
+  color: #ffffff;
+  background-color: #D32F2F;
+  border: 1px solid #D32F2F;
+}

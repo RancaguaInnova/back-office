@@ -38,40 +38,55 @@
   border-spacing: 0;
 }
 
-.paginated-table thead {
-  background-color: #f1f1f1;
+.paginated-table thead tr {
+  background-color: #607D8B !important;
   text-align: left;
+  color: #8BC34A;
 }
 
 .paginated-table tr {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #CFD8DC;
+  border: 1px solid #CFD8DC;
+  padding: 0.625em 0.875em;
+  background-color: rgb(255, 255, 255);
+  color: #8BC34A;
+}
+
+
+
+.paginated-table tr:nth-child(even) {
+  background-color: rgb(246, 250, 242);
 }
 
 .paginated-table thead tr th {
   border-bottom: 1px solid #999;
   position: relative;
-  padding: 9px 10px;
-  line-height: 22px;
+  line-height: 30px;
   vertical-align: top;
   padding-top: 6px;
+  padding-left: 5px;
   padding-bottom: 6px;
-  color: #32325d;
+  color: #fff;
   font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
 }
 
 .paginated-table tbody tr:hover td {
-  color: #111;
+
+  background-color: #CFD8DC;
+  color: #000;
 }
 
 .paginated-table td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ccc;
   position: relative;
-  padding: 9px 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 5px;
   color: #555;
-  line-height: 22px;
-  vertical-align: top;
+  vertical-align: center;
+  line-height: 30px
 }
 
 .paginated-pagination-pages {
@@ -115,4 +130,15 @@
   border: 1px solid #e6ebf1;
   border-radius: 4px;
   padding: 4px 7px;
+}
+
+.paginated-sort-arrow-up {
+  color: #8BC34A;
+  margin: -8px;
+  margin-bottom: 0px;
+}
+
+.paginated-sort-arrow-down {
+  color: #8BC34A;
+  margin: -8px;
 }

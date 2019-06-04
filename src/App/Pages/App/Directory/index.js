@@ -25,7 +25,7 @@ export default class DirectoryRoutes extends React.Component {
           <Tabs
             items={[
               { title: 'Home', path: '/directorio' },
-              { title: 'Areas', path: '/directorio/areas' },
+              { title: 'Categorias', path: '/directorio/categorias' },
               { title: 'Departamentos', path: '/directorio/departamentos' },
               { title: 'Funcionarios', path: '/directorio/funcionarios' }
             ]}
@@ -34,8 +34,8 @@ export default class DirectoryRoutes extends React.Component {
         <Container>
           <Switch>
             <Route
-              path='/directorio/areas'
-              component={DynamicComponent(() => import('./ServiceAreas'))}
+              path='/directorio/categorias'
+              component={DynamicComponent(() => import('./InformationCategory'))}
             />
             <Route
               path='/directorio/departamentos'

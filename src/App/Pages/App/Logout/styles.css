@@ -5,18 +5,15 @@
 .footer {
   position: fixed;
   left: 0;
-  bottom: 0 !important;
+  bottom: 0px !important;
   padding: 5px;
   width: 100%;
   background-color: #f0f0f0;
   color: 000;
-  margin-top: 40px;
+  /* margin-top: 40px; */
   text-align: right;
 }
 
-.os_container {
-  margin-bottom: 50px !important
-}
 
 @media (max-width: 600px) {
 
@@ -31,4 +28,13 @@
     box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
     color: #666;
   }
+}
+
+.os_container_big {
+  max-width: 1200px;
+  height: 100%;
+}
+
+form {
+  margin-bottom: 50px;
 }

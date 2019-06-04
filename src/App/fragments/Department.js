@@ -7,7 +7,8 @@ export default {
       name
       optionLabel
       managerId
-      serviceAreaId
+      informationCategoryId
+      tags
       contactInformation {
         address {
           streetName
