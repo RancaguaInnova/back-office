@@ -7,19 +7,21 @@ import styles from './styles.css'
 import autobind from 'autobind-decorator'
 import 'react-inputs-validation/lib/react-inputs-validation.min.css'
 import { confirmAlert } from 'react-confirm-alert'
-import 'react-confirm-alert/src/react-confirm-alert.css'
-import { Field, Form } from 'simple-react-form'
-import SelectOrisoft from 'orionsoft-parts/lib/components/fields/Select'
+import { Form } from 'simple-react-form'
 import SearchBar from 'App/components/fields/GooglePlaces'
-import FormatEmail from 'App/helpers/format/formatMail'
-import FormatUrl from 'App/helpers/format/formatUrl'
 import LinkToAccount from '../LinkToAccount'
-import { Textbox } from 'react-inputs-validation'
 import withUserId from 'App/helpers/auth/withUserId'
 import AppFragments from 'App/fragments/Apps'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
+
+import 'react-confirm-alert/src/react-confirm-alert.css'
+import { InputText } from 'primereact/inputtext'
+import _mergeWith from 'lodash/mergeWith'
+import { Button } from 'primereact/button'
+import { MultiSelect } from 'primereact/multiselect'
+import { InputSwitch } from 'primereact/inputswitch'
 
 @withUserId
 @withRouter
@@ -67,63 +69,47 @@ class TemplateApplication extends React.Component {
   }
   constructor(props) {
     super(props)
-    if (this.props.type === 'update') {
-      let Application = this.props.application
-      this.state = {
-        ownerId: Application.ownerId,
-        _id: Application._id,
-        applicationURL: Application.applicationURL || '',
-        name: Application.name || '',
-        description: Application.description || '',
-        userFields: Application.userFields || '',
-        validate: false,
-        firstName: Application.developerInfo.firstName || '',
-        lastName: Application.developerInfo.lastName || '',
-        url: Application.developerInfo.url || '',
-        email: Application.developerInfo.email || '',
-        streetName: Application.developerInfo.address.streetName || '',
-        streetNumber: Application.developerInfo.address.streetNumber || '',
-        departmentNumber: Application.developerInfo.address.departmentNumber || '',
-        postalCode: Application.developerInfo.address.postalCode || '',
-        areaCode: Application.developerInfo.phone.areaCode || '',
-        administrativeAreaLevel1: Application.developerInfo.address.administrativeAreaLevel1,
-        administrativeAreaLevel2: Application.developerInfo.address.administrativeAreaLevel2,
-        country: Application.developerInfo.address.country,
-        formatted_address: Application.developerInfo.address.formatted_address || '',
-        place_id: Application.developerInfo.address.place_id || '',
-        latitude: Application.developerInfo.address.latitude || -34.1703131,
-        longitude: Application.developerInfo.address.longitude || -70.74064759999999,
-        number: Application.developerInfo.phone.number || '',
-        mobilePhone: Application.developerInfo.phone.mobilePhone || ''
-      }
-    } else {
-      this.state = {
-        validate: false,
-        name: '',
-        userFields: null,
-        hasNameError: true,
-        hasApplicationUrlError: true,
-        hasUrlError: true,
+    this.state = {
+      application: {
         _id: '',
+        ownerId: '',
+        name: '',
         description: '',
+        userFields: [],
         applicationURL: '',
-        fieldName: '',
-        lastName: '',
-        url: '',
-        email: '',
-        streetName: '',
-        streetNumber: '',
-        departmentNumber: '',
-        postalCode: '',
-        areaCode: '',
-        number: '',
-        mobilePhone: '',
-        longitude: -70.740435,
-        latitude: -34.1706134
+        appMovil: false,
+        urlApp: '',
+        appName: '',
+        appStoreId: '',
+        appStoreLocale: '',
+        playStoreId: '',
+        developerInfo: {
+          firstName: '',
+          lastName: '',
+          url: '',
+          email: '',
+          address: {
+            streetName: '',
+            streetNumber: '',
+            departmentNumber: '',
+            city: '',
+            postalCode: '',
+            administrativeAreaLevel1: '',
+            administrativeAreaLevel2: '',
+            country: '',
+            formatted_address: '',
+            place_id: '',
+            latitude: -34.1703131,
+            longitude: -70.74064759999999
+          },
+          phone: {
+            areaCode: null,
+            number: null,
+            mobilePhone: ''
+          }
+        }
       }
     }
-    this.validateForm = this.validateForm.bind(this)
-    this.validateFormUpdate = this.validateFormUpdate.bind(this)
   }
 
   @autobind
@@ -141,138 +127,15 @@ class TemplateApplication extends React.Component {
     this.props.history.push(`/devs/apps`)
   }
 
-  setApplication() {
-    let s = this.state
-    var Application = {
-      _id: s._id,
-      ownerId: this.props.type === 'create' ? this.props.userId : s.ownerId,
-      name: s.name,
-      description: s.description,
-      userFields: s.userFields,
-      applicationURL: s.applicationURL,
-      developerInfo: {
-        firstName: s.firstName,
-        lastName: s.lastName,
-        url: s.url,
-        email: s.email,
-        address: {
-          streetName: s.streetName,
-          streetNumber: s.streetNumber,
-          departmentNumber: s.departmentNumber,
-          city: s.city,
-          postalCode: s.postalCode,
-          administrativeAreaLevel1: s.administrativeAreaLevel1,
-          administrativeAreaLevel2: s.administrativeAreaLevel2,
-          country: s.country,
-          formatted_address: s.formatted_address,
-          place_id: s.place_id,
-          latitude: s.latitude,
-          longitude: s.longitude
-        },
-        phone: {
-          areaCode: s.areaCode !== '' ? s.areaCode : null,
-          number: s.number,
-          mobilePhone: s.mobilePhone
-        }
-      }
-    }
-    return Application
-  }
-
-  @autobind
-  async onSubmitInsert() {
-    try {
-      var Application = this.setApplication()
-      await this.props.createApplication({ application: Application })
-      this.onSuccessInsert()
-    } catch (error) {
-      this.props.showMessage('Ocurrió un error al registrar el Aplicación')
-    }
-  }
-
-  @autobind
-  async onSubmitUpdate() {
-    try {
-      var Application = this.setApplication()
-      await this.props.updateApplication({ application: Application })
-      this.onSuccessUpdate()
-    } catch (error) {
-      this.props.showMessage('Ocurrió un error al editar el Aplicación')
-    }
-  }
-
-  onSuccessDelete() {
-    this.props.showMessage('Aplicación eliminado correctamente')
-    this.props.history.push(`/devs/apps`)
-  }
-
-  @autobind
-  async onDelete() {
-    try {
-      var Application = this.setApplication()
-      await this.props.deleteApplication({ _id: Application._id })
-      this.onSuccessDelete()
-    } catch (error) {
-      this.props.showMessage('Ocurrió un error al eliminar el Aplicación')
-    }
-  }
-
   handleChangeAddress = contactInformationAddress => {
-    this.setState({
-      streetName: contactInformationAddress.streetName,
-      city: contactInformationAddress.city,
-      departmentNumber: contactInformationAddress.departmentNumber,
-      postalCode: contactInformationAddress.postalCode,
-      streetNumber: contactInformationAddress.streetNumber,
-      formatted_address: contactInformationAddress.formatted_address || '',
-      place_id: contactInformationAddress.place_id || '',
-      latitude: contactInformationAddress.latitude || '',
-      longitude: contactInformationAddress.longitude || ''
-    })
-  }
+    let application = { ...this.state.application }
 
-  toggleValidating(validate) {
-    this.setState({ validate })
-  }
-  Delete = () => {
-    confirmAlert({
-      title: 'Eliminar Aplicación',
-      message: '¿Esta seguro que desea eliminar este Aplicación?',
-      buttons: [
-        {
-          label: 'Si',
-          onClick: () => this.onDelete()
-        },
-        {
-          label: 'No'
-        }
-      ]
-    })
-  }
-
-  async validateForm(e) {
-    e.preventDefault()
-
-    await this.toggleValidating(true)
-    const { hasNameError, hasDescriptionError, hasApplicationUrlError, hasUrlError } = this.state
-    if (!hasNameError && !hasDescriptionError && !hasApplicationUrlError && !hasUrlError) {
-      this.props.showMessage('Campos validados correctamente')
-      this.onSubmitInsert()
-    } else {
-      this.props.showMessage('Verifique que todos los datos estén correctos')
-    }
-  }
-
-  async validateFormUpdate(e) {
-    e.preventDefault()
-    await this.toggleValidating(true)
-    const { hasNameError, hasDescriptionError, hasApplicationUrlError, hasUrlError } = this.state
-    if (!hasNameError && !hasDescriptionError && !hasApplicationUrlError && !hasUrlError) {
-      this.props.showMessage('Campos validados correctamente')
-      this.onSubmitUpdate()
-    } else {
-      this.props.showMessage('Verifique que todos los datos estén correctos')
-    }
+    application.developerInfo.address = _mergeWith(
+      application.developerInfo.address,
+      contactInformationAddress,
+      (a, b) => (b === null ? a : undefined)
+    )
+    this.setState({ application })
   }
 
   renderLinkToAccountButton() {
@@ -308,94 +171,113 @@ class TemplateApplication extends React.Component {
       />
     )
   }
+  componentDidMount() {
+    if (this.props.type === 'update') {
+      var application = _mergeWith(this.state.application, this.props.application, (a, b) =>
+        b === null ? a : undefined
+      )
+      this.setState(application)
+    }
+  }
+  @autobind
+  async handleSubmit() {
+    var application = this.state.application
+    if (this.props.type === 'create') {
+      try {
+        await this.props.createApplication({ application: application })
+        this.onSuccessInsert()
+      } catch (error) {
+        this.props.showMessage('Ocurrión un error!')
+      }
+    } else {
+      try {
+        await this.props.updateApplication({ application: application })
+        this.onSuccessUpdate()
+      } catch (error) {
+        this.props.showMessage('Ocurrión un error!')
+      }
+    }
+  }
+
+  @autobind
+  onSuccessDelete() {
+    this.props.showMessage('Aplicación eliminada correctamente')
+    this.props.history.push(`/devs/apps`)
+  }
+
+  @autobind
+  async onDelete() {
+    try {
+      var application = this.state.application
+      await this.props.deleteApplication({ _id: application._id })
+      this.onSuccessDelete()
+    } catch (error) {
+      this.props.showMessage('Ocurrió un error al eliminar la aplicación')
+    }
+  }
+  @autobind
+  confirmDelete() {
+    confirmAlert({
+      title: 'Confirmar acción',
+      message: '¿seguro desea eliminar esta aplicación?',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: async () => await this.onDelete()
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    })
+  }
 
   render() {
-    const {
-      validate,
-      name,
-      description,
-      applicationURL,
-      firstName,
-      lastName,
-      url,
-      streetName,
-      streetNumber,
-      departmentNumber,
-      city,
-      postalCode,
-      areaCode,
-      number,
-      mobilePhone,
-      email
-    } = this.state
     return (
-      <Form state={this.state} onChange={changes => this.setState(changes)}>
+      <Form onSubmit={this.handleSubmit}>
         <Section title={this.props.title} description={this.props.description} top>
           <div className={styles.headerLabel}>Información de la aplicación:</div>
-
           <div className={styles.fieldGroup}>
-            <div className={styles.label}>Nombre:</div>
-            <Textbox
-              tabIndex='1'
-              id={'Name'}
-              name={'Name'}
-              maxLength='300'
+            <div className='label'>Nombre:</div>
+            <InputText
               type='text'
-              value={name}
-              validate={validate}
-              validationCallback={res => {
-                this.setState({ hasNameError: res, validate: false })
-              }}
-              onChange={(name, e) => {
-                this.setState({ name })
-              }}
-              validationOption={{ name: 'Nombre', check: true, required: true }}
-            />
-            <div className={styles.label}>Descripción:</div>
-            <Textbox
-              tabIndex='2'
-              id={'description'}
-              name={'description'}
-              maxLength='300'
-              type='text'
-              value={description}
-              validate={validate}
-              onChange={(description, e) => {
-                this.setState({ description })
-              }}
-              validationOption={{ name: 'Descripción', check: false, required: false }}
-            />
-            <div className={styles.label}>URL de redirección:</div>
-            <Textbox
-              tabIndex='3'
-              id={'applicationURL'}
-              name={'applicationURL'}
-              maxLength='300'
-              type='text'
-              value={applicationURL}
-              validate={validate}
-              onChange={(applicationURL, e) => {
-                this.setState({ applicationURL })
-              }}
-              validationCallback={res => {
-                this.setState({ hasApplicationUrlError: res, validate: false })
-              }}
-              validationOption={{
-                name: 'Url aplicación',
-                check: true,
-                required: false,
-                customFunc: applicationURL => {
-                  return FormatUrl(applicationURL)
-                }
+              value={this.state.application.name}
+              required
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.name = e.target.value
+                this.setState({ application })
               }}
             />
-            <div className={styles.label}>Datos de usuario:</div>
-            <Field
-              fieldName='userFields'
-              type={SelectOrisoft}
-              multi
-              onChange={userFields => {
-                this.setState({ userFields })
+            <div className='label'>Descripción:</div>
+            <InputText
+              type='text'
+              value={this.state.application.description}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.description = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>URL de redirección:</div>
+            <InputText
+              type='url'
+              value={this.state.application.applicationURL}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.applicationURL = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>Datos de usuario:</div>
+            <MultiSelect
+              value={this.state.application.userFields}
+              className='p-inputtext'
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.userFields = e.target.value
+                this.setState({ application })
               }}
               options={[
                 {
@@ -436,281 +318,240 @@ class TemplateApplication extends React.Component {
                 }
               ]}
             />
+            <div className='label'>Es aplicación movil:</div>
+            <InputSwitch
+              checked={this.state.application.appMovil}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.appMovil = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>url deep link:</div>
+            <InputText
+              type='text'
+              value={this.state.application.urlApp}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.urlApp = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>Nombre de la aplicación:</div>
+            <InputText
+              type='text'
+              value={this.state.application.appName}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.appName = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>App Store Id:</div>
+            <InputText
+              type='number'
+              value={this.state.application.appStoreId || ''}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.appStoreId = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>App Store Locale:</div>
+            <InputText
+              type='text'
+              value={this.state.application.appStoreLocale}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.appStoreLocale = e.target.value
+                this.setState({ application })
+              }}
+            />
+            <div className='label'>Play Store Id:</div>
+            <InputText
+              type='text'
+              value={this.state.application.playStoreId}
+              onChange={e => {
+                let application = { ...this.state.application }
+                application.playStoreId = e.target.value
+                this.setState({ application })
+              }}
+            />
           </div>
+
           {this.props.userId !== '' && (
             <div>
-              <div className={styles.headerLabel} style={{ marginBottom: 10 }}>
+              <div className={styles.headerLabel} style={{ marginBottom: 10, marginTop: 20 }}>
                 Información del desarrollador:
               </div>
               <div>{this.renderLinkToAccountButton()}</div>
               <div className={styles.fieldGroup} style={{ marginTop: 15 }}>
-                <div className={styles.label}>Nombre:</div>
-                <Textbox
-                  tabIndex='4'
-                  id={'firstName'}
-                  name={'firstName'}
-                  maxLength='300'
+                <div className='label'>Nombre:</div>
+                <InputText
                   type='text'
-                  value={firstName}
-                  validate={validate}
-                  onChange={(firstName, e) => {
-                    this.setState({ firstName })
+                  value={this.state.application.developerInfo.firstName}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.firstName = e.target.value
+                    this.setState({ application })
                   }}
-                  validationOption={{ name: 'Nombre', check: false, required: false }}
+                />
+                <div className='label'>Apellido:</div>
+                <InputText
+                  type='text'
+                  value={this.state.application.developerInfo.lastName}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.lastName = e.target.value
+                    this.setState({ application })
+                  }}
+                />
+                <div className='label'>Pagina Web:</div>
+                <InputText
+                  type='text'
+                  value={this.state.application.developerInfo.url}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.url = e.target.value
+                    this.setState({ application })
+                  }}
                 />
 
-                <div className={styles.label}>Apellido:</div>
-                <Textbox
-                  tabIndex='5'
-                  id={'lastName'}
-                  name={'lastName'}
-                  maxLength='300'
-                  type='text'
-                  value={lastName}
-                  validate={validate}
-                  onChange={(lastName, e) => {
-                    this.setState({ lastName })
-                  }}
-                  validationOption={{ name: 'Url aplicación', check: false, required: false }}
-                />
-                <div className={styles.label}>Pagina Web:</div>
-                <Textbox
-                  tabIndex='6'
-                  id={'url'}
-                  name={'url'}
-                  maxLength='300'
-                  type='text'
-                  value={url}
-                  validate={validate}
-                  onChange={(url, e) => {
-                    this.setState({ url })
-                  }}
-                  validationCallback={res => {
-                    this.setState({ hasUrlError: res, validate: false })
-                  }}
-                  validationOption={{
-                    name: 'Url',
-                    check: true,
-                    required: false,
-                    customFunc: url => {
-                      return FormatUrl(url)
-                    }
-                  }}
-                />
-                <div className={styles.headerLabel}>Información de contacto:</div>
-                <div className={styles.fieldGroup}>
-                  <div className={styles.subheaderLabel}>Dirección:</div>
-                  <div className={styles.fieldGroup}>
-                    <SearchBar
-                      handleChangeAddress={this.handleChangeAddress}
-                      latitude={this.state.latitude}
-                      longitude={this.state.longitude}
-                      address={this.state.formatted_address}
-                    />
-                    <div className={styles.label}>Nombre de calle:</div>
-                    <Textbox
-                      tabIndex='7'
-                      id={'streetName'}
-                      name={'streetName'}
-                      maxLength='300'
-                      type='text'
-                      value={streetName}
-                      validate={validate}
-                      onChange={(streetName, e) => {
-                        this.setState({ streetName })
-                      }}
-                      validationOption={{ name: 'Calle ', check: false, required: false }}
-                    />
-                    <div className={styles.label}>Numeración:</div>
-                    <Textbox
-                      tabIndex='8'
-                      id={'streetNumber'}
-                      name={'streetNumber'}
-                      maxLength='300'
-                      type='text'
-                      value={streetNumber}
-                      validate={validate}
-                      onChange={(streetNumber, e) => {
-                        this.setState({ streetNumber })
-                      }}
-                      validationOption={{ name: 'Número ', check: false, required: false }}
-                    />
-                    <div className={styles.label}>
-                      Número de oficina/casa/departamento (opcional):
-                    </div>
-                    <Textbox
-                      tabIndex='9'
-                      id={'departmentNumber'}
-                      name={'departmentNumber'}
-                      maxLength='300'
-                      type='text'
-                      value={departmentNumber}
-                      validate={validate}
-                      onChange={(departmentNumber, e) => {
-                        this.setState({ departmentNumber })
-                      }}
-                      validationOption={{
-                        name: 'Número de departamento',
-                        check: false,
-                        required: false
-                      }}
-                    />
-                    <div className={styles.label}>Ciudad:</div>
-                    <Textbox
-                      tabIndex='10'
-                      id={'city'}
-                      name={'city'}
-                      maxLength='300'
-                      type='text'
-                      value={city}
-                      validate={validate}
-                      onChange={(city, e) => {
-                        this.setState({ city })
-                      }}
-                      validationOption={{
-                        name: 'Ciudad',
-                        check: false,
-                        required: false
-                      }}
-                    />
-                    <div className={styles.label}>Código Postal:</div>
-                    <Textbox
-                      tabIndex='11'
-                      id={'postalCode'}
-                      name={'postalCode'}
-                      maxLength='300'
-                      type='text'
-                      value={postalCode}
-                      validate={validate}
-                      onChange={(postalCode, e) => {
-                        this.setState({ postalCode })
-                      }}
-                      validationOption={{
-                        name: 'Código Postal',
-                        check: false,
-                        required: false
-                      }}
-                    />
-                  </div>
-                  <div className={styles.subheaderLabel}>Teléfono:</div>
-                  <div className={styles.fieldGroup}>
-                    <div className={styles.label}>Código de área:</div>
-                    <Textbox
-                      tabIndex='11'
-                      id={'areaCode'}
-                      name={'areaCode'}
-                      maxLength='300'
-                      type='Number'
-                      value={areaCode}
-                      validate={validate}
-                      onChange={(areaCode, e) => {
-                        this.setState({ areaCode })
-                      }}
-                      validationOption={{
-                        name: 'Código de área',
-                        check: false,
-                        required: false
-                      }}
-                    />
-                    <div className={styles.label}>Número fijo:</div>
-                    <Textbox
-                      tabIndex='11'
-                      id={'number'}
-                      name={'number'}
-                      maxLength='300'
-                      type='Number'
-                      value={number}
-                      validate={validate}
-                      onChange={(number, e) => {
-                        this.setState({ number })
-                      }}
-                      validationOption={{
-                        name: 'Número Fijo',
-                        check: false,
-                        required: false
-                      }}
-                    />
-                    <div className={styles.label}>Celular:</div>
-                    <Textbox
-                      tabIndex='11'
-                      id={'mobilePhone'}
-                      name={'mobilePhone'}
-                      maxLength='300'
-                      type='Number'
-                      value={mobilePhone}
-                      validate={validate}
-                      onChange={(mobilePhone, e) => {
-                        this.setState({ mobilePhone })
-                      }}
-                      validationOption={{
-                        name: 'Célular',
-                        check: false,
-                        required: false
-                      }}
-                    />
-                  </div>
-                  <div className={styles.subheaderLabel}>Email:</div>
-                  <div className={styles.fieldGroup}>
-                    <div className={styles.label}>Email:</div>
-                    <Textbox
-                      tabIndex='11'
-                      id={'email'}
-                      name={'email'}
-                      maxLength='300'
-                      type='text'
-                      value={email}
-                      validate={validate}
-                      onChange={(email, e) => {
-                        this.setState({ email })
-                      }}
-                      validationOption={{
-                        name: 'Email',
-                        check: true,
-                        required: false,
-                        customFunc: email => {
-                          return FormatEmail(email)
-                        }
-                      }}
-                    />
-                  </div>
+                <div className='headerLabel'>Información de contacto:</div>
+                <div className='subheaderLabel'>Dirección:</div>
+                <div className='fieldGroup'>
+                  <SearchBar
+                    handleChangeAddress={this.handleChangeAddress}
+                    latitude={this.state.application.developerInfo.address.latitude}
+                    longitude={this.state.application.developerInfo.address.longitude}
+                    address={this.state.application.developerInfo.address.formatted_address}
+                  />
+
+                  <div className='label'>Nombre de calle:</div>
+                  <InputText
+                    type='text'
+                    value={this.state.application.developerInfo.address.streetName}
+                    onChange={e => {
+                      let application = { ...this.state.application }
+                      application.developerInfo.address.streetName = e.target.value
+                      this.setState({ application })
+                    }}
+                  />
+                  <div className='label'>Numeración:</div>
+                  <InputText
+                    type='text'
+                    value={this.state.application.developerInfo.address.streetNumber}
+                    onChange={e => {
+                      let application = { ...this.state.application }
+                      application.developerInfo.address.streetNumber = e.target.value
+                      this.setState({ application })
+                    }}
+                  />
+                  <div className='label'>Número de oficina/casa/departamento (opcional):</div>
+                  <InputText
+                    type='text'
+                    value={this.state.application.developerInfo.address.departmentNumber}
+                    onChange={e => {
+                      let application = { ...this.state.application }
+                      application.developerInfo.address.departmentNumber = e.target.value
+                      this.setState({ application })
+                    }}
+                  />
+                  <div className='label'>Ciudad:</div>
+                  <InputText
+                    maxLength='300'
+                    type='text'
+                    value={this.state.application.developerInfo.address.city}
+                    onChange={e => {
+                      let application = { ...this.state.application }
+                      application.developerInfo.address.city = e.target.value
+                      this.setState({ application })
+                    }}
+                  />
+                  <div className='label'>Código Postal:</div>
+                  <InputText
+                    type='text'
+                    value={this.state.application.developerInfo.address.postalCode}
+                    onChange={e => {
+                      let application = { ...this.state.application }
+                      application.developerInfo.address.postalCode = e.target.value
+                      this.setState({ application })
+                    }}
+                  />
                 </div>
+                <div className='label'>Código de área:</div>
+                <InputText
+                  type='Number'
+                  value={this.state.application.developerInfo.phone.areaCode || ''}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.phone.areaCode = e.target.value
+                    this.setState({ application })
+                  }}
+                />
+                <div className='label'>Número fijo:</div>
+                <InputText
+                  type='Number'
+                  value={this.state.application.developerInfo.phone.number || ''}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.phone.number = e.target.value
+                    this.setState({ application })
+                  }}
+                />
+                <div className='label'>Celular:</div>
+                <InputText
+                  type='Number'
+                  value={this.state.application.developerInfo.phone.mobilePhone}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.phone.mobilePhone = e.target.value
+                    this.setState({ application })
+                  }}
+                />
+              </div>
+              <div className={styles.fieldGroup}>
+                <div className='label'>Email:</div>
+                <InputText
+                  type='email'
+                  value={this.state.application.developerInfo.email}
+                  onChange={e => {
+                    let application = { ...this.state.application }
+                    application.developerInfo.email = e.target.value
+                    this.setState({ application })
+                  }}
+                />
               </div>
             </div>
           )}
+          <br />
           {this.props.userId === '' &&
             (this.props.showMessage(
               'Desarollador no registrado, sera redireccionado al registro de desarrolladores'
             ),
             this.props.history.push('/devs/registro'))}
-
-          <div className='os_button_container padding'>
-            <button style={{ marginRight: 10 }} className='orion_button ' onClick={this.BackList}>
-              Volver
-            </button>
-            {this.props.type === 'update' && (
-              <button
-                style={{ marginRight: 10 }}
-                onClick={this.Delete}
-                className='orion_button orion_danger'
-              >
-                Eliminar Aplicación
-              </button>
-            )}
-            {this.props.type === 'update' && (
-              <button
-                style={{ marginRight: 10 }}
-                onClick={this.validateFormUpdate}
-                className='orion_button orion_primary'
-              >
-                Actualizar Aplicación
-              </button>
-            )}
-            {this.props.type === 'create' && (
-              <button onClick={this.validateForm} className='orion_button orion_primary'>
-                Crear Aplicación
-              </button>
-            )}
-          </div>
+          <Button
+            onClick={() => this.BackList()}
+            style={{ marginRight: 10 }}
+            label='Cancelar'
+            className='p-button-secondary'
+            type='button'
+          />
+          {this.props.type === 'create' && (
+            <Button label='Crear Aplicación' style={{ marginRight: 10 }} type='submit' />
+          )}
+          {this.props.type === 'update' && (
+            <Button label='Guardar' style={{ marginRight: 10 }} type='submit' />
+          )}
+          {this.props.type === 'update' && (
+            <Button
+              className='p-button-danger'
+              type='button'
+              label='Eliminar'
+              style={{ marginRight: 10 }}
+              onClick={() => this.confirmDelete()}
+            />
+          )}
         </Section>
       </Form>
     )

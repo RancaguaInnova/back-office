@@ -168,21 +168,6 @@ class TemplateDepartment extends React.Component {
   toggleValidating(validate) {
     this.setState({ validate })
   }
-  Delete = () => {
-    confirmAlert({
-      title: 'Eliminar Departamento',
-      message: '¿Esta seguro que desea eliminar este departamento?',
-      buttons: [
-        {
-          label: 'Si',
-          onClick: () => this.onDelete()
-        },
-        {
-          label: 'No'
-        }
-      ]
-    })
-  }
 
   handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
   handleProgress = progress => this.setState({ progress })
@@ -226,6 +211,23 @@ class TemplateDepartment extends React.Component {
   }
   handleSpinner() {
     return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
+  }
+  @autobind
+  confirmDelete() {
+    confirmAlert({
+      title: 'Confirmar acción',
+      message: '¿Seguro desea eliminar este Departamento?',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: async () => await this.onDelete()
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    })
   }
 
   @autobind
