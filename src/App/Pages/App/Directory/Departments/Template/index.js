@@ -216,7 +216,7 @@ class TemplateDepartment extends React.Component {
   confirmDelete() {
     confirmAlert({
       title: 'Confirmar acción',
-      message: '¿seguro desea eliminar este Departamento?',
+      message: '¿Seguro desea eliminar este Departamento?',
       buttons: [
         {
           label: 'Sí',
