@@ -10,6 +10,12 @@ export default {
       approved
       userFields
       applicationURL
+      appMovil
+      urlApp
+      appName
+      appStoreId
+      appStoreLocale
+      playStoreId
       developerInfo {
         firstName
         lastName
@@ -47,6 +53,12 @@ export default {
       description
       userFields
       applicationURL
+      appMovil
+      urlApp
+      appName
+      appStoreId
+      appStoreLocale
+      playStoreId
       developerInfo {
         firstName
         lastName

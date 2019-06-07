@@ -27,3 +27,27 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
+.p-inputtext {
+  width: 100%;
+}
+
+.p-inputtextIconUrl {
+  width: 100%;
+  margin-right: 10px;
+
+}
+
+.p-button {
+  height: 100%;
+  text-align: center;
+  padding: 0 auto;
+}
+
+.m6 {
+  margin: 6px
+}
+
+.headerLabel {
+  margin-top: 20px;
+}
