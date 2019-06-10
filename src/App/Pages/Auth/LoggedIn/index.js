@@ -20,10 +20,14 @@ export default class Logout extends React.Component {
     logout: PropTypes.func
   }
   @autobind
-  async logout() {
-    await this.props.logout({ sessionId: this.props.userId })
-    LogoutHelp()
-    this.props.history.push('/login')
+  async logoutSession() {
+    try {
+      await this.props.logout({ sessionId: this.props.userId })
+      await LogoutHelp()
+      this.props.history.push('/login')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
@@ -31,7 +35,7 @@ export default class Logout extends React.Component {
       <div className={styles.container}>
         <p>Ya tienes tu sesión iniciada, quieres cerrar tu sesión?</p>
         <Button onClick={() => this.props.history.push('/')}>Home</Button>
-        <Button onClick={this.logout} danger>
+        <Button onClick={this.logoutSession} danger>
           Cerrar Sesión
         </Button>
       </div>
