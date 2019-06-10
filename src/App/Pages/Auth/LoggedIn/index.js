@@ -25,7 +25,9 @@ export default class Logout extends React.Component {
       await this.props.logout({ sessionId: this.props.userId })
       await LogoutHelp()
       this.props.history.push('/login')
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
