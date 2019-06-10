@@ -728,16 +728,7 @@ export default class TemplateEvent extends Component {
                 editable={false}
                 placeholder='Seleccione un departamento'
               />
-              <div className='label'>Tags</div>
-              <div>
-                <Chips
-                  value={this.state.tags}
-                  onChange={e => {
-                    this.setState({ tags: e.value })
-                  }}
-                  tooltip='Para agregar un nuevo tag debe ingresar el valor  y dar enter'
-                />
-              </div>
+
               <div>
                 <Popup
                   modal
@@ -756,18 +747,26 @@ export default class TemplateEvent extends Component {
                         &times;
                       </a>
                       <div className='headerModal'> Información de ticket </div>
-                      <div className='label'>
-                        <h4>Detalle del evento</h4>
-                      </div>
+                      <div className='label'>Detalle del evento</div>
                       <div>
                         <Editor
-                          style={{ height: '200px' }}
+                          style={{ height: '100px' }}
                           value={this.state.detail}
                           onTextChange={e => this.setState({ detail: e.htmlValue })}
                         />
-
-                        <br />
                       </div>
+                      <div className='label'>Tags</div>
+
+                      <div>
+                        <Chips
+                          value={this.state.tags}
+                          onChange={e => {
+                            this.setState({ tags: e.value })
+                          }}
+                          tooltip='Para agregar un nuevo tag debe ingresar el valor  y dar enter'
+                        />
+                      </div>
+                      <br />
                       <div className='contentModal'>
                         <table className='tableModal'>
                           <thead>
@@ -858,16 +857,16 @@ export default class TemplateEvent extends Component {
                             })}
                           </tbody>
                         </table>
-                        <div />
-                        <div className='label'>Usuarios validadores del evento *(Indique mail)</div>
-                        <div>
-                          <Chips
-                            value={validators}
-                            placeholder='Agregar email'
-                            onChange={this.handleAdditionValidator}
-                            tooltip='Para agregar un nuevo validador debe ingresar el email  y dar enter'
-                          />
-                        </div>
+                      </div>
+
+                      <div className='label'>Usuarios validadores del evento *(Indique mail)</div>
+                      <div>
+                        <Chips
+                          value={validators}
+                          placeholder='Agregar email'
+                          onChange={this.handleAdditionValidator}
+                          tooltip='Para agregar un nuevo validador debe ingresar el email  y dar enter'
+                        />
                       </div>
                       <div className='actions'>
                         <Button

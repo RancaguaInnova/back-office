@@ -14,10 +14,10 @@
   background-color: darkgray
 }
 
-.ModalEvent>.contentModalEvent {
+.ModalEvent>.contentModal {
   width: 100%;
   padding: 1px 1px;
-  max-height: 500px;
+  max-height: 200px;
   overflow: auto;
 }
 
@@ -89,6 +89,7 @@ tr:nth-child(even) {
 
 .col4 {
   width: 15%;
+  text-align: center;
 
 }
 
