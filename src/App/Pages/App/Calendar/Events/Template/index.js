@@ -543,7 +543,6 @@ export default class TemplateEvent extends Component {
                   this.setState({ description: e.target.value })
                 }}
                 className='p-inputtext'
-                required={true}
                 tabIndex={2}
               />
               <div className='label'>Link a información</div>
@@ -553,7 +552,6 @@ export default class TemplateEvent extends Component {
                   this.setState({ externalUrl: e.target.value })
                 }}
                 className='p-inputtext'
-                required={true}
                 tabIndex={3}
               />
               <div className='label'>Fecha</div>
@@ -644,7 +642,6 @@ export default class TemplateEvent extends Component {
                   this.setState({ optionLabel: e.target.value })
                 }}
                 className='p-inputtext'
-                required={true}
                 tabIndex={6}
               />
               <div className='label'>Url con imagen para el evento</div>
@@ -656,7 +653,6 @@ export default class TemplateEvent extends Component {
                     this.setState({ imageUrl: e.target.value })
                   }}
                   className='p-inputtext'
-                  required={true}
                   tabIndex={7}
                 />
 
