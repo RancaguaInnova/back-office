@@ -535,7 +535,7 @@ export default class TemplateEvent extends Component {
                 className='p-inputtext'
                 required={true}
                 tabIndex={1}
-                maxLength={25}
+                maxLength={80}
               />
               <div className='label'>Descripción</div>
               <InputText
