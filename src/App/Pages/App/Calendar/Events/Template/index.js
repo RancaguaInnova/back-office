@@ -535,6 +535,7 @@ export default class TemplateEvent extends Component {
                 className='p-inputtext'
                 required={true}
                 tabIndex={1}
+                maxLength={25}
               />
               <div className='label'>Descripción</div>
               <InputText
@@ -543,6 +544,7 @@ export default class TemplateEvent extends Component {
                   this.setState({ description: e.target.value })
                 }}
                 className='p-inputtext'
+                maxLength={140}
                 tabIndex={2}
               />
               <div className='label'>Link a información</div>
