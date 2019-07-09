@@ -138,7 +138,7 @@ export default class TemplateEvent extends Component {
         departmentId: event.departmentId || '',
         externalUrl: event.externalUrl || '',
         imageUrl: event.imageUrl || '',
-        showInCalendarChecked: event.showInCalendar || '',
+        showInCalendar: event.showInCalendar,
         locations: event.locations || [],
         loading: true,
         validate: false,
@@ -160,6 +160,7 @@ export default class TemplateEvent extends Component {
         description: '',
         detail: '',
         externalUrl: '',
+        showInCalendar: true,
         event: {},
         errorMessages: {},
         date: new Date(),
@@ -397,7 +398,7 @@ export default class TemplateEvent extends Component {
       departmentId: s.departmentId,
       externalUrl: s.externalUrl,
       imageUrl: s.imageUrl,
-      showInCalendar: s.showInCalendarChecked,
+      showInCalendar: s.showInCalendar,
       tags: this.formatApiTag(s.tags),
 
       locations: s.locations,
@@ -633,7 +634,6 @@ export default class TemplateEvent extends Component {
                 className='p-inputtext'
                 required={false}
               />
-
               <div className='label hidden'>
                 Texto que aparecerá en campos para seleccionar un evento
               </div>
@@ -664,7 +664,6 @@ export default class TemplateEvent extends Component {
                   </button>
                 )}
               </div>
-
               <div className='UploadImage'>
                 {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
                 {this.state.imageUrl && (
@@ -710,11 +709,15 @@ export default class TemplateEvent extends Component {
                 </span>
               </div>
               <div className='label'> </div>
+
               <Checkbox
-                onChange={e => this.setState({ showInCalendar: e.checked })}
+                onChange={e => {
+                  this.setState({ showInCalendar: e.checked })
+                }}
                 checked={this.state.showInCalendar}
                 tabIndex='8'
               />
+
               <label htmlFor='showInCalendar' className='p-checkbox-label'>
                 Mostrar en calendario (publicar evento)
               </label>
@@ -726,7 +729,6 @@ export default class TemplateEvent extends Component {
                 editable={false}
                 placeholder='Seleccione un departamento'
               />
-
               <div>
                 <Popup
                   modal
