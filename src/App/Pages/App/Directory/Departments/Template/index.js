@@ -224,7 +224,7 @@ class TemplateDepartment extends React.Component {
         },
         {
           label: 'No',
-          onClick: () => {}
+          onClick: () => { }
         }
       ]
     })
@@ -465,11 +465,11 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Celular</div>
             <InputText
-              name='department.contactInformation.phone.mobile'
-              value={this.state.department.contactInformation.phone.mobile || ''}
+              name='department.contactInformation.phone.mobilePhone'
+              value={this.state.department.contactInformation.phone.mobilePhone || ''}
               onChange={e => {
                 let department = { ...this.state.department }
-                department.contactInformation.phone.mobile = e.target.value
+                department.contactInformation.phone.mobilePhone = e.target.value
                 this.setState({ department })
               }}
               className='p-inputtext'
