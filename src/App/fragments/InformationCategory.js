@@ -9,6 +9,7 @@ export default {
       optionLabel
       iconURL
       urlRedirect
+      active
       imageHeaderUrl
       parent {
         _id

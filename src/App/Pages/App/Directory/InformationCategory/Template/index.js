@@ -15,9 +15,9 @@ import { Button } from 'primereact/button'
 import './style.css'
 import InformationCategoryFragments from 'App/fragments/InformationCategory'
 import { confirmAlert } from 'react-confirm-alert'
+import { InputSwitch } from 'primereact/inputswitch'
 
 @withMessage
-
 @withGraphQL(gql`
   query informationCategory($informationCategoryId: ID!) {
     informationCategory(informationCategoryId: $informationCategoryId) {
@@ -28,10 +28,8 @@ import { confirmAlert } from 'react-confirm-alert'
       name
     }
   }
-
   ${InformationCategoryFragments.FullInformationCategory}
 `)
-
 @withMutation(gql`
   mutation createInformationCategory($informationCategory: InformationCategoryInput!) {
     createInformationCategory(informationCategory: $informationCategory) {
@@ -40,7 +38,6 @@ import { confirmAlert } from 'react-confirm-alert'
   }
   ${InformationCategoryFragments.FullInformationCategory}
 `)
-
 @withMutation(gql`
   mutation updateInformationCategory($informationCategory: InformationCategoryInput!) {
     updateInformationCategory(InformationCategory: $informationCategory) {
@@ -49,13 +46,11 @@ import { confirmAlert } from 'react-confirm-alert'
   }
   ${InformationCategoryFragments.FullInformationCategory}
 `)
-
 @withMutation(gql`
   mutation deleteInformationCategory($_id: ID!) {
     deleteInformationCategory(_id: $_id)
   }
 `)
-
 export default class Template extends Component {
   static propTypes = {
     history: PropTypes.object,
@@ -81,7 +76,8 @@ export default class Template extends Component {
         optionLabel: '',
         urlRedirect: '',
         imageHeaderUrl: '',
-        tags: []
+        tags: [],
+        active: true
       }
     }
     if (this.props.type === 'update') {
@@ -227,7 +223,7 @@ export default class Template extends Component {
         },
         {
           label: 'No',
-          onClick: () => { }
+          onClick: () => {}
         }
       ]
     })
@@ -262,20 +258,18 @@ export default class Template extends Component {
           <div className='label'>Descripción</div>
           <InputText
             name='description'
-            value={this.state.description}
+            value={this.state.description || ''}
             onChange={this.handleInputChange}
             className='p-inputtext'
-            required
             tabIndex={2}
           />
 
           <div className='label'>Url de redirección </div>
           <InputText
             name='urlRedirect'
-            value={this.state.urlRedirect}
+            value={this.state.urlRedirect || ''}
             onChange={this.handleInputChange}
             className='p-inputtext'
-            required
             tabIndex={2}
           />
           <div className='label'>Url Icono</div>
@@ -299,7 +293,7 @@ export default class Template extends Component {
               name='imageHeaderUrl'
               title='Debe ingresar una url del header de la categoría'
               type='url'
-              value={this.state.imageHeaderUrl}
+              value={this.state.imageHeaderUrl || ''}
               onChange={this.handleInputChange}
               className='p-inputtextIconUrl'
               tabIndex={2}
@@ -338,6 +332,13 @@ export default class Template extends Component {
               tooltip='Para agregar un nuevo tag debe ingresar el tag  y dar enter'
             />
           </div>
+          <div className='label'>Activo</div>
+
+          <InputSwitch
+            checked={this.state.active || false}
+            onChange={e => this.setState({ active: e.value })}
+          />
+
           <br />
           <Button
             onClick={() => this.goBack()}

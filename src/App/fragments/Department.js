@@ -35,6 +35,8 @@ export default {
       description
       imageUrl
       address
+      imageHeader
+      active
     }
   `
 }
