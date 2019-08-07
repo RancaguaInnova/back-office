@@ -76,6 +76,7 @@ export default class Template extends Component {
         optionLabel: '',
         urlRedirect: '',
         imageHeaderUrl: '',
+        urlIframe: '',
         tags: [],
         active: true
       }
@@ -320,6 +321,13 @@ export default class Template extends Component {
           <InputText
             name='optionLabel'
             value={this.state.optionLabel}
+            onChange={this.handleInputChange}
+            className='p-inputtext'
+          />
+          <div className='label'>Url Iframe en caso de usarlo</div>
+          <InputText
+            name='urlIframe'
+            value={this.state.urlIframe}
             onChange={this.handleInputChange}
             className='p-inputtext'
           />

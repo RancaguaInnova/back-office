@@ -10,6 +10,7 @@ export default {
       iconURL
       urlRedirect
       active
+      urlIframe
       imageHeaderUrl
       parent {
         _id
