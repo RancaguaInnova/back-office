@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import NotificationWidget from './NotificationWidget'
 import { Button } from 'primereact/button'
 import find from 'lodash/find'
-import axios from 'axios'
+import moment from 'moment'
+import { get } from 'App/helpers/requests/notifications'
 
 import styles from './styles.css'
 
@@ -18,28 +19,39 @@ export default class NotificationsSelector extends React.Component {
 
   static propTypes = {
     /** Id of the Notification document with notification details */
-    notificationId: PropTypes.string.isRequired,
+    notificationId: PropTypes.string,
     /** Subject to check user subscriptions */
     theme: PropTypes.string,
     notificationData: PropTypes.shape({
       subject: PropTypes.string,
       body: PropTypes.string,
       departmentId: PropTypes.string
-    })
+    }),
+    handleNotifications: PropTypes.func
   }
 
   componentDidMount = async () => {
     const { notificationId } = this.props
     if (notificationId) {
-      const notificationRequest = new Request(
-        `http://localhost:3100/${notificationId}`
-      )
-      const response = await fetch(notificationRequest)
+      try {
+        const notification = await get(notificationId)
+        this.setState({ ...notification.schedule })
+      } catch (error) {
+        console.log('Error getting Notification document:', error)
+      }
     }
   }
 
   isValidDate = (currentDates, newDate) => {
-    if (find(currentDates, item => item.getTime() === newDate.getTime())) {
+    if (
+      find(
+        currentDates,
+        item =>
+          moment(item)
+            .toDate()
+            .getTime() === newDate.getTime()
+      )
+    ) {
       return false
     }
     if (newDate - new Date() < -1000 * 60 * 60 * 24) return false
@@ -49,9 +61,10 @@ export default class NotificationsSelector extends React.Component {
   addNotificationDate = (type, newDate) => {
     const currentDates = this.state[type] || []
     if (this.isValidDate(currentDates, newDate)) {
-      currentDates.push(newDate)
+      currentDates.push(moment(newDate).format())
     }
     this.setState({ [type]: currentDates })
+    this.props.handleNotifications({ [type]: currentDates })
   }
 
   handleSubmit = async e => {
@@ -62,11 +75,6 @@ export default class NotificationsSelector extends React.Component {
       notificationData: { departmentId, subject, body }
     } = this.props
     const { email, push } = this.state
-
-    console.log('type:', theme)
-    console.log('departmentId:', departmentId)
-    console.log('subject:', subject)
-    console.log('body:', body)
 
     let url = 'http://localhost:3100/notifications'
     if (notificationId) url = url + `/${notificationId}`
@@ -86,7 +94,11 @@ export default class NotificationsSelector extends React.Component {
         schedule: this.state
       })
     })
-    const response = await fetch(request)
+    try {
+      const response = await fetch(request)
+    } catch (error) {
+      console.log('Error creating/updating Notification:', error)
+    }
   }
 
   render () {
@@ -109,10 +121,12 @@ export default class NotificationsSelector extends React.Component {
           addNotificationDate={this.addNotificationDate}
           notifications={this.state.push}
         />
-        <Button
-          label='Guardar Notificaciones'
-          onClick={e => this.handleSubmit(e)}
-        />
+        {this.props.handleNotifications ? null : (
+          <Button
+            label='Guardar Notificaciones'
+            onClick={e => this.handleSubmit(e)}
+          />
+        )}
       </div>
     )
   }

@@ -28,6 +28,7 @@ import Es from '../../../../../i18n/calendarEs'
 import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
 import NotificationsSelector from 'App/components/NotificationsSelector'
+import { createOrUpdate } from 'App/helpers/requests/notifications'
 
 @withRouter
 @withMessage
@@ -153,7 +154,8 @@ export default class TemplateEvent extends Component {
         tags: eventTags || [],
         isOpen: false,
         validators: validators || [],
-        notificationId: event.notificationId || ''
+        notificationId: event.notificationId || '',
+        notifications: { email: [], push: [] }
       }
     } else {
       this.state = {
@@ -187,7 +189,8 @@ export default class TemplateEvent extends Component {
         imageUrl: '',
         isOpen: false,
         validators: [],
-        notificationId: ''
+        notificationId: '',
+        notifications: { email: [], push: [] }
       }
     }
     this.handleChangeDate = this.handleChangeDate.bind(this)
@@ -378,7 +381,7 @@ export default class TemplateEvent extends Component {
 
   getEvent() {
     let s = this.state
-    var event = {
+    return {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
@@ -413,7 +416,6 @@ export default class TemplateEvent extends Component {
       validators: s.validators,
       notificationId: s.notificationId
     }
-    return event
   }
 
   onSuccessInsert() {
@@ -421,14 +423,14 @@ export default class TemplateEvent extends Component {
     this.props.history.push('/calendario/eventos')
   }
 
-  onSuccessUpdate() {
+  onSuccessUpdate = () => {
     this.props.showMessage(
       'El evento fue registrado correctamente , sera redireccionado al home de eventos'
     )
     this.props.history.push('/calendario/eventos')
   }
-  @autobind
-  infoButton() {
+
+  infoButton = () => {
     let res = ''
     if (this.state.locations.length < 1) {
       res = 'Agregar  ticket al evento'
@@ -438,14 +440,27 @@ export default class TemplateEvent extends Component {
     return res
   }
 
-  @autobind
-  async handleSubmit(event) {
-    event.preventDefault()
+  handleSubmit = async e => {
+    e.preventDefault()
+    let event = this.getEvent()
+    const { notifications } = this.state
+
+    const notificationDoc = {
+      type: 'events',
+      departmentId: event.departmentId,
+      subject: event.name,
+      body: event.description,
+      createdFor: event._id,
+      sendEmail: !!(notifications.email && notifications.email.length),
+      sendPush: !!(notifications.push && notifications.push.length),
+      schedule: notifications
+    }
+
     if (this.props.type === 'create') {
       try {
-        let event = this.getEvent()
+        const { _id } = await createOrUpdate(notificationDoc)
+        event.notificationId = notificationId
         await this.props.createEvent({ event: event })
-
         this.onSuccessInsert()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
@@ -453,12 +468,17 @@ export default class TemplateEvent extends Component {
       }
     } else {
       try {
-        let event = this.getEvent()
-        await this.props.updateEvent({ event: event })
+        if (event.notificationId) {
+          notificationDoc.id = event.notificationId
+        }
+
+        const { _id } = await createOrUpdate(notificationDoc)
+        event.notificationId = _id
+        console.log('event:', event)
+        await this.props.updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
-
         this.props.showMessage('Ocurrión un error!')
       }
     }
@@ -508,6 +528,15 @@ export default class TemplateEvent extends Component {
         <i className="pi pi-user-plus" />
       </div>
     )
+  }
+
+  handleNotifications = notifications => {
+    let newNotifications = Object.assign(
+      {},
+      this.state.notifications,
+      notifications
+    )
+    this.setState({ notifications: newNotifications })
   }
 
   render() {
@@ -761,6 +790,7 @@ export default class TemplateEvent extends Component {
                   body: this.state.description,
                   departmentId: this.state.departmentId
                 }}
+                handleNotifications={this.handleNotifications}
               />
               <div>
                 <Popup
