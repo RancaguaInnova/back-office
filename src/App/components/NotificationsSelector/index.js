@@ -5,6 +5,7 @@ import { Button } from 'primereact/button'
 import find from 'lodash/find'
 import moment from 'moment'
 import { get } from 'App/helpers/requests/notifications'
+import remove from 'lodash/remove'
 
 import styles from './styles.css'
 
@@ -67,6 +68,12 @@ export default class NotificationsSelector extends React.Component {
     this.props.handleNotifications({ [type]: currentDates })
   }
 
+  removeNotificationDate = (type, date) => {
+    const currentDates = this.state[type] || []
+    remove(currentDates, d => d === date)
+    this.setState({ [type]: currentDates })
+  }
+
   handleSubmit = async e => {
     e.preventDefault()
     const {
@@ -111,6 +118,7 @@ export default class NotificationsSelector extends React.Component {
           header='Email'
           text='Enviar notificacines vía email a los usuarios que se hayan suscrito a eventos:'
           addNotificationDate={this.addNotificationDate}
+          removeNotificationDate={this.removeNotificationDate}
           notifications={this.state.email}
         />
         <NotificationWidget
@@ -119,6 +127,7 @@ export default class NotificationsSelector extends React.Component {
           header='Push'
           text='Enviar notificacines al teléfono de los usuarios que se hayan suscrito a eventos:'
           addNotificationDate={this.addNotificationDate}
+          removeNotificationDate={this.removeNotificationDate}
           notifications={this.state.push}
         />
         {this.props.handleNotifications ? null : (

@@ -28,7 +28,7 @@ import Es from '../../../../../i18n/calendarEs'
 import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
 import NotificationsSelector from 'App/components/NotificationsSelector'
-import { createOrUpdate } from 'App/helpers/requests/notifications'
+import { create, update } from 'App/helpers/requests/notifications'
 
 @withRouter
 @withMessage
@@ -458,7 +458,7 @@ export default class TemplateEvent extends Component {
 
     if (this.props.type === 'create') {
       try {
-        const { _id } = await createOrUpdate(notificationDoc)
+        const { _id } = await create(notificationDoc)
         event.notificationId = notificationId
         await this.props.createEvent({ event: event })
         this.onSuccessInsert()
@@ -472,9 +472,8 @@ export default class TemplateEvent extends Component {
           notificationDoc.id = event.notificationId
         }
 
-        const { _id } = await createOrUpdate(notificationDoc)
+        const { _id } = await update(notificationDoc)
         event.notificationId = _id
-        console.log('event:', event)
         await this.props.updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {

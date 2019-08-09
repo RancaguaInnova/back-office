@@ -1,11 +1,10 @@
 // GET URL FROM ENV
 
-export const createOrUpdate = async notification => {
+export const create = async notification => {
   let url = 'http://localhost:3100/notifications'
-  if (notification.id) url = url + `/${notification.id}`
 
   const request = new Request(url, {
-    method: notification.id ? 'PUT' : 'POST',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -15,7 +14,26 @@ export const createOrUpdate = async notification => {
     const response = await fetch(request)
     return response.json()
   } catch (error) {
-    return error
+    throw error
+  }
+}
+
+export const update = async notification => {
+  let url = `http://localhost:3100/notifications/${notification.id}`
+  delete notification.id
+
+  const request = new Request(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ notification })
+  })
+  try {
+    const response = await fetch(request)
+    return response.json()
+  } catch (error) {
+    throw error
   }
 }
 
@@ -27,6 +45,6 @@ export const get = async notificationId => {
     const response = await fetch(request)
     return response.json()
   } catch (error) {
-    return error
+    throw error
   }
 }

@@ -67,6 +67,7 @@ export default class NotificationWidget extends React.Component {
     type: PropTypes.string.isRequired,
     subject: PropTypes.string.isRequired,
     addNotificationDate: PropTypes.func.isRequired,
+    removeNotificationDate: PropTypes.func.isRequired,
     header: PropTypes.string,
     text: PropTypes.string,
     notifications: PropTypes.arrayOf(PropTypes.object)
@@ -78,10 +79,20 @@ export default class NotificationWidget extends React.Component {
       return (
         <div className={styles.notifications}>
           Notificaciones programadas:
-          {notifications.map(date => {
+          {notifications.map((date, i) => {
             return (
-              <div key={date.toString()} className={styles.date}>
+              <div key={i} className={styles.date}>
                 {moment(date).format('DD-MM-YYYY')}
+                <Button
+                  style={{
+                    marginLeft: 40,
+                    backgroundColor: '#e21b1b',
+                    borderColor: '#e21b1b'
+                  }}
+                  icon='pi pi-minus'
+                  tooltip='Eliminar esta notificación'
+                  onClick={e => this.handleDateRemoval(e, date)}
+                />
               </div>
             )
           })}
@@ -94,6 +105,11 @@ export default class NotificationWidget extends React.Component {
     e.preventDefault()
     this.props.addNotificationDate(this.props.type, this.state.tempDate)
     this.setState({ tempDate: '' })
+  }
+
+  handleDateRemoval = (e, date) => {
+    e.preventDefault()
+    this.props.removeNotificationDate(this.props.type, date)
   }
 
   render () {
