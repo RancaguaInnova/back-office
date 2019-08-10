@@ -5,6 +5,7 @@ import { Button } from 'primereact/button'
 import { Calendar } from 'primereact/calendar'
 import sortBy from 'lodash/sortBy'
 import isEmpty from 'lodash/isEmpty'
+import moment from 'moment'
 
 import styles from './styles.css'
 
@@ -103,7 +104,10 @@ export default class NotificationWidget extends React.Component {
 
   handleDateAddition = e => {
     e.preventDefault()
-    this.props.addNotificationDate(this.props.type, this.state.tempDate)
+    this.props.addNotificationDate(
+      this.props.type,
+      moment(this.state.tempDate).format()
+    )
     this.setState({ tempDate: '' })
   }
 
@@ -120,7 +124,7 @@ export default class NotificationWidget extends React.Component {
             <p>{this.props.text}</p>
             <div className={styles.label}>Fechas a notificar</div>
             <Calendar
-              locale={this.props.locale}
+              locale={this.locale}
               showButtonBar
               value={this.state.tempDate}
               onChange={e => this.setState({ tempDate: e.value })}

@@ -459,7 +459,7 @@ export default class TemplateEvent extends Component {
     if (this.props.type === 'create') {
       try {
         const { _id } = await create(notificationDoc)
-        event.notificationId = notificationId
+        event.notificationId = _id
         await this.props.createEvent({ event: event })
         this.onSuccessInsert()
       } catch (error) {

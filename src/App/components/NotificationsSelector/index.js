@@ -5,6 +5,7 @@ import { Button } from 'primereact/button'
 import find from 'lodash/find'
 import moment from 'moment'
 import { get } from 'App/helpers/requests/notifications'
+import withServices from 'App/components/WithServices'
 import remove from 'lodash/remove'
 
 import styles from './styles.css'
@@ -12,7 +13,7 @@ import styles from './styles.css'
 /**
  * Widget to select notification types and times
  */
-export default class NotificationsSelector extends React.Component {
+class NotificationsSelector extends React.Component {
   constructor (props) {
     super(props)
     this.state = {}
@@ -32,10 +33,10 @@ export default class NotificationsSelector extends React.Component {
   }
 
   componentDidMount = async () => {
-    const { notificationId } = this.props
+    const { notificationId, services } = this.props
     if (notificationId) {
       try {
-        const notification = await get(notificationId)
+        const notification = await services.notifications.get(notificationId)
         this.setState({ ...notification.schedule })
       } catch (error) {
         console.log('Error getting Notification document:', error)
@@ -50,7 +51,10 @@ export default class NotificationsSelector extends React.Component {
         item =>
           moment(item)
             .toDate()
-            .getTime() === newDate.getTime()
+            .getTime() ===
+          moment(newDate)
+            .toDate()
+            .getTime()
       )
     ) {
       return false
@@ -62,7 +66,7 @@ export default class NotificationsSelector extends React.Component {
   addNotificationDate = (type, newDate) => {
     const currentDates = this.state[type] || []
     if (this.isValidDate(currentDates, newDate)) {
-      currentDates.push(moment(newDate).format())
+      currentDates.push(newDate)
     }
     this.setState({ [type]: currentDates })
     this.props.handleNotifications({ [type]: currentDates })
@@ -72,40 +76,6 @@ export default class NotificationsSelector extends React.Component {
     const currentDates = this.state[type] || []
     remove(currentDates, d => d === date)
     this.setState({ [type]: currentDates })
-  }
-
-  handleSubmit = async e => {
-    e.preventDefault()
-    const {
-      notificationId,
-      theme,
-      notificationData: { departmentId, subject, body }
-    } = this.props
-    const { email, push } = this.state
-
-    let url = 'http://localhost:3100/notifications'
-    if (notificationId) url = url + `/${notificationId}`
-
-    const request = new Request(url, {
-      method: notificationId ? 'PUT' : 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        type: theme,
-        departmentId,
-        subject,
-        body,
-        sendEmail: !!(email && email.length),
-        sendPush: !!(push && push.length),
-        schedule: this.state
-      })
-    })
-    try {
-      const response = await fetch(request)
-    } catch (error) {
-      console.log('Error creating/updating Notification:', error)
-    }
   }
 
   render () {
@@ -130,13 +100,14 @@ export default class NotificationsSelector extends React.Component {
           removeNotificationDate={this.removeNotificationDate}
           notifications={this.state.push}
         />
-        {this.props.handleNotifications ? null : (
-          <Button
-            label='Guardar Notificaciones'
-            onClick={e => this.handleSubmit(e)}
-          />
-        )}
       </div>
     )
   }
 }
+
+export default withServices(
+  NotificationsSelector,
+  'http://localhost:3100',
+  ['notifications'],
+  ['get']
+)
