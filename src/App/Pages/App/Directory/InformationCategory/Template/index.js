@@ -15,6 +15,7 @@ import { Button } from 'primereact/button'
 import './style.css'
 import InformationCategoryFragments from 'App/fragments/InformationCategory'
 import { confirmAlert } from 'react-confirm-alert'
+import { InputSwitch } from 'primereact/inputswitch'
 
 @withMessage
 @withGraphQL(gql`
@@ -27,7 +28,6 @@ import { confirmAlert } from 'react-confirm-alert'
       name
     }
   }
-
   ${InformationCategoryFragments.FullInformationCategory}
 `)
 @withMutation(gql`
@@ -74,7 +74,11 @@ export default class Template extends Component {
         description: '',
         iconURL: '',
         optionLabel: '',
-        tags: []
+        urlRedirect: '',
+        imageHeaderUrl: '',
+        urlIframe: '',
+        tags: [],
+        active: true
       }
     }
     if (this.props.type === 'update') {
@@ -113,7 +117,21 @@ export default class Template extends Component {
   goBack() {
     this.props.history.push('/directorio/categorias')
   }
-
+  handleUploadSuccessHeader = filename => {
+    this.setState({
+      uploadImageUrl: filename,
+      progress: 100,
+      isUploading: false
+    })
+    firebase
+      .storage()
+      .ref('CategoryImages')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => {
+        this.setState({ ...this.state, imageHeaderUrl: url })
+      })
+  }
   handleUploadImage() {
     return (
       <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
@@ -132,6 +150,26 @@ export default class Template extends Component {
       </span>
     )
   }
+
+  handleUploadImageHeader() {
+    return (
+      <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
+        <span className='p-button-icon-center pi pi-plus m6' />
+        <FileUploader
+          accept='image/*'
+          name='uploadImageUrl'
+          className='p-inputtext p-component p-inputtext p-filled'
+          randomizeFilename
+          storageRef={firebase.storage().ref('CategoryImages')}
+          onUploadStart={this.handleUploadStart}
+          onUploadError={this.handleUploadError}
+          onUploadSuccess={this.handleUploadSuccessHeader}
+          onProgress={this.handleProgress}
+        />
+      </span>
+    )
+  }
+
   handleSpinner() {
     return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
   }
@@ -151,14 +189,14 @@ export default class Template extends Component {
         await this.props.createInformationCategory({ informationCategory: category })
         this.onSuccessInsert()
       } catch (error) {
-        this.props.showMessage('Ocurrión un error!')
+        this.props.showMessage('Ocurrió un error!')
       }
     } else {
       try {
         await this.props.updateInformationCategory({ informationCategory: category })
         this.onSuccessUpdate()
       } catch (error) {
-        this.props.showMessage('Ocurrión un error!')
+        this.props.showMessage('Ocurrió un error!')
       }
     }
   }
@@ -221,10 +259,18 @@ export default class Template extends Component {
           <div className='label'>Descripción</div>
           <InputText
             name='description'
-            value={this.state.description}
+            value={this.state.description || ''}
             onChange={this.handleInputChange}
             className='p-inputtext'
-            required
+            tabIndex={2}
+          />
+
+          <div className='label'>Url de redirección </div>
+          <InputText
+            name='urlRedirect'
+            value={this.state.urlRedirect || ''}
+            onChange={this.handleInputChange}
+            className='p-inputtext'
             tabIndex={2}
           />
           <div className='label'>Url Icono</div>
@@ -240,6 +286,21 @@ export default class Template extends Component {
             />
             <div className='UploadImage'>
               {this.state.isUploading ? this.handleSpinner() : this.handleUploadImage()}
+            </div>
+          </div>
+          <div className='label'>Url imagen header</div>
+          <div className='flex-cols'>
+            <InputText
+              name='imageHeaderUrl'
+              title='Debe ingresar una url del header de la categoría'
+              type='url'
+              value={this.state.imageHeaderUrl || ''}
+              onChange={this.handleInputChange}
+              className='p-inputtextIconUrl'
+              tabIndex={2}
+            />
+            <div className='UploadImage'>
+              {this.state.isUploading ? this.handleSpinner() : this.handleUploadImageHeader()}
             </div>
           </div>
           <div className='label'>Categoría Padre</div>
@@ -263,6 +324,13 @@ export default class Template extends Component {
             onChange={this.handleInputChange}
             className='p-inputtext'
           />
+          <div className='label'>Url Iframe en caso de usarlo</div>
+          <InputText
+            name='urlIframe'
+            value={this.state.urlIframe}
+            onChange={this.handleInputChange}
+            className='p-inputtext'
+          />
           <div className='label'>Tags</div>
           <div>
             <Chips
@@ -272,6 +340,13 @@ export default class Template extends Component {
               tooltip='Para agregar un nuevo tag debe ingresar el tag  y dar enter'
             />
           </div>
+          <div className='label'>Activo</div>
+
+          <InputSwitch
+            checked={this.state.active || false}
+            onChange={e => this.setState({ active: e.value })}
+          />
+
           <br />
           <Button
             onClick={() => this.goBack()}

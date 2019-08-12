@@ -14,17 +14,17 @@ export default class Departments extends React.Component {
         <Switch>
           <Route
             exact
-            path='/directorio/departamentosMunicipales'
+            path='/directorio/departamentos'
             component={DynamicComponent(() => import('./List'))}
           />
           <Route
             exact
-            path='/directorio/departamentosMunicipales/crear'
+            path='/directorio/departamentos/crear'
             component={DynamicComponent(() => import('./Create'))}
           />
           <Route
             exact
-            path='/directorio/departamentosMunicipales/editar/:departmentId'
+            path='/directorio/departamentos/editar/:departmentId'
             component={DynamicComponent(() => import('./Update'))}
           />
         </Switch>

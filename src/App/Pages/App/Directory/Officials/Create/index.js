@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Template from '../Template/'
 import PropTypes from 'prop-types'
-export default class CreateDepartments extends React.Component {
+
+export default class CreateOfficial extends Component {
   static propTypes = {
     history: PropTypes.object
   }
@@ -9,9 +10,9 @@ export default class CreateDepartments extends React.Component {
     return (
       <Template
         type='create'
-        departmentId=''
-        title='Crear Departamento Municipal'
-        description='Creación de nuevo departamento municipal'
+        officialId=''
+        title='Crea el registro de funcionarios '
+        description=''
         history={this.props.history}
       />
     )

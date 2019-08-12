@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 export default {
-  FullDepartment: gql`
-    fragment FullDepartment on Department {
+  FullInformationDepartment: gql`
+    fragment FullInformationDepartment on InformationDepartment {
       _id
       name
       optionLabel

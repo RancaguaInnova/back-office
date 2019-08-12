@@ -21,9 +21,9 @@ export default class ListDepartment extends React.Component {
   render() {
     return (
       <PaginatedList
-        title='Departamentos Municipales'
-        name='departments'
-        basePath='/directorio/departamentosMunicipales'
+        title='Departamentos'
+        name='informationDepartments'
+        basePath='/directorio/departamentos'
         fields={this.getFields()}
         canUpdate
         canCreate
