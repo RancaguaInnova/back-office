@@ -8,7 +8,7 @@ import withMutation from 'react-apollo-decorators/lib/withMutation'
 import gql from 'graphql-tag'
 import autobind from 'autobind-decorator'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
-import DepartmentFragments from 'App/fragments/Department'
+import InformationDepartmentFragments from 'App/fragments/InformationDepartment'
 import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { InputText } from 'primereact/inputtext'
@@ -24,28 +24,28 @@ import { Chips } from 'primereact/chips'
 @withRouter
 @withMessage
 @withMutation(gql`
-  mutation createDepartment($department: DepartmentInput!) {
-    createDepartment(department: $department) {
+  mutation createInformationDepartment($informationDepartment: InformationDepartmentInput!) {
+    createInformationDepartment(informationDepartment: $informationDepartment) {
       _id
     }
   }
 `)
 @withMutation(gql`
-  mutation updateDepartment($department: DepartmentInput!) {
-    updateDepartment(department: $department) {
+  mutation updateInformationDepartment($informationDepartment: InformationDepartmentInput!) {
+    updateInformationDepartment(informationDepartment: $informationDepartment) {
       _id
     }
   }
 `)
 @withMutation(gql`
-  mutation deleteDepartment($_id: ID!) {
-    deleteDepartment(_id: $_id)
+  mutation deleteInformationDepartment($_id: ID!) {
+    deleteInformationDepartment(_id: $_id)
   }
 `)
 @withGraphQL(gql`
-  query department($departmentId: ID!) {
-    department(departmentId: $departmentId) {
-      ...FullDepartment
+  query informationDepartment($departmentId: ID!) {
+    informationDepartment(departmentId: $departmentId) {
+      ...FullInformationDepartment
     }
     officials {
       items {
@@ -58,16 +58,16 @@ import { Chips } from 'primereact/chips'
       label: name
     }
   }
-  ${DepartmentFragments.FullDepartment}
+  ${InformationDepartmentFragments.FullInformationDepartment}
 `)
 class TemplateDepartment extends React.Component {
   static propTypes = {
     history: PropTypes.object,
     showMessage: PropTypes.func,
-    createDepartment: PropTypes.func,
-    department: PropTypes.object,
-    updateDepartment: PropTypes.func,
-    deleteDepartment: PropTypes.func,
+    createInformationDepartment: PropTypes.func,
+    informationDepartment: PropTypes.object,
+    updateInformationDepartment: PropTypes.func,
+    deleteInformationDepartment: PropTypes.func,
     officials: PropTypes.object,
     informationCategoriesList: PropTypes.array,
     type: PropTypes.string,
@@ -76,7 +76,7 @@ class TemplateDepartment extends React.Component {
   }
   constructor(props) {
     super(props)
-    var department = {
+    var informationDepartment = {
       _id: '',
       name: '',
       optionLabel: '',
@@ -111,43 +111,45 @@ class TemplateDepartment extends React.Component {
       }
     }
     this.state = {
-      department: department,
+      informationDepartment: informationDepartment,
       officialsArray: this.props.officials.items,
       informationCategoriesList: this.props.informationCategoriesList
     }
   }
   componentDidMount() {
     if (this.props.type === 'update') {
-      var department = _mergeWith(this.state.department, this.props.department, (a, b) =>
-        b === null ? a : undefined
+      var informationDepartment = _mergeWith(
+        this.state.informationDepartment,
+        this.props.informationDepartment,
+        (a, b) => (b === null ? a : undefined)
       )
-      this.setState(department)
+      this.setState(informationDepartment)
     }
   }
   onSuccessInsert() {
     this.props.showMessage('Departamento creado')
-    this.props.history.push(`/directorio/departamentosMunicipales/`)
+    this.props.history.push(`/directorio/departamentos/`)
   }
   onSuccessUpdate() {
     this.props.showMessage('Departamento actualizado correctamente')
-    this.props.history.push(`/directorio/departamentosMunicipales/`)
+    this.props.history.push(`/directorio/departamentos/`)
   }
   @autobind
   BackList() {
-    this.props.history.push(`/directorio/departamentosMunicipales/`)
+    this.props.history.push(`/directorio/departamentos/`)
   }
 
   @autobind
   onSuccessDelete() {
     this.props.showMessage('Departamento eliminado correctamente')
-    this.props.history.push(`/directorio/departamentosMunicipales/`)
+    this.props.history.push(`/directorio/departamentos/`)
   }
 
   @autobind
   async onDelete() {
     try {
-      var department = this.state.departament
-      await this.props.deleteDepartment({ _id: department._id })
+      var informationDepartment = this.state.informationDepartment
+      await this.props.deleteInformationDepartment({ _id: informationDepartment._id })
       this.onSuccessDelete()
     } catch (error) {
       this.props.showMessage('Ocurrió un error al eliminar el departamento')
@@ -155,14 +157,14 @@ class TemplateDepartment extends React.Component {
   }
 
   handleChangeAddress = contactInformationAddress => {
-    let department = { ...this.state.department }
+    let informationDepartment = { ...this.state.informationDepartment }
 
-    department.contactInformation.address = _mergeWith(
-      department.contactInformation.address,
+    informationDepartment.contactInformation.address = _mergeWith(
+      informationDepartment.contactInformation.address,
       contactInformationAddress,
       (a, b) => (b === null ? a : undefined)
     )
-    this.setState({ department })
+    this.setState({ informationDepartment })
   }
 
   toggleValidating(validate) {
@@ -182,13 +184,13 @@ class TemplateDepartment extends React.Component {
     })
     firebase
       .storage()
-      .ref('DepartmentImages')
+      .ref('InformationDepartmentImages')
       .child(filename)
       .getDownloadURL()
       .then(url => {
-        let department = { ...this.state.department }
-        department.imageUrl = url
-        this.setState({ department })
+        let informationDepartment = { ...this.state.informationDepartment }
+        informationDepartment.imageUrl = url
+        this.setState({ informationDepartment })
       })
   }
   handleUploadImage() {
@@ -200,7 +202,7 @@ class TemplateDepartment extends React.Component {
           name='uploadImageUrl'
           className='p-inputtext p-component p-inputtext p-filled'
           randomizeFilename
-          storageRef={firebase.storage().ref('DepartmentImages')}
+          storageRef={firebase.storage().ref('InformationDepartmentImages')}
           onUploadStart={this.handleUploadStart}
           onUploadError={this.handleUploadError}
           onUploadSuccess={this.handleUploadSuccess}
@@ -233,22 +235,23 @@ class TemplateDepartment extends React.Component {
   @autobind
   async handleSubmit(e) {
     e.preventDefault()
-    var department = this.state.department
-    console.log(department)
+    var informationDepartment = this.state.informationDepartment
     if (this.props.type === 'create') {
       try {
-        await this.props.createDepartment({ department: department })
+        await this.props.createInformationDepartment({
+          informationDepartment: informationDepartment
+        })
         this.onSuccessInsert()
       } catch (error) {
-        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     } else {
       try {
-        await this.props.updateDepartment({ department: department })
+        await this.props.updateInformationDepartment({
+          informationDepartment: informationDepartment
+        })
         this.onSuccessUpdate()
       } catch (error) {
-        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     }
@@ -261,11 +264,11 @@ class TemplateDepartment extends React.Component {
           <div className='fieldGroup'>
             <div className='label'>Nombre</div>
             <InputText
-              value={this.state.department.name}
+              value={this.state.informationDepartment.name}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.name = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.name = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               required
@@ -276,11 +279,11 @@ class TemplateDepartment extends React.Component {
               Texto que aparecerá en campos para seleccionar departamentos
             </div>
             <InputText
-              value={this.state.department.optionLabel}
+              value={this.state.informationDepartment.optionLabel}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.optionLabel = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.optionLabel = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={2}
@@ -289,13 +292,13 @@ class TemplateDepartment extends React.Component {
             <div className='label'>Director(a) de este departamento</div>
             <Dropdown
               name='department.managerId'
-              value={this.state.department.managerId}
+              value={this.state.informationDepartment.managerId}
               options={this.state.officialsArray}
               className='p-inputtext'
               onChange={e => {
-                let department = { ...this.state.department }
-                department.managerId = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.managerId = e.target.value
+                this.setState({ informationDepartment })
               }}
               filter={true}
               filterPlaceholder='Seleccione un director'
@@ -303,14 +306,14 @@ class TemplateDepartment extends React.Component {
             />
             <div className='label'>Categoria a la que pertenece el departamento</div>
             <Dropdown
-              name='department.informationCategory'
-              value={this.state.department.informationCategoryId || ''}
+              name='informationDepartment.informationCategory'
+              value={this.state.informationDepartment.informationCategoryId || ''}
               options={this.props.informationCategoriesList}
               className='p-inputtext'
               onChange={e => {
-                let department = { ...this.state.department }
-                department.informationCategoryId = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.informationCategoryId = e.target.value
+                this.setState({ informationDepartment })
               }}
               filter={true}
               filterPlaceholder='Seleccione una categoría'
@@ -324,17 +327,19 @@ class TemplateDepartment extends React.Component {
           <div className='fieldGroup'>
             <SearchBar
               handleChangeAddress={this.handleChangeAddress}
-              latitude={this.state.department.contactInformation.address.latitude}
-              longitude={this.state.department.contactInformation.address.longitude}
-              address={this.state.department.contactInformation.address.formatted_address}
+              latitude={this.state.informationDepartment.contactInformation.address.latitude}
+              longitude={this.state.informationDepartment.contactInformation.address.longitude}
+              address={
+                this.state.informationDepartment.contactInformation.address.formatted_address
+              }
             />
             <div className='label'>Calle</div>
             <InputText
-              value={this.state.department.contactInformation.address.streetName}
+              value={this.state.informationDepartment.contactInformation.address.streetName}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.streetName = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.streetName = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={5}
@@ -342,12 +347,12 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Numero</div>
             <InputText
-              name='department.contactInformation.address.streetNumber'
-              value={this.state.department.contactInformation.address.streetNumber}
+              name='informationDepartment.contactInformation.address.streetNumber'
+              value={this.state.informationDepartment.contactInformation.address.streetNumber}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.streetNumber = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.streetNumber = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={6}
@@ -355,12 +360,12 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Numero Departamento/Otro</div>
             <InputText
-              name='department.contactInformation.address.departmentNumber'
-              value={this.state.department.contactInformation.address.departmentNumber}
+              name='informationDepartment.contactInformation.address.departmentNumber'
+              value={this.state.informationDepartment.contactInformation.address.departmentNumber}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.departmentNumber = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.departmentNumber = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={7}
@@ -368,12 +373,12 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Ciudad</div>
             <InputText
-              name='department.contactInformation.address.city'
-              value={this.state.department.contactInformation.address.city}
+              name='informationDepartment.contactInformation.address.city'
+              value={this.state.informationDepartment.contactInformation.address.city}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.city = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.city = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={8}
@@ -381,12 +386,15 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Provincia</div>
             <InputText
-              name='department.contactInformation.address.administrativeAreaLevel2'
-              value={this.state.department.contactInformation.address.administrativeAreaLevel2}
+              name='informationDepartment.contactInformation.address.administrativeAreaLevel2'
+              value={
+                this.state.informationDepartment.contactInformation.address.administrativeAreaLevel2
+              }
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.administrativeAreaLevel2 = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.administrativeAreaLevel2 =
+                  e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={9}
@@ -394,12 +402,15 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Región</div>
             <InputText
-              name='department.contactInformation.address.administrativeAreaLevel1'
-              value={this.state.department.contactInformation.address.administrativeAreaLevel1}
+              name='informationDepartment.contactInformation.address.administrativeAreaLevel1'
+              value={
+                this.state.informationDepartment.contactInformation.address.administrativeAreaLevel1
+              }
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.administrativeAreaLevel1 = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.administrativeAreaLevel1 =
+                  e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={10}
@@ -408,11 +419,11 @@ class TemplateDepartment extends React.Component {
             <div className='label'>País</div>
             <InputText
               name='contactInformation.address.country'
-              value={this.state.department.contactInformation.address.country}
+              value={this.state.informationDepartment.contactInformation.address.country}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.country = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.country = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={11}
@@ -420,12 +431,12 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Código Postal</div>
             <InputText
-              name='department.contactInformation.address.postalCode'
-              value={this.state.department.contactInformation.address.postalCode}
+              name='informationDepartment.contactInformation.address.postalCode'
+              value={this.state.informationDepartment.contactInformation.address.postalCode}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.address.postalCode = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.address.postalCode = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={11}
@@ -438,12 +449,12 @@ class TemplateDepartment extends React.Component {
             <div className='label'>Código de área</div>
             <InputText
               type='number'
-              name='department.contactInformation.phone.areaCode'
-              value={this.state.department.contactInformation.phone.areaCode || ''}
+              name='informationDepartment.contactInformation.phone.areaCode'
+              value={this.state.informationDepartment.contactInformation.phone.areaCode || ''}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.phone.areaCode = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.phone.areaCode = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={13}
@@ -452,12 +463,12 @@ class TemplateDepartment extends React.Component {
             <div className='label'>Número</div>
             <InputText
               type='number'
-              name='department.contactInformation.phone.number'
-              value={this.state.department.contactInformation.phone.number || ''}
+              name='informationDepartment.contactInformation.phone.number'
+              value={this.state.informationDepartment.contactInformation.phone.number || ''}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.phone.number = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.phone.number = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={14}
@@ -465,12 +476,12 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Celular</div>
             <InputText
-              name='department.contactInformation.phone.mobilePhone'
-              value={this.state.department.contactInformation.phone.mobilePhone || ''}
+              name='informationDepartment.contactInformation.phone.mobilePhone'
+              value={this.state.informationDepartment.contactInformation.phone.mobilePhone || ''}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.phone.mobilePhone = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.phone.mobilePhone = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={15}
@@ -478,13 +489,13 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Email</div>
             <InputText
-              name='department.contactInformation.email'
+              name='informationDepartment.contactInformation.email'
               type='email'
-              value={this.state.department.contactInformation.email || ''}
+              value={this.state.informationDepartment.contactInformation.email || ''}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.contactInformation.email = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.contactInformation.email = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={16}
@@ -494,13 +505,13 @@ class TemplateDepartment extends React.Component {
               Horarios de atención (Ej: lunes a jueves / 08:30 a 13:30 / Viernes 08:30 a 16:30)
             </div>
             <InputText
-              name='department.businessHours'
+              name='informationDepartment.businessHours'
               type='text'
-              value={this.state.department.businessHours}
+              value={this.state.informationDepartment.businessHours}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.businessHours = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.businessHours = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={17}
@@ -508,13 +519,13 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Descripción de funciones del departamento</div>
             <InputText
-              name='department.description'
+              name='informationDepartment.description'
               type='text'
-              value={this.state.department.description}
+              value={this.state.informationDepartment.description}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.description = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.description = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={18}
@@ -524,13 +535,13 @@ class TemplateDepartment extends React.Component {
 
             <div className='flex-cols'>
               <InputText
-                name='department.imageUrl'
+                name='informationDepartment.imageUrl'
                 type='url'
-                value={this.state.department.imageUrl}
+                value={this.state.informationDepartment.imageUrl}
                 onChange={e => {
-                  let department = { ...this.state.department }
-                  department.imageUrl = e.target.value
-                  this.setState({ department })
+                  let informationDepartment = { ...this.state.informationDepartment }
+                  informationDepartment.imageUrl = e.target.value
+                  this.setState({ informationDepartment })
                 }}
                 className='inputtextIconUrl'
                 tabIndex={19}
@@ -542,13 +553,13 @@ class TemplateDepartment extends React.Component {
 
             <div className='label'>Dirección del departamento de tránsito</div>
             <InputText
-              name='department.address'
+              name='informationDepartment.address'
               type='text'
-              value={this.state.department.address}
+              value={this.state.informationDepartment.address}
               onChange={e => {
-                let department = { ...this.state.department }
-                department.address = e.target.value
-                this.setState({ department })
+                let informationDepartment = { ...this.state.informationDepartment }
+                informationDepartment.address = e.target.value
+                this.setState({ informationDepartment })
               }}
               className='p-inputtext'
               tabIndex={20}
@@ -556,13 +567,12 @@ class TemplateDepartment extends React.Component {
             <div className='label'>Tags</div>
             <div>
               <Chips
-                value={this.state.department.tags}
+                value={this.state.informationDepartment.tags}
                 placeholder='Agregar tag'
                 onChange={e => {
-                  console.log(e)
-                  let department = { ...this.state.department }
-                  department.tags = e.value
-                  this.setState({ department })
+                  let informationDepartment = { ...this.state.informationDepartment }
+                  informationDepartment.tags = e.value
+                  this.setState({ informationDepartment })
                 }}
                 tooltip='Para agregar un nuevo tag debe ingresar el tag  y dar enter'
               />

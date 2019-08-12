@@ -27,6 +27,8 @@ export default class DirectoryRoutes extends React.Component {
               { title: 'Home', path: '/directorio' },
               { title: 'Categorias', path: '/directorio/categorias' },
               { title: 'Departamentos', path: '/directorio/departamentos' },
+
+              { title: 'Departamentos Municipales', path: '/directorio/departamentosMunicipales' },
               { title: 'Funcionarios', path: '/directorio/funcionarios' }
             ]}
           />
@@ -39,13 +41,17 @@ export default class DirectoryRoutes extends React.Component {
             />
             <Route
               path='/directorio/departamentos'
-              component={DynamicComponent(() => import('./Departments'))}
+              component={DynamicComponent(() => import('./InformationDepartment'))}
             />
             <Route
               path='/directorio/funcionarios'
               component={DynamicComponent(() => import('./Officials'))}
             />
             <Route exact path='/directorio' component={DynamicComponent(() => import('./Home'))} />
+            <Route
+              path='/directorio/departamentosMunicipales'
+              component={DynamicComponent(() => import('./Departments'))}
+            />
           </Switch>
         </Container>
       </div>
