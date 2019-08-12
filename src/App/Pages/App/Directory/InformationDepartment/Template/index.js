@@ -116,6 +116,7 @@ class TemplateDepartment extends React.Component {
       informationCategoriesList: this.props.informationCategoriesList
     }
   }
+
   componentDidMount() {
     if (this.props.type === 'update') {
       var informationDepartment = _mergeWith(
@@ -126,14 +127,17 @@ class TemplateDepartment extends React.Component {
       this.setState(informationDepartment)
     }
   }
+
   onSuccessInsert() {
     this.props.showMessage('Departamento creado')
     this.props.history.push(`/directorio/departamentos/`)
   }
+
   onSuccessUpdate() {
     this.props.showMessage('Departamento actualizado correctamente')
     this.props.history.push(`/directorio/departamentos/`)
   }
+
   @autobind
   BackList() {
     this.props.history.push(`/directorio/departamentos/`)
@@ -172,10 +176,13 @@ class TemplateDepartment extends React.Component {
   }
 
   handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
+
   handleProgress = progress => this.setState({ progress })
+
   handleUploadError = () => {
     this.setState({ isUploading: false })
   }
+
   handleUploadSuccess = filename => {
     this.setState({
       uploadImageUrl: filename,
@@ -193,6 +200,7 @@ class TemplateDepartment extends React.Component {
         this.setState({ informationDepartment })
       })
   }
+
   handleUploadImage() {
     return (
       <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
@@ -211,9 +219,11 @@ class TemplateDepartment extends React.Component {
       </span>
     )
   }
+
   handleSpinner() {
     return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
   }
+
   @autobind
   confirmDelete() {
     confirmAlert({

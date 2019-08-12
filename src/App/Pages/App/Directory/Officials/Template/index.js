@@ -103,6 +103,7 @@ class Template extends React.Component {
       departmentD: this.props.departmentsList.items || []
     }
   }
+
   componentDidMount() {
     if (this.props.type === 'update') {
       var official = _.mergeWith(this.state.official, this.props.official, (a, b) =>
@@ -111,17 +112,20 @@ class Template extends React.Component {
       this.setState(official)
     }
   }
+
   handleInputChange = e => {
     const { name, value } = e.target
     let official = this.state.official
     _.set(official, name, value)
     this.setState({ official })
   }
+
   handleSelect = e => {
     let official = this.state.official
     official.department = e.value
     this.setState({ official })
   }
+
   handleSubmit = async e => {
     e.preventDefault()
     let OfficialInput = this.state.official
@@ -139,10 +143,12 @@ class Template extends React.Component {
       this.props.showMessage('Ocurrió un error!')
     }
   }
+
   onSuccessDelete = () => {
     this.props.showMessage('Funcionario eliminado correctamente')
     this.props.history.push('/directorio/funcionarios')
   }
+
   onSuccessInsert = () => {
     this.props.showMessage('Funcionario creado correctamente')
     this.props.history.push('/directorio/funcionarios')
@@ -152,9 +158,11 @@ class Template extends React.Component {
     this.props.showMessage('Funcionario actualizado correctamente')
     this.props.history.push('/directorio/funcionarios')
   }
+
   goBack = () => {
     this.props.history.push('/directorio/funcionarios')
   }
+
   @autobind
   confirmDelete() {
     confirmAlert({
@@ -172,6 +180,7 @@ class Template extends React.Component {
       ]
     })
   }
+
   @autobind
   async onDelete() {
     let OfficialInput = this.state.official
