@@ -28,7 +28,7 @@ import Es from '../../../../../i18n/calendarEs'
 import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
 import NotificationsSelector from 'App/components/NotificationsSelector'
-import { create, update } from 'App/helpers/requests/notifications'
+import withServices from 'App/components/WithServices'
 
 @withRouter
 @withMessage
@@ -78,7 +78,10 @@ export default class TemplateEvent extends Component {
     updateEvent: PropTypes.func,
     type: PropTypes.string,
     title: PropTypes.string,
-    description: PropTypes.string
+    description: PropTypes.string,
+    services: PropTypes.shape({
+      notifications: PropTypes.object
+    }).isRequired
   }
 
   constructor(props) {
@@ -434,6 +437,7 @@ export default class TemplateEvent extends Component {
     e.preventDefault()
     let event = this.getEvent()
     const { notifications } = this.state
+    const { services, createEvent, updateEvent } = this.props
 
     const notificationDoc = {
       type: 'events',
@@ -448,7 +452,7 @@ export default class TemplateEvent extends Component {
 
     if (this.props.type === 'create') {
       try {
-        const { _id } = await create(notificationDoc)
+        const { _id } = await services.notifications.create(notificationDoc)
         event.notificationId = _id
         await this.props.createEvent({ event: event })
         this.onSuccessInsert()
@@ -458,13 +462,17 @@ export default class TemplateEvent extends Component {
       }
     } else {
       try {
+        let _id
         if (event.notificationId) {
           notificationDoc.id = event.notificationId
+        } else {
+          { _id } = await createEvent({ event: event })
+          event.notificationId = _id
         }
 
-        const { _id } = await update(notificationDoc)
+        const { _id } = await services.notifications.update(notificationDoc)
         event.notificationId = _id
-        await this.props.updateEvent({ event })
+        await updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
