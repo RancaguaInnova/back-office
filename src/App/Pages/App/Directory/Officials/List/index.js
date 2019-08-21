@@ -5,25 +5,25 @@ export default class ListDepartment extends React.Component {
   getFields() {
     return [
       {
-        name: 'name',
+        name: 'firstname',
         title: 'Nombre',
         sort: 'DESC',
-        render: (value, doc, index) => <span>{value.name} </span>
+        render: (value, doc, index) => <span>{value.firstname} </span>
       },
       {
-        name: 'optionLabel',
-        title: 'Description',
+        name: 'lastname',
+        title: 'Apellido',
         sort: 'DESC',
-        render: (value, doc, index) => <span>{value.optionLabel} </span>
+        render: (value, doc, index) => <span>{value.lastname} </span>
       }
     ]
   }
   render() {
     return (
       <PaginatedList
-        title='Departamentos Municipales'
-        name='departments'
-        basePath='/directorio/departamentosMunicipales'
+        title='Funcionarios'
+        name='officials'
+        basePath='/directorio/funcionarios'
         fields={this.getFields()}
         canUpdate
         canCreate

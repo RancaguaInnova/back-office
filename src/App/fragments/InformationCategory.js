@@ -8,6 +8,10 @@ export default {
       description
       optionLabel
       iconURL
+      urlRedirect
+      active
+      urlIframe
+      imageHeaderUrl
       parent {
         _id
         name
