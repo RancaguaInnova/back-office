@@ -193,18 +193,14 @@ export default class TemplateEvent extends Component {
         notifications: { email: [], push: [] }
       }
     }
-    this.handleChangeDate = this.handleChangeDate.bind(this)
-    this.handleChangeTime = this.handleChangeTime.bind(this)
-    this.handleChangeEndTime = this.handleChangeEndTime.bind(this)
-    this.handleAdditionValidator = this.handleAdditionValidator.bind(this)
-    this.onSuccessUpdate = this.onSuccessUpdate.bind(this)
   }
 
   handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
+
   handleProgress = progress => this.setState({ progress })
-  handleUploadError = () => {
-    this.setState({ isUploading: false })
-  }
+
+  handleUploadError = () => this.setState({ isUploading: false })
+
   handleUploadSuccess = filename => {
     this.setState({
       uploadImageUrl: filename,
@@ -231,7 +227,7 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  formatApiTag(arrayTags) {
+  formatApiTag = arrayTags => {
     let a = arrayTags || []
     if (a.length === 0) {
       return []
@@ -245,7 +241,8 @@ export default class TemplateEvent extends Component {
       return ar
     }
   }
-  formatBackTags(arrayTags) {
+
+  formatBackTags = arrayTags => {
     let a = arrayTags || []
     if (a.length === 0) {
       return []
@@ -260,15 +257,14 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  getDepartmentOptions() {
+  getDepartmentOptions = () => {
     const Departaments = this.props.departments.items.map(department => {
       return { label: department.name, value: department._id }
     })
-
     return Departaments
   }
 
-  getValidationErrors(error) {
+  getValidationErrors = error => {
     return reduce(
       error.graphQLErrors,
       (result, e, k) => {
@@ -278,50 +274,46 @@ export default class TemplateEvent extends Component {
     )
   }
 
-  renderErrorMessages() {
+  renderErrorMessages = () => {
     if (!this.state.errorMessages) return
     console.log('UNIMPLEMENTED')
   }
-  toggleValidating(validate) {
-    this.setState({ validate })
-  }
-  toggleValidatingPop(validatePop) {
-    this.setState({ validatePop })
-  }
 
-  @autobind
-  removeLocation(e) {
+  toggleValidating = validate => this.setState({ validate })
+
+  toggleValidatingPop = validatePop => this.setState({ validatePop })
+
+  removeLocation = e => {
     let locations = this.state.locations
     locations = this.arrayRemove(locations, e)
     this.setState({ locations })
   }
 
-  arrayRemove(arr, value) {
+  arrayRemove = (arr, value) => {
     return arr.filter(function(ele) {
       return ele !== value
     })
   }
 
-  handleChangeDate(date) {
+  handleChangeDate = date => {
     this.setState({
       date: date
     })
   }
 
-  handleChangeTime(time) {
+  handleChangeTime = time => {
     this.setState({
       time: time
     })
   }
 
-  handleChangeEndTime(endTime) {
+  handleChangeEndTime = endTime => {
     this.setState({
       endTime: endTime
     })
   }
 
-  @autobind
-  async addLocation(e) {
+  addLocation = async e => {
     e.preventDefault()
     await this.toggleValidatingPop(true)
     const { hasCampoNameError, hasQuotaCodeError } = this.state
@@ -342,16 +334,15 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  onSuccessDelete() {
+  onSuccessDelete = () => {
     this.props.showMessage('Evento eliminado correctamente')
     this.props.history.push('/calendario/eventos')
   }
-  goBack() {
+  goBack = () => {
     this.props.history.push('/calendario/eventos')
   }
 
-  @autobind
-  async onDelete() {
+  onDelete = async () => {
     try {
       let event = this.getEvent()
       await this.props.deleteEvent({ _id: event._id })
@@ -361,8 +352,7 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  @autobind
-  confirmDelete() {
+  confirmDelete = () => {
     confirmAlert({
       title: 'Confirmar acción',
       message: '¿Eliminar este evento?',
@@ -379,7 +369,7 @@ export default class TemplateEvent extends Component {
     })
   }
 
-  getEvent() {
+  getEvent = () => {
     let s = this.state
     return {
       _id: s._id,
@@ -418,7 +408,7 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  onSuccessInsert() {
+  onSuccessInsert = () => {
     this.props.showMessage('Evento creado')
     this.props.history.push('/calendario/eventos')
   }
@@ -483,8 +473,7 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  @autobind
-  handleChangeAddress(contactInformationAddress) {
+  handleChangeAddress = contactInformationAddress => {
     let newState = Object.assign(this.state, {
       streetName: contactInformationAddress.streetName,
       administrativeAreaLevel1:
@@ -504,30 +493,24 @@ export default class TemplateEvent extends Component {
     this.setState(newState)
   }
 
-  onEditorStateChange = editorState => {
-    this.setState({
-      editorState
-    })
-  }
+  onEditorStateChange = editorState => this.setState({ editorState })
 
-  handleDateChangeRaw = e => {
-    e.preventDefault()
-  }
+  handleDateChangeRaw = e => e.preventDefault()
+
   handleShowDialog = () => {
     this.setState({ isOpen: !this.state.isOpen })
   }
-  HanddleCleanImageUrl = () => {
+
+  handleCleanImageUrl = () => {
     this.setState({ imageUrl: '', uploadImageUrl: '' })
   }
 
-  customChip(item) {
-    return (
-      <div>
-        <span>{item} </span>
-        <i className="pi pi-user-plus" />
-      </div>
-    )
-  }
+  customChip = item => (
+    <div>
+      <span>{item} </span>
+      <i className="pi pi-user-plus" />
+    </div>
+  )
 
   handleNotifications = notifications => {
     let newNotifications = Object.assign(
@@ -704,7 +687,7 @@ export default class TemplateEvent extends Component {
                 {this.state.imageUrl && (
                   <button
                     className="clear-button"
-                    onClick={this.HanddleCleanImageUrl}
+                    onClick={this.handleCleanImageUrl}
                   >
                     <i className="pi pi-times size3" />
                   </button>
