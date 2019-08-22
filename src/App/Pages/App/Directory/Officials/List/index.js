@@ -27,6 +27,7 @@ export default class ListDepartment extends React.Component {
         fields={this.getFields()}
         canUpdate
         canCreate
+        allowSearch
       />
     )
   }
