@@ -83,7 +83,7 @@ export default class NotificationWidget extends React.Component {
           {notifications.map((date, i) => {
             return (
               <div key={i} className={styles.date}>
-                {moment(date).format('DD-MM-YYYY')}
+                {moment(date, 'DD-MM-YYYY').format('DD-MM-YYYY')}
                 <Button
                   style={{
                     marginLeft: 40,
@@ -104,10 +104,7 @@ export default class NotificationWidget extends React.Component {
 
   handleDateAddition = e => {
     e.preventDefault()
-    this.props.addNotificationDate(
-      this.props.type,
-      moment(this.state.tempDate).format()
-    )
+    this.props.addNotificationDate(this.props.type, this.state.tempDate)
     this.setState({ tempDate: '' })
   }
 
