@@ -29,6 +29,7 @@ import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
 import NotificationsSelector from 'App/components/NotificationsSelector'
 import withServices from 'App/components/WithServices'
+// import servicesUrls from 'App/Root/servicesUrls'
 
 @withRouter
 @withMessage
@@ -67,7 +68,7 @@ import withServices from 'App/components/WithServices'
   }
   ${EventFragments.FullEvent}
 `)
-export default class TemplateEvent extends Component {
+class TemplateEvent extends Component {
   static propTypes = {
     history: PropTypes.object,
     showMessage: PropTypes.func,
@@ -84,7 +85,7 @@ export default class TemplateEvent extends Component {
     }).isRequired
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     let event = this.props.event
 
@@ -235,7 +236,7 @@ export default class TemplateEvent extends Component {
     if (a.length === 0) {
       return []
     } else {
-      let ar = a.map(function(obj) {
+      let ar = a.map(function (obj) {
         var rObj = {}
         rObj['tag'] = obj || ''
 
@@ -250,7 +251,7 @@ export default class TemplateEvent extends Component {
     if (a.length === 0) {
       return []
     } else {
-      let ar = a.map(function(obj) {
+      let ar = a.map(function (obj) {
         var rObj = {}
         rObj = obj.tag || ''
 
@@ -293,7 +294,7 @@ export default class TemplateEvent extends Component {
   }
 
   arrayRemove = (arr, value) => {
-    return arr.filter(function(ele) {
+    return arr.filter(function (ele) {
       return ele !== value
     })
   }
@@ -452,7 +453,7 @@ export default class TemplateEvent extends Component {
 
     if (this.props.type === 'create') {
       try {
-        const { _id } = await services.notifications.create(notificationDoc)
+        let { _id } = await services.notifications.create(notificationDoc)
         event.notificationId = _id
         await this.props.createEvent({ event: event })
         this.onSuccessInsert()
@@ -462,15 +463,15 @@ export default class TemplateEvent extends Component {
       }
     } else {
       try {
-        let _id
+        var _id
         if (event.notificationId) {
           notificationDoc.id = event.notificationId
         } else {
-          { _id } = await createEvent({ event: event })
+          var { _id } = await createEvent({ event: event })
           event.notificationId = _id
         }
 
-        const { _id } = await services.notifications.update(notificationDoc)
+        var { _id } = await services.notifications.update(notificationDoc)
         event.notificationId = _id
         await updateEvent({ event })
         this.onSuccessUpdate()
@@ -505,9 +506,7 @@ export default class TemplateEvent extends Component {
 
   handleDateChangeRaw = e => e.preventDefault()
 
-  handleShowDialog = () => {
-    this.setState({ isOpen: !this.state.isOpen })
-  }
+  handleShowDialog = () => this.setState({ isOpen: !this.state.isOpen })
 
   handleCleanImageUrl = () => {
     this.setState({ imageUrl: '', uploadImageUrl: '' })
@@ -516,7 +515,7 @@ export default class TemplateEvent extends Component {
   customChip = item => (
     <div>
       <span>{item} </span>
-      <i className="pi pi-user-plus" />
+      <i className='pi pi-user-plus' />
     </div>
   )
 
@@ -529,7 +528,7 @@ export default class TemplateEvent extends Component {
     this.setState({ notifications: newNotifications })
   }
 
-  render() {
+  render () {
     const {
       campoName,
       validatePop,
@@ -542,14 +541,14 @@ export default class TemplateEvent extends Component {
     var _this = this
     return (
       <div>
-        <div className="alert alert-info uppercase" role="alert">
-          <i className="pi pi-info information " />
+        <div className='alert alert-info uppercase' role='alert'>
+          <i className='pi pi-info information ' />
           Si necesitas ayuda para crear o editar un evento haz &nbsp;
           <a
-            href="https://desarrollorancagua.atlassian.net/wiki/x/AgAYAg"
-            target="_blank"
-            className="alert-link"
-            rel="noopener noreferrer"
+            href='https://desarrollorancagua.atlassian.net/wiki/x/AgAYAg'
+            target='_blank'
+            className='alert-link'
+            rel='noopener noreferrer'
           >
             click aquí
           </a>
@@ -561,147 +560,147 @@ export default class TemplateEvent extends Component {
               description={this.props.description}
               top
             >
-              <div className="label">Nombre</div>
+              <div className='label'>Nombre</div>
               <InputText
                 value={this.state.name}
                 onChange={e => {
                   this.setState({ name: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 required={true}
                 tabIndex={1}
                 maxLength={80}
               />
-              <div className="label">Descripción</div>
+              <div className='label'>Descripción</div>
               <InputText
                 value={this.state.description}
                 onChange={e => {
                   this.setState({ description: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 maxLength={140}
                 tabIndex={2}
               />
-              <div className="label">Link a información</div>
+              <div className='label'>Link a información</div>
               <InputText
                 value={this.state.externalUrl}
                 onChange={e => {
                   this.setState({ externalUrl: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 tabIndex={3}
               />
-              <div className="label">Fecha</div>
+              <div className='label'>Fecha</div>
               <Calendar
                 locale={Es}
-                dateFormat="dd-mm-yy"
+                dateFormat='dd-mm-yy'
                 value={this.state.date}
                 onChange={e => this.setState({ date: e.value })}
               />
-              <div className="label">Hora de inicio</div>
+              <div className='label'>Hora de inicio</div>
               <Calendar
                 required
                 timeOnly
                 showTime
-                hourFormat="24"
+                hourFormat='24'
                 value={this.state.time}
                 onChange={e => this.setState({ time: e.value })}
               />
-              <div className="label">Hora de término</div>
+              <div className='label'>Hora de término</div>
               <Calendar
                 required={false}
                 timeOnly
                 showTime
-                hourFormat="24"
+                hourFormat='24'
                 value={this.state.endTime}
                 onChange={e => this.setState({ endTime: e.value })}
               />
-              <div className="label">Dirección </div>
+              <div className='label'>Dirección </div>
               <SearchBar
                 handleChangeAddress={this.handleChangeAddress}
                 latitude={latitude}
                 longitude={longitude}
                 address={formattedAddress}
               />
-              <div className="label">Lugar</div>
+              <div className='label'>Lugar</div>
               <InputText
                 value={this.state.place}
                 onChange={e => {
                   this.setState({ place: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 required={false}
               />
-              <div className="label">Calle</div>
+              <div className='label'>Calle</div>
               <InputText
                 value={this.state.streetName}
                 onChange={e => {
                   this.setState({ streetName: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 required={false}
               />
-              <div className="label">Número</div>
+              <div className='label'>Número</div>
               <InputText
                 value={this.state.streetNumber}
                 onChange={e => {
                   this.setState({ streetNumber: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 required={false}
               />
-              <div className="label">Departamento</div>
+              <div className='label'>Departamento</div>
               <InputText
                 value={this.state.departmentNumber}
                 onChange={e => {
                   this.setState({ departmentNumber: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 required={false}
               />
-              <div className="label">Ciudad</div>
+              <div className='label'>Ciudad</div>
               <InputText
                 value={this.state.city}
                 onChange={e => {
                   this.setState({ city: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 required={false}
               />
-              <div className="label hidden">
+              <div className='label hidden'>
                 Texto que aparecerá en campos para seleccionar un evento
               </div>
               <InputText
-                type="hidden"
+                type='hidden'
                 value={this.state.optionLabel}
                 onChange={e => {
                   this.setState({ optionLabel: e.target.value })
                 }}
-                className="p-inputtext"
+                className='p-inputtext'
                 tabIndex={6}
               />
-              <div className="label">Url con imagen para el evento</div>
-              <div className="os-input-container">
+              <div className='label'>Url con imagen para el evento</div>
+              <div className='os-input-container'>
                 <InputText
-                  type="url"
+                  type='url'
                   value={this.state.imageUrl}
                   onChange={e => {
                     this.setState({ imageUrl: e.target.value })
                   }}
-                  className="p-inputtext"
+                  className='p-inputtext'
                   tabIndex={7}
                 />
 
                 {this.state.imageUrl && (
                   <button
-                    className="clear-button"
+                    className='clear-button'
                     onClick={this.handleCleanImageUrl}
                   >
-                    <i className="pi pi-times size3" />
+                    <i className='pi pi-times size3' />
                   </button>
                 )}
               </div>
-              <div className="UploadImage">
+              <div className='UploadImage'>
                 {this.state.isUploading && (
                   <p>Subiendo... {this.state.progress}</p>
                 )}
@@ -711,35 +710,35 @@ export default class TemplateEvent extends Component {
                     <img
                       src={this.state.imageUrl}
                       onClick={this.handleShowDialog}
-                      className="small"
+                      className='small'
                     />
                   </div>
                 )}
                 {this.state.isOpen && (
                   <dialog
-                    className="dialog shadow-lg p-3 mb-5 bg-white rounded"
+                    className='dialog shadow-lg p-3 mb-5 bg-white rounded'
                     style={{ position: 'absolute' }}
                     open
                     onClick={this.handleShowDialog}
                   >
                     <img
-                      className="image"
+                      className='image'
                       src={this.state.imageUrl}
                       onClick={this.handleShowDialog}
-                      alt="no image"
+                      alt='no image'
                     />
                   </dialog>
                 )}
 
-                <span className="p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success">
-                  <span className="p-button-icon-left pi pi-plus" />
-                  <span className="p-button-text p-clickable">
+                <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
+                  <span className='p-button-icon-left pi pi-plus' />
+                  <span className='p-button-text p-clickable'>
                     Seleccionar Imagen
                   </span>
                   <FileUploader
-                    accept="image/*"
-                    name="uploadImageUrl"
-                    className="p-inputtext p-component p-inputtext p-filled"
+                    accept='image/*'
+                    name='uploadImageUrl'
+                    className='p-inputtext p-component p-inputtext p-filled'
                     randomizeFilename
                     storageRef={firebase.storage().ref('EventImages')}
                     onUploadStart={this.handleUploadStart}
@@ -749,20 +748,20 @@ export default class TemplateEvent extends Component {
                   />
                 </span>
               </div>
-              <div className="label"> </div>
+              <div className='label'> </div>
 
               <Checkbox
                 onChange={e => {
                   this.setState({ showInCalendar: e.checked })
                 }}
                 checked={this.state.showInCalendar}
-                tabIndex="8"
+                tabIndex='8'
               />
 
-              <label htmlFor="showInCalendar" className="p-checkbox-label">
+              <label htmlFor='showInCalendar' className='p-checkbox-label'>
                 Mostrar en calendario (publicar evento)
               </label>
-              <div className="label">
+              <div className='label'>
                 Departamento al que pertenece el evento
               </div>
               <Dropdown
@@ -770,11 +769,11 @@ export default class TemplateEvent extends Component {
                 options={this.getDepartmentOptions()}
                 onChange={e => this.setState({ departmentId: e.target.value })}
                 editable={false}
-                placeholder="Seleccione un departamento"
+                placeholder='Seleccione un departamento'
               />
               <NotificationsSelector
                 notificationId={this.state.notificationId}
-                theme="events"
+                theme='events'
                 notificationData={{
                   subject: this.state.name,
                   body: this.state.description,
@@ -787,20 +786,20 @@ export default class TemplateEvent extends Component {
                   modal
                   trigger={
                     <Button
-                      type="button"
-                      className="p-button-success"
+                      type='button'
+                      className='p-button-success'
                       label={this.infoButton()}
                       style={{ marginTop: 20 }}
                     />
                   }
                 >
                   {close => (
-                    <div className="ModalEvent">
-                      <a className="close" onClick={close}>
+                    <div className='ModalEvent'>
+                      <a className='close' onClick={close}>
                         &times;
                       </a>
-                      <div className="headerModal"> Información de ticket </div>
-                      <div className="label">Detalle del evento</div>
+                      <div className='headerModal'> Información de ticket </div>
+                      <div className='label'>Detalle del evento</div>
                       <div>
                         <Editor
                           style={{ height: '100px' }}
@@ -810,7 +809,7 @@ export default class TemplateEvent extends Component {
                           }
                         />
                       </div>
-                      <div className="label">Tags</div>
+                      <div className='label'>Tags</div>
 
                       <div>
                         <Chips
@@ -818,32 +817,32 @@ export default class TemplateEvent extends Component {
                           onChange={e => {
                             this.setState({ tags: e.value })
                           }}
-                          tooltip="Para agregar un nuevo tag debe ingresar el valor  y dar enter"
+                          tooltip='Para agregar un nuevo tag debe ingresar el valor  y dar enter'
                         />
                       </div>
                       <br />
-                      <div className="contentModal">
-                        <table className="tableModal">
+                      <div className='contentModal'>
+                        <table className='tableModal'>
                           <thead>
                             <tr>
-                              <td className="Headcol2">
+                              <td className='Headcol2'>
                                 Nombre de la ubicación
                               </td>
-                              <td className="Headcol3">Nº de tickets</td>
-                              <td className="Headcol4"> </td>
+                              <td className='Headcol3'>Nº de tickets</td>
+                              <td className='Headcol4'> </td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
-                              <td className="col2">
+                              <td className='col2'>
                                 <Textbox
-                                  tabIndex="10"
-                                  id="campoName"
-                                  name="campoName"
-                                  type="text"
+                                  tabIndex='10'
+                                  id='campoName'
+                                  name='campoName'
+                                  type='text'
                                   value={campoName}
-                                  classNameInput="campoName"
-                                  maxLength="50"
+                                  classNameInput='campoName'
+                                  maxLength='50'
                                   validate={validatePop}
                                   validationCallback={res => {
                                     this.setState({
@@ -861,14 +860,14 @@ export default class TemplateEvent extends Component {
                                   }}
                                 />
                               </td>
-                              <td className="col3">
+                              <td className='col3'>
                                 <Textbox
-                                  tabIndex="11"
-                                  id="campoQuota"
-                                  name="campoQuota"
-                                  type="text"
+                                  tabIndex='11'
+                                  id='campoQuota'
+                                  name='campoQuota'
+                                  type='text'
                                   value={campoQuota}
-                                  classNameInput="campoQuota"
+                                  classNameInput='campoQuota'
                                   validate={validatePop}
                                   validationCallback={res => {
                                     this.setState({
@@ -876,7 +875,7 @@ export default class TemplateEvent extends Component {
                                       validatePop: false
                                     })
                                   }}
-                                  maxLength="6"
+                                  maxLength='6'
                                   onChange={(campoQuota, e) => {
                                     this.setState({ campoQuota })
                                   }}
@@ -890,24 +889,24 @@ export default class TemplateEvent extends Component {
                                   }}
                                 />
                               </td>
-                              <td className="col4">
+                              <td className='col4'>
                                 <Button
                                   onClick={this.addLocation}
-                                  className="button"
-                                  label="+"
+                                  className='button'
+                                  label='+'
                                 />
                               </td>
                             </tr>
 
-                            {this.state.locations.map(function(item, index) {
+                            {this.state.locations.map(function (item, index) {
                               return (
                                 <tr key={index}>
-                                  <td className="col2">{item.name}</td>
-                                  <td className="col3">{item.quota}</td>
-                                  <td className="col4">
+                                  <td className='col2'>{item.name}</td>
+                                  <td className='col3'>{item.quota}</td>
+                                  <td className='col4'>
                                     <Button
-                                      className="button"
-                                      label="-"
+                                      className='button'
+                                      label='-'
                                       onClick={() => {
                                         _this.removeLocation(item)
                                       }}
@@ -920,21 +919,21 @@ export default class TemplateEvent extends Component {
                         </table>
                       </div>
 
-                      <div className="label">
+                      <div className='label'>
                         Usuarios validadores del evento *(Indique mail)
                       </div>
                       <div>
                         <Chips
                           value={validators}
-                          placeholder="Agregar email"
+                          placeholder='Agregar email'
                           onChange={this.handleAdditionValidator}
-                          tooltip="Para agregar un nuevo validador debe ingresar el email  y dar enter"
+                          tooltip='Para agregar un nuevo validador debe ingresar el email  y dar enter'
                         />
                       </div>
-                      <div className="actions">
+                      <div className='actions'>
                         <Button
-                          className="p-button-secondary"
-                          label="Cerrar"
+                          className='p-button-secondary'
+                          label='Cerrar'
                           style={{ marginRight: 10 }}
                           onClick={() => {
                             close()
@@ -949,29 +948,29 @@ export default class TemplateEvent extends Component {
               <Button
                 onClick={() => this.goBack()}
                 style={{ marginRight: 10 }}
-                label="Cancelar"
-                className="p-button-secondary"
-                type="button"
+                label='Cancelar'
+                className='p-button-secondary'
+                type='button'
               />
               {this.props.type === 'create' && (
                 <Button
-                  label="Crear Evento"
+                  label='Crear Evento'
                   style={{ marginRight: 10 }}
-                  type="submit"
+                  type='submit'
                 />
               )}
               {this.props.type === 'update' && (
                 <Button
-                  label="Guardar"
+                  label='Guardar'
                   style={{ marginRight: 10 }}
-                  type="submit"
+                  type='submit'
                 />
               )}
               {this.props.type === 'update' && (
                 <Button
-                  className="p-button-danger"
-                  type="button"
-                  label="Eliminar"
+                  className='p-button-danger'
+                  type='button'
+                  label='Eliminar'
                   style={{ marginRight: 10 }}
                   onClick={() => this.confirmDelete()}
                 />
@@ -983,3 +982,10 @@ export default class TemplateEvent extends Component {
     )
   }
 }
+
+export default withServices(
+  TemplateEvent,
+  'http://localhost:3100',
+  ['notifications'],
+  ['create', 'update']
+)
