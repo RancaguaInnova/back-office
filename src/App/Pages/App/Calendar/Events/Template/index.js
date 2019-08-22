@@ -29,7 +29,7 @@ import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
 import NotificationsSelector from 'App/components/NotificationsSelector'
 import withServices from 'App/components/WithServices'
-// import servicesUrls from 'App/Root/servicesUrls'
+import servicesUrl from 'App/Root/servicesUrl'
 
 @withRouter
 @withMessage
@@ -985,7 +985,7 @@ class TemplateEvent extends Component {
 
 export default withServices(
   TemplateEvent,
-  'http://localhost:3100',
+  servicesUrl,
   ['notifications'],
   ['create', 'update']
 )

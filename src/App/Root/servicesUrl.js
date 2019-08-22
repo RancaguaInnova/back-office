@@ -1,14 +1,9 @@
 import getEnv from './getEnv'
 
-const urls = {
-  local: `http://${window.location.hostname}:3100`,
-  dev: `https://services-dev.smartrancagua.com`,
-  prod: 'https://services.smartrancagua.com'
-}
-
 const env = getEnv()
+const servicesUrl =
+  env === 'prod'
+    ? 'https://services.smartrancagua.com'
+    : 'http://localhost:3100'
 
-if (env !== 'local' && window.location.protocol !== 'https:') {
-  window.location.protocol = 'https:'
-}
-export default urls[env]
+export default servicesUrl
