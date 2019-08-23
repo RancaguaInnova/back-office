@@ -27,7 +27,7 @@ export default (WrappedComponent, baseUrl, resources, actions) => {
                 })
                 try {
                   const response = await fetch(request)
-                  return response.json()
+                  return await response.json()
                 } catch (error) {
                   throw error
                 }
@@ -35,12 +35,13 @@ export default (WrappedComponent, baseUrl, resources, actions) => {
               break
             case 'get':
               this.services[resource]['get'] = async id => {
+                console.log('id:', id)
                 const request = new Request(`${servicesUrl}/${id}`, {
                   method: 'GET'
                 })
                 try {
                   const response = await fetch(request)
-                  return response.json()
+                  return await response.json()
                 } catch (error) {
                   throw error
                 }
@@ -57,7 +58,7 @@ export default (WrappedComponent, baseUrl, resources, actions) => {
                 })
                 try {
                   const response = await fetch(request)
-                  return response.json()
+                  return await response.json()
                 } catch (error) {
                   throw error
                 }
@@ -74,7 +75,7 @@ export default (WrappedComponent, baseUrl, resources, actions) => {
                 })
                 try {
                   const response = await fetch(request)
-                  return response.json()
+                  return await response.json()
                 } catch (error) {
                   throw error
                 }
@@ -88,7 +89,7 @@ export default (WrappedComponent, baseUrl, resources, actions) => {
                 })
                 try {
                   const response = await fetch(request)
-                  return response.json()
+                  return await response.json()
                 } catch (error) {
                   throw error
                 }

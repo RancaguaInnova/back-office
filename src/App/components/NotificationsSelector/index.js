@@ -4,8 +4,8 @@ import NotificationWidget from './NotificationWidget'
 import { Button } from 'primereact/button'
 import find from 'lodash/find'
 import moment from 'moment'
-import { get } from 'App/helpers/requests/notifications'
 import withServices from 'App/components/WithServices'
+import servicesUrl from 'App/Root/servicesUrl'
 import remove from 'lodash/remove'
 
 import styles from './styles.css'
@@ -37,9 +37,11 @@ class NotificationsSelector extends React.Component {
     if (notificationId) {
       try {
         const notification = await services.notifications.get(notificationId)
+        console.log('notification:', notification)
         this.setState({ ...notification.schedule })
+        this.props.handleNotifications({ ...notification.schedule })
       } catch (error) {
-        console.log('Error getting Notification document:', error)
+        console.log('Error getting Notification document:', error.message)
       }
     }
   }
@@ -76,6 +78,7 @@ class NotificationsSelector extends React.Component {
     const currentDates = this.state[type] || []
     remove(currentDates, d => d === date)
     this.setState({ [type]: currentDates })
+    this.props.handleNotifications({ [type]: currentDates })
   }
 
   render () {
@@ -107,7 +110,7 @@ class NotificationsSelector extends React.Component {
 
 export default withServices(
   NotificationsSelector,
-  'http://localhost:3100',
+  servicesUrl,
   ['notifications'],
   ['get']
 )

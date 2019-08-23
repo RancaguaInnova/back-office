@@ -82,7 +82,7 @@ class TemplateEvent extends Component {
     description: PropTypes.string,
     services: PropTypes.shape({
       notifications: PropTypes.object
-    }).isRequired
+    })
   }
 
   constructor (props) {
@@ -465,14 +465,15 @@ class TemplateEvent extends Component {
       try {
         var _id
         if (event.notificationId) {
-          notificationDoc.id = event.notificationId
+          console.log('event.notificationId:', event.notificationId)
+          await services.notifications.update(
+            notificationDoc,
+            event.notificationId
+          )
         } else {
-          var { _id } = await createEvent({ event: event })
+          var { _id } = await services.notifications.create(notificationDoc)
           event.notificationId = _id
         }
-
-        var { _id } = await services.notifications.update(notificationDoc)
-        event.notificationId = _id
         await updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {
