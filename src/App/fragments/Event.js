@@ -41,6 +41,7 @@ export default {
       firebaseIdEvent
       validators
       place
+      notificationId
     }
   `
 }

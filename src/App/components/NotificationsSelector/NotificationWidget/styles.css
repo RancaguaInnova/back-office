@@ -1,0 +1,21 @@
+:local(.accordion) {
+  margin: 20px 0;
+}
+
+:local(.label) {
+  font-weight: bold;
+  margin: 20px 0 10px 0;
+}
+
+:local(.notifications) {
+  font-weight: bold;
+}
+
+:local(.date) {
+  font-weight: normal;
+  margin: 5px 0 5px 15px;
+}
+
+:local(.addButton) {
+  margin-left: 10px;
+}

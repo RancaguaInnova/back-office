@@ -27,6 +27,10 @@ import { Editor } from 'primereact/editor'
 import Es from '../../../../../i18n/calendarEs'
 import { Checkbox } from 'primereact/checkbox'
 import { Chips } from 'primereact/chips'
+import NotificationsSelector from 'App/components/NotificationsSelector'
+import withServices from 'App/components/WithServices'
+import servicesUrl from 'App/Root/servicesUrl'
+
 @withRouter
 @withMessage
 @withMutation(gql`
@@ -64,7 +68,7 @@ import { Chips } from 'primereact/chips'
   }
   ${EventFragments.FullEvent}
 `)
-export default class TemplateEvent extends Component {
+class TemplateEvent extends Component {
   static propTypes = {
     history: PropTypes.object,
     showMessage: PropTypes.func,
@@ -75,10 +79,13 @@ export default class TemplateEvent extends Component {
     updateEvent: PropTypes.func,
     type: PropTypes.string,
     title: PropTypes.string,
-    description: PropTypes.string
+    description: PropTypes.string,
+    services: PropTypes.shape({
+      notifications: PropTypes.object
+    })
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     let event = this.props.event
 
@@ -150,7 +157,9 @@ export default class TemplateEvent extends Component {
 
         tags: eventTags || [],
         isOpen: false,
-        validators: validators || []
+        validators: validators || [],
+        notificationId: event.notificationId || '',
+        notifications: { email: [], push: [] }
       }
     } else {
       this.state = {
@@ -183,23 +192,25 @@ export default class TemplateEvent extends Component {
         progress: 0,
         imageUrl: '',
         isOpen: false,
-        validators: []
+        validators: [],
+        notificationId: '',
+        notifications: { email: [], push: [] }
       }
     }
-    this.handleChangeDate = this.handleChangeDate.bind(this)
-    this.handleChangeTime = this.handleChangeTime.bind(this)
-    this.handleChangeEndTime = this.handleChangeEndTime.bind(this)
-    this.handleAdditionValidator = this.handleAdditionValidator.bind(this)
-    this.onSuccessUpdate = this.onSuccessUpdate.bind(this)
   }
 
   handleUploadStart = () => this.setState({ isUploading: true, progress: 0 })
+
   handleProgress = progress => this.setState({ progress })
-  handleUploadError = () => {
-    this.setState({ isUploading: false })
-  }
+
+  handleUploadError = () => this.setState({ isUploading: false })
+
   handleUploadSuccess = filename => {
-    this.setState({ uploadImageUrl: filename, progress: 100, isUploading: false })
+    this.setState({
+      uploadImageUrl: filename,
+      progress: 100,
+      isUploading: false
+    })
     firebase
       .storage()
       .ref('EventImages')
@@ -210,7 +221,7 @@ export default class TemplateEvent extends Component {
       })
   }
 
-  handleAdditionValidator(e) {
+  handleAdditionValidator = e => {
     var ultimo = e.value[e.value.length - 1]
     let res = formatMail(ultimo)
     if (res === true || e.value.length === 0) {
@@ -220,12 +231,12 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  formatApiTag(arrayTags) {
+  formatApiTag = arrayTags => {
     let a = arrayTags || []
     if (a.length === 0) {
       return []
     } else {
-      let ar = a.map(function(obj) {
+      let ar = a.map(function (obj) {
         var rObj = {}
         rObj['tag'] = obj || ''
 
@@ -234,12 +245,13 @@ export default class TemplateEvent extends Component {
       return ar
     }
   }
-  formatBackTags(arrayTags) {
+
+  formatBackTags = arrayTags => {
     let a = arrayTags || []
     if (a.length === 0) {
       return []
     } else {
-      let ar = a.map(function(obj) {
+      let ar = a.map(function (obj) {
         var rObj = {}
         rObj = obj.tag || ''
 
@@ -249,15 +261,14 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  getDepartmentOptions() {
+  getDepartmentOptions = () => {
     const Departaments = this.props.departments.items.map(department => {
       return { label: department.name, value: department._id }
     })
-
     return Departaments
   }
 
-  getValidationErrors(error) {
+  getValidationErrors = error => {
     return reduce(
       error.graphQLErrors,
       (result, e, k) => {
@@ -267,50 +278,46 @@ export default class TemplateEvent extends Component {
     )
   }
 
-  renderErrorMessages() {
+  renderErrorMessages = () => {
     if (!this.state.errorMessages) return
     console.log('UNIMPLEMENTED')
   }
-  toggleValidating(validate) {
-    this.setState({ validate })
-  }
-  toggleValidatingPop(validatePop) {
-    this.setState({ validatePop })
-  }
 
-  @autobind
-  removeLocation(e) {
+  toggleValidating = validate => this.setState({ validate })
+
+  toggleValidatingPop = validatePop => this.setState({ validatePop })
+
+  removeLocation = e => {
     let locations = this.state.locations
     locations = this.arrayRemove(locations, e)
     this.setState({ locations })
   }
 
-  arrayRemove(arr, value) {
-    return arr.filter(function(ele) {
+  arrayRemove = (arr, value) => {
+    return arr.filter(function (ele) {
       return ele !== value
     })
   }
 
-  handleChangeDate(date) {
+  handleChangeDate = date => {
     this.setState({
       date: date
     })
   }
 
-  handleChangeTime(time) {
+  handleChangeTime = time => {
     this.setState({
       time: time
     })
   }
 
-  handleChangeEndTime(endTime) {
+  handleChangeEndTime = endTime => {
     this.setState({
       endTime: endTime
     })
   }
 
-  @autobind
-  async addLocation(e) {
+  addLocation = async e => {
     e.preventDefault()
     await this.toggleValidatingPop(true)
     const { hasCampoNameError, hasQuotaCodeError } = this.state
@@ -331,16 +338,15 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  onSuccessDelete() {
+  onSuccessDelete = () => {
     this.props.showMessage('Evento eliminado correctamente')
     this.props.history.push('/calendario/eventos')
   }
-  goBack() {
+  goBack = () => {
     this.props.history.push('/calendario/eventos')
   }
 
-  @autobind
-  async onDelete() {
+  onDelete = async () => {
     try {
       let event = this.getEvent()
       await this.props.deleteEvent({ _id: event._id })
@@ -350,8 +356,7 @@ export default class TemplateEvent extends Component {
     }
   }
 
-  @autobind
-  confirmDelete() {
+  confirmDelete = () => {
     confirmAlert({
       title: 'Confirmar acción',
       message: '¿Eliminar este evento?',
@@ -368,9 +373,9 @@ export default class TemplateEvent extends Component {
     })
   }
 
-  getEvent() {
+  getEvent = () => {
     let s = this.state
-    var event = {
+    return {
       _id: s._id,
       firebaseIdEvent: s.firebaseIdEvent,
       name: s.name,
@@ -402,24 +407,24 @@ export default class TemplateEvent extends Component {
       tags: this.formatApiTag(s.tags),
 
       locations: s.locations,
-      validators: s.validators
+      validators: s.validators,
+      notificationId: s.notificationId
     }
-    return event
   }
 
-  onSuccessInsert() {
+  onSuccessInsert = () => {
     this.props.showMessage('Evento creado')
     this.props.history.push('/calendario/eventos')
   }
 
-  onSuccessUpdate() {
+  onSuccessUpdate = () => {
     this.props.showMessage(
       'El evento fue registrado correctamente , sera redireccionado al home de eventos'
     )
     this.props.history.push('/calendario/eventos')
   }
-  @autobind
-  infoButton() {
+
+  infoButton = () => {
     let res = ''
     if (this.state.locations.length < 1) {
       res = 'Agregar  ticket al evento'
@@ -429,14 +434,28 @@ export default class TemplateEvent extends Component {
     return res
   }
 
-  @autobind
-  async handleSubmit(event) {
-    event.preventDefault()
+  handleSubmit = async e => {
+    e.preventDefault()
+    let event = this.getEvent()
+    const { notifications } = this.state
+    const { services, createEvent, updateEvent } = this.props
+
+    const notificationDoc = {
+      type: 'events',
+      departmentId: event.departmentId,
+      subject: event.name,
+      body: event.description,
+      createdFor: event._id,
+      sendEmail: !!(notifications.email && notifications.email.length),
+      sendPush: !!(notifications.push && notifications.push.length),
+      schedule: notifications
+    }
+
     if (this.props.type === 'create') {
       try {
-        let event = this.getEvent()
+        let { _id } = await services.notifications.create(notificationDoc)
+        event.notificationId = _id
         await this.props.createEvent({ event: event })
-
         this.onSuccessInsert()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
@@ -444,23 +463,33 @@ export default class TemplateEvent extends Component {
       }
     } else {
       try {
-        let event = this.getEvent()
-        await this.props.updateEvent({ event: event })
+        var _id
+        if (event.notificationId) {
+          console.log('event.notificationId:', event.notificationId)
+          await services.notifications.update(
+            notificationDoc,
+            event.notificationId
+          )
+        } else {
+          var { _id } = await services.notifications.create(notificationDoc)
+          event.notificationId = _id
+        }
+        await updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
-
         this.props.showMessage('Ocurrión un error!')
       }
     }
   }
 
-  @autobind
-  handleChangeAddress(contactInformationAddress) {
+  handleChangeAddress = contactInformationAddress => {
     let newState = Object.assign(this.state, {
       streetName: contactInformationAddress.streetName,
-      administrativeAreaLevel1: contactInformationAddress.administrativeAreaLevel1,
-      administrativeAreaLevel2: contactInformationAddress.administrativeAreaLevel2,
+      administrativeAreaLevel1:
+        contactInformationAddress.administrativeAreaLevel1,
+      administrativeAreaLevel2:
+        contactInformationAddress.administrativeAreaLevel2,
       city: contactInformationAddress.city,
       departmentNumber: contactInformationAddress.departmentNumber,
       postalCode: contactInformationAddress.postalCode,
@@ -474,32 +503,33 @@ export default class TemplateEvent extends Component {
     this.setState(newState)
   }
 
-  onEditorStateChange = editorState => {
-    this.setState({
-      editorState
-    })
-  }
+  onEditorStateChange = editorState => this.setState({ editorState })
 
-  handleDateChangeRaw = e => {
-    e.preventDefault()
-  }
-  handleShowDialog = () => {
-    this.setState({ isOpen: !this.state.isOpen })
-  }
-  HanddleCleanImageUrl = () => {
+  handleDateChangeRaw = e => e.preventDefault()
+
+  handleShowDialog = () => this.setState({ isOpen: !this.state.isOpen })
+
+  handleCleanImageUrl = () => {
     this.setState({ imageUrl: '', uploadImageUrl: '' })
   }
 
-  customChip(item) {
-    return (
-      <div>
-        <span>{item} </span>
-        <i className='pi pi-user-plus' />
-      </div>
+  customChip = item => (
+    <div>
+      <span>{item} </span>
+      <i className='pi pi-user-plus' />
+    </div>
+  )
+
+  handleNotifications = notifications => {
+    let newNotifications = Object.assign(
+      {},
+      this.state.notifications,
+      notifications
     )
+    this.setState({ notifications: newNotifications })
   }
 
-  render() {
+  render () {
     const {
       campoName,
       validatePop,
@@ -526,7 +556,11 @@ export default class TemplateEvent extends Component {
         </div>
         <div>
           <form onSubmit={this.handleSubmit}>
-            <Section title={this.props.title} description={this.props.description} top>
+            <Section
+              title={this.props.title}
+              description={this.props.description}
+              top
+            >
               <div className='label'>Nombre</div>
               <InputText
                 value={this.state.name}
@@ -566,9 +600,9 @@ export default class TemplateEvent extends Component {
               />
               <div className='label'>Hora de inicio</div>
               <Calendar
-                required={true}
-                timeOnly={true}
-                showTime={true}
+                required
+                timeOnly
+                showTime
                 hourFormat='24'
                 value={this.state.time}
                 onChange={e => this.setState({ time: e.value })}
@@ -576,8 +610,8 @@ export default class TemplateEvent extends Component {
               <div className='label'>Hora de término</div>
               <Calendar
                 required={false}
-                timeOnly={true}
-                showTime={true}
+                timeOnly
+                showTime
                 hourFormat='24'
                 value={this.state.endTime}
                 onChange={e => this.setState({ endTime: e.value })}
@@ -659,13 +693,18 @@ export default class TemplateEvent extends Component {
                 />
 
                 {this.state.imageUrl && (
-                  <button className='clear-button' onClick={this.HanddleCleanImageUrl}>
+                  <button
+                    className='clear-button'
+                    onClick={this.handleCleanImageUrl}
+                  >
                     <i className='pi pi-times size3' />
                   </button>
                 )}
               </div>
               <div className='UploadImage'>
-                {this.state.isUploading && <p>Subiendo... {this.state.progress}</p>}
+                {this.state.isUploading && (
+                  <p>Subiendo... {this.state.progress}</p>
+                )}
                 {this.state.imageUrl && (
                   <div>
                     Vista previa
@@ -694,7 +733,9 @@ export default class TemplateEvent extends Component {
 
                 <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
                   <span className='p-button-icon-left pi pi-plus' />
-                  <span className='p-button-text p-clickable'>Seleccionar Imagen</span>
+                  <span className='p-button-text p-clickable'>
+                    Seleccionar Imagen
+                  </span>
                   <FileUploader
                     accept='image/*'
                     name='uploadImageUrl'
@@ -721,13 +762,25 @@ export default class TemplateEvent extends Component {
               <label htmlFor='showInCalendar' className='p-checkbox-label'>
                 Mostrar en calendario (publicar evento)
               </label>
-              <div className='label'>Departamento al que pertenece el evento</div>
+              <div className='label'>
+                Departamento al que pertenece el evento
+              </div>
               <Dropdown
                 value={this.state.departmentId}
                 options={this.getDepartmentOptions()}
                 onChange={e => this.setState({ departmentId: e.target.value })}
                 editable={false}
                 placeholder='Seleccione un departamento'
+              />
+              <NotificationsSelector
+                notificationId={this.state.notificationId}
+                theme='events'
+                notificationData={{
+                  subject: this.state.name,
+                  body: this.state.description,
+                  departmentId: this.state.departmentId
+                }}
+                handleNotifications={this.handleNotifications}
               />
               <div>
                 <Popup
@@ -752,7 +805,9 @@ export default class TemplateEvent extends Component {
                         <Editor
                           style={{ height: '100px' }}
                           value={this.state.detail}
-                          onTextChange={e => this.setState({ detail: e.htmlValue })}
+                          onTextChange={e =>
+                            this.setState({ detail: e.htmlValue })
+                          }
                         />
                       </div>
                       <div className='label'>Tags</div>
@@ -771,7 +826,9 @@ export default class TemplateEvent extends Component {
                         <table className='tableModal'>
                           <thead>
                             <tr>
-                              <td className='Headcol2'>Nombre de la ubicación</td>
+                              <td className='Headcol2'>
+                                Nombre de la ubicación
+                              </td>
                               <td className='Headcol3'>Nº de tickets</td>
                               <td className='Headcol4'> </td>
                             </tr>
@@ -834,11 +891,15 @@ export default class TemplateEvent extends Component {
                                 />
                               </td>
                               <td className='col4'>
-                                <Button onClick={this.addLocation} className='button' label='+' />
+                                <Button
+                                  onClick={this.addLocation}
+                                  className='button'
+                                  label='+'
+                                />
                               </td>
                             </tr>
 
-                            {this.state.locations.map(function(item, index) {
+                            {this.state.locations.map(function (item, index) {
                               return (
                                 <tr key={index}>
                                   <td className='col2'>{item.name}</td>
@@ -859,7 +920,9 @@ export default class TemplateEvent extends Component {
                         </table>
                       </div>
 
-                      <div className='label'>Usuarios validadores del evento *(Indique mail)</div>
+                      <div className='label'>
+                        Usuarios validadores del evento *(Indique mail)
+                      </div>
                       <div>
                         <Chips
                           value={validators}
@@ -891,10 +954,18 @@ export default class TemplateEvent extends Component {
                 type='button'
               />
               {this.props.type === 'create' && (
-                <Button label='Crear Evento' style={{ marginRight: 10 }} type='submit' />
+                <Button
+                  label='Crear Evento'
+                  style={{ marginRight: 10 }}
+                  type='submit'
+                />
               )}
               {this.props.type === 'update' && (
-                <Button label='Guardar' style={{ marginRight: 10 }} type='submit' />
+                <Button
+                  label='Guardar'
+                  style={{ marginRight: 10 }}
+                  type='submit'
+                />
               )}
               {this.props.type === 'update' && (
                 <Button
@@ -912,3 +983,10 @@ export default class TemplateEvent extends Component {
     )
   }
 }
+
+export default withServices(
+  TemplateEvent,
+  servicesUrl,
+  ['notifications'],
+  ['create', 'update']
+)

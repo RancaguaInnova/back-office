@@ -1,11 +1,12 @@
 import React from 'react'
 import Template from '../Template/'
 import PropTypes from 'prop-types'
+
 export default class CreateEvents extends React.Component {
   static propTypes = {
     history: PropTypes.object
   }
-  render() {
+  render () {
     return (
       <Template
         type='create'

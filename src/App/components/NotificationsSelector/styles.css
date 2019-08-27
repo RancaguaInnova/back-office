@@ -1,0 +1,13 @@
+:local(.frame) {
+  border: 2px solid #455a64;
+  padding: 20px 30px;
+  border-radius: 5px;
+  margin: 40px 0;
+}
+
+:local(.warningHeader) {
+  color: #455a64;
+  font-weight: 900;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
