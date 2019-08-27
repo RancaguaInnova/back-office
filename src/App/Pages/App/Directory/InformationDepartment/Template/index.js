@@ -20,6 +20,7 @@ import FileUploader from 'react-firebase-file-uploader'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import firebase from '/src/App/helpers/auth/firebaseConfig'
 import { Chips } from 'primereact/chips'
+import { InputSwitch } from 'primereact/inputswitch'
 
 @withRouter
 @withMessage
@@ -108,7 +109,8 @@ class TemplateDepartment extends React.Component {
           longitude: null
         },
         email: ''
-      }
+      },
+      active: false
     }
     this.state = {
       informationDepartment: informationDepartment,
@@ -253,6 +255,7 @@ class TemplateDepartment extends React.Component {
         })
         this.onSuccessInsert()
       } catch (error) {
+        console.log(error)
         this.props.showMessage('Ocurrión un error!')
       }
     } else {
@@ -262,6 +265,8 @@ class TemplateDepartment extends React.Component {
         })
         this.onSuccessUpdate()
       } catch (error) {
+        console.log(error)
+
         this.props.showMessage('Ocurrión un error!')
       }
     }
@@ -588,6 +593,12 @@ class TemplateDepartment extends React.Component {
               />
             </div>
           </div>
+          <div className='label'>Activo</div>
+
+          <InputSwitch
+            checked={this.state.active || false}
+            onChange={e => this.setState({ active: e.value })}
+          />
           <br />
           <Button
             onClick={() => this.BackList()}
