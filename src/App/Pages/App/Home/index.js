@@ -23,6 +23,7 @@ export default class DirectoryRoutes extends React.Component {
               { title: 'Calendario', path: '/calendario' },
               { title: 'Usuarios', path: '/usuarios' },
               { title: 'Aplicaciones', path: '/apps' },
+              { title: 'Emargencias', path: '/emergencias' },
               { title: 'Indicadores', path: '/informacion' }
             ]}
           />
