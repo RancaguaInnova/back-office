@@ -8,7 +8,7 @@ import React, { Component } from 'react'
  * @param {Array} resources List of resources/collections to add handlers to
  * @param {Array} actions List of action to be performed on the resources (maps to HTTP verbs)
  *
- * @returns {A Composed component with action handlers for each resource}
+ * @returns {Class} A Composed component with action handlers for each resource
  */
 export default (WrappedComponent, baseUrl, resources, actions) => {
   return class WithServices extends Component {
@@ -35,7 +35,6 @@ export default (WrappedComponent, baseUrl, resources, actions) => {
               break
             case 'get':
               this.services[resource]['get'] = async id => {
-                console.log('id:', id)
                 const request = new Request(`${servicesUrl}/${id}`, {
                   method: 'GET'
                 })

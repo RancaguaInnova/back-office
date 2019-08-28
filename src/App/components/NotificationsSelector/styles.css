@@ -11,3 +11,8 @@
   font-size: 1.5em;
   margin-bottom: 15px;
 }
+
+:local(.important) {
+  color: #ce0e0e;
+  font-weight: 900;
+}

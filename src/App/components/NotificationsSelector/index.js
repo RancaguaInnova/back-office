@@ -37,7 +37,6 @@ class NotificationsSelector extends React.Component {
     if (notificationId) {
       try {
         const notification = await services.notifications.get(notificationId)
-        console.log('notification:', notification)
         this.setState({ ...notification.schedule })
         this.props.handleNotifications({ ...notification.schedule })
       } catch (error) {
@@ -85,6 +84,10 @@ class NotificationsSelector extends React.Component {
     return (
       <div className={styles.frame}>
         <h3 className={styles.warningHeader}>Notificaciones</h3>
+        <p>
+          <span className={styles.important}>Importante: </span>Debes
+          seleccionar el departamento al que pertenece la notificación
+        </p>
         <NotificationWidget
           subject='events'
           type='email'

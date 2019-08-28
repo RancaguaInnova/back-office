@@ -465,7 +465,6 @@ class TemplateEvent extends Component {
       try {
         var _id
         if (event.notificationId) {
-          console.log('event.notificationId:', event.notificationId)
           await services.notifications.update(
             notificationDoc,
             event.notificationId
@@ -681,7 +680,7 @@ class TemplateEvent extends Component {
                 tabIndex={6}
               />
               <div className='label'>Url con imagen para el evento</div>
-              <div className='os-input-container'>
+              <div className='os-input-container' style={{ marginBottom: 30 }}>
                 <InputText
                   type='url'
                   value={this.state.imageUrl}
@@ -701,7 +700,7 @@ class TemplateEvent extends Component {
                   </button>
                 )}
               </div>
-              <div className='UploadImage'>
+              <div className='uploadImage'>
                 {this.state.isUploading && (
                   <p>Subiendo... {this.state.progress}</p>
                 )}
@@ -712,6 +711,7 @@ class TemplateEvent extends Component {
                       src={this.state.imageUrl}
                       onClick={this.handleShowDialog}
                       className='small'
+                      style={{ marginBottom: 20, marginTop: 20 }}
                     />
                   </div>
                 )}
@@ -749,19 +749,7 @@ class TemplateEvent extends Component {
                   />
                 </span>
               </div>
-              <div className='label'> </div>
 
-              <Checkbox
-                onChange={e => {
-                  this.setState({ showInCalendar: e.checked })
-                }}
-                checked={this.state.showInCalendar}
-                tabIndex='8'
-              />
-
-              <label htmlFor='showInCalendar' className='p-checkbox-label'>
-                Mostrar en calendario (publicar evento)
-              </label>
               <div className='label'>
                 Departamento al que pertenece el evento
               </div>
@@ -782,6 +770,29 @@ class TemplateEvent extends Component {
                 }}
                 handleNotifications={this.handleNotifications}
               />
+
+              <div className='label'> </div>
+              <Checkbox
+                onChange={e => {
+                  this.setState({ showInCalendar: e.checked })
+                }}
+                checked={this.state.showInCalendar}
+                tabIndex='8'
+              />
+
+              <label
+                htmlFor='showInCalendar'
+                className='p-checkbox-label'
+                style={{
+                  marginTop: 20,
+                  marginBottom: 30,
+                  fontWeigth: 900,
+                  fontSize: '1.5em'
+                }}
+              >
+                <span>Mostrar en calendario </span>
+                <span style={{ color: '#D11F1F' }}>Evento será publicado</span>
+              </label>
               <div>
                 <Popup
                   modal
