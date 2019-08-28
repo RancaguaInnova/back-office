@@ -2,13 +2,14 @@ import getEnv from './getEnv'
 
 const env = getEnv()
 
-const servicesUrl =
-  env === 'prod'
-    ? 'https://services.smartrancagua.com'
-    : 'http://localhost:3100'
+const servicesUrl = {
+  prod: 'https://services.smartrancagua.com',
+  dev: 'https://services.smartrancagua.com',
+  local: 'http://localhost:3100'
+}
 
 if (env !== 'local' && window.location.protocol !== 'https:') {
   window.location.protocol = 'https:'
 }
 
-export default servicesUrl
+export default servicesUrl[env]

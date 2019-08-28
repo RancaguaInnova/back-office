@@ -440,21 +440,26 @@ class TemplateEvent extends Component {
     const { notifications } = this.state
     const { services, createEvent, updateEvent } = this.props
 
-    const notificationDoc = {
-      type: 'events',
-      departmentId: event.departmentId,
-      subject: event.name,
-      body: event.description,
-      createdFor: event._id,
-      sendEmail: !!(notifications.email && notifications.email.length),
-      sendPush: !!(notifications.push && notifications.push.length),
-      schedule: notifications
+    let notificationDoc = null
+    if (notifications.email.length || notifications.push.length) {
+      notificationDoc = {
+        type: 'events',
+        departmentId: event.departmentId,
+        subject: event.name,
+        body: event.description,
+        createdFor: event._id,
+        sendEmail: !!(notifications.email && notifications.email.length),
+        sendPush: !!(notifications.push && notifications.push.length),
+        schedule: notifications
+      }
     }
 
     if (this.props.type === 'create') {
       try {
-        let { _id } = await services.notifications.create(notificationDoc)
-        event.notificationId = _id
+        if (notificationDoc) {
+          let { _id } = await services.notifications.create(notificationDoc)
+          event.notificationId = _id
+        }
         await this.props.createEvent({ event: event })
         this.onSuccessInsert()
       } catch (error) {
@@ -801,7 +806,7 @@ class TemplateEvent extends Component {
                       type='button'
                       className='p-button-success'
                       label={this.infoButton()}
-                      style={{ marginTop: 20 }}
+                      style={{ marginTop: 40, marginBottom: 40 }}
                     />
                   }
                 >

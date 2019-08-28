@@ -1,6 +1,7 @@
 const hostname = window.location.hostname
 const isProduction = hostname.includes('.com')
-const isDev = !isProduction // hostname.includes('beta.') || hostname.includes('dev')
+const isLocal = hostname.includes('localhost')
+const isDev = !isProduction && !isLocal
 
 const forceProd = false
 
