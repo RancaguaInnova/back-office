@@ -86,6 +86,8 @@ class TemplateDepartment extends React.Component {
       businessHours: '',
       description: '',
       imageUrl: '',
+      iconMapUrl: '',
+      imageHeader: '',
       address: '',
       tags: [],
       contactInformation: {
@@ -221,6 +223,116 @@ class TemplateDepartment extends React.Component {
       </span>
     )
   }
+
+  handleUploadSuccessIconMap = filename => {
+    this.setState({
+      uploadImageUrl: filename,
+      progressIconMap: 100,
+      isUploadingIconMap: false
+    })
+    firebase
+      .storage()
+      .ref('InformationDepartmentImages')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => {
+        let informationDepartment = { ...this.state.informationDepartment }
+        informationDepartment.iconMapUrl = url
+        this.setState({ informationDepartment })
+      })
+  }
+
+  handleUploadImageIconMap() {
+    return (
+      <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
+        <span className='p-button-icon-center pi pi-plus m6' />
+        <FileUploader
+          accept='image/*'
+          name='uploadImageUrl'
+          className='p-inputtext p-component p-inputtext p-filled'
+          randomizeFilename
+          storageRef={firebase.storage().ref('InformationDepartmentImages')}
+          onUploadStart={this.handleUploadStartIconMap}
+          onUploadError={this.handleUploadError}
+          onUploadSuccess={this.handleUploadSuccessIconMap}
+          onProgress={this.handleProgressIconMap}
+        />
+      </span>
+    )
+  }
+  handleUploadStartIconMap = () => this.setState({ isUploadingIconMap: true, progressIconMap: 0 })
+
+  handleProgressIconMap = progressIconMap => this.setState({ progressIconMap })
+  handleSpinnerIconMap() {
+    return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
+  }
+
+  handleUploadSuccessIconMap = filename => {
+    this.setState({
+      uploadImageUrl: filename,
+      progressIconMap: 100,
+      isUploadingIconMap: false
+    })
+    firebase
+      .storage()
+      .ref('InformationDepartmentImages')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => {
+        let informationDepartment = { ...this.state.informationDepartment }
+        informationDepartment.iconMapUrl = url
+        this.setState({ informationDepartment })
+      })
+  }
+
+  handleUploadImageHeaderMap() {
+    return (
+      <span className='p-button p-fileupload-choose p-component p-button-text-icon-left p-button-success'>
+        <span className='p-button-icon-center pi pi-plus m6' />
+        <FileUploader
+          accept='image/*'
+          name='uploadImageUrl'
+          className='p-inputtext p-component p-inputtext p-filled'
+          randomizeFilename
+          storageRef={firebase.storage().ref('InformationDepartmentImages')}
+          onUploadStart={this.handleUploadStartHeaderMap}
+          onUploadError={this.handleUploadError}
+          onUploadSuccess={this.handleUploadSuccessHeaderMap}
+          onProgress={this.handleProgressHeaderMap}
+        />
+      </span>
+    )
+  }
+  handleUploadStartIHeaderMap = () =>
+    this.setState({ isUploadingHeaderMap: true, progressHeaderMap: 0 })
+
+  handleProgressHeaderMap = progressHeaderMap => this.setState({ progressHeaderMap })
+  handleSpinnerHeaderMap() {
+    return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
+  }
+
+  handleUploadSuccessHeaderMap = filename => {
+    this.setState({
+      uploadImageUrl: filename,
+      progressHeaderMap: 100,
+      isUploadingHeaderMap: false
+    })
+    firebase
+      .storage()
+      .ref('InformationDepartmentImages')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => {
+        let informationDepartment = { ...this.state.informationDepartment }
+        informationDepartment.imageHeader = url
+        this.setState({ informationDepartment })
+      })
+  }
+
+  handleUploadStartHeaderMap = () =>
+    this.setState({ isUploadingHeaderMap: true, progressHeaderMap: 0 })
+
+  handleProgressHeaderMap = progressHeaderMap => this.setState({ progressHeaderMap })
 
   handleSpinner() {
     return <ProgressSpinner style={{ width: '30px', height: '30px' }} />
@@ -546,7 +658,7 @@ class TemplateDepartment extends React.Component {
               tabIndex={18}
             />
 
-            <div className='label'>Imagen del edificio donde se encuentra el departamento</div>
+            <div className='label'>Imágen del icono del departamento</div>
 
             <div className='flex-cols'>
               <InputText
@@ -565,7 +677,49 @@ class TemplateDepartment extends React.Component {
                 {this.state.isUploading ? this.handleSpinner() : this.handleUploadImage()}
               </div>
             </div>
+            <div className='label'>Imágen del header del departamento</div>
 
+            <div className='flex-cols'>
+              <InputText
+                name='informationDepartment.iconMapUrl'
+                type='url'
+                value={this.state.informationDepartment.imageHeader}
+                onChange={e => {
+                  let informationDepartment = { ...this.state.informationDepartment }
+                  informationDepartment.imageHeader = e.target.value
+                  this.setState({ informationDepartment })
+                }}
+                className='inputtextIconUrl'
+                tabIndex={19}
+              />
+              <div className='UploadImage m6'>
+                {this.state.isUploadingHeaderMap
+                  ? this.handleSpinnerHeaderMap()
+                  : this.handleUploadImageHeaderMap()}
+              </div>
+            </div>
+
+            <div className='label'>Icono mapa del departamento</div>
+
+            <div className='flex-cols'>
+              <InputText
+                name='informationDepartment.iconMapUrl'
+                type='url'
+                value={this.state.informationDepartment.iconMapUrl}
+                onChange={e => {
+                  let informationDepartment = { ...this.state.informationDepartment }
+                  informationDepartment.iconMapUrl = e.target.value
+                  this.setState({ informationDepartment })
+                }}
+                className='inputtextIconUrl'
+                tabIndex={19}
+              />
+              <div className='UploadImage m6'>
+                {this.state.isUploadingIconMap
+                  ? this.handleSpinnerIconMap()
+                  : this.handleUploadImageIconMap()}
+              </div>
+            </div>
             <div className='label'>Dirección del departamento de tránsito</div>
             <InputText
               name='informationDepartment.address'
