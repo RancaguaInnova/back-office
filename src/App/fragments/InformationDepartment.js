@@ -34,6 +34,8 @@ export default {
       businessHours
       description
       imageUrl
+      iconMapUrl
+      imageHeader
       address
       imageHeader
       active
