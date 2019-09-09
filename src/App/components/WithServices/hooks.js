@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import forEach from 'lodash/forEach'
 
-
-
 /**
  * Creates an API to interact with given actions on the given resources
  *
@@ -16,7 +14,7 @@ export default (baseUrl, resources) => {
   const [services, setServices] = useState({})
   forEach(resources, (resourceName, actionsList) => {
     const servicesUrl = `${baseUrl}/${resourceName}`
-    const resourceApi = Object.assign({}, services, { [resourceName]: {} } }
+    const resourceApi = Object.assign({}, services, { [resourceName]: {} })
     actionsList.forEach(actionName => {
       switch (action) {
         case 'list':
@@ -39,4 +37,6 @@ export default (baseUrl, resources) => {
           throw Error(`Invalid action ${action} passed to withServices`)
       }
     })
+    setServices(resourceApi)
+    return resourceApi
   })
