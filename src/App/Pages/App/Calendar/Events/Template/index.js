@@ -8,7 +8,6 @@ import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
 import withMutation from 'react-apollo-decorators/lib/withMutation'
 import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
 import gql from 'graphql-tag'
-import autobind from 'autobind-decorator'
 import reduce from 'lodash/reduce'
 import { Textbox } from 'react-inputs-validation'
 import './style.css'
@@ -469,15 +468,16 @@ class TemplateEvent extends Component {
     } else {
       try {
         var _id
-        if (event.notificationId) {
-          await services.notifications.update(
-            notificationDoc,
-            event.notificationId
-          )
-        } else {
-          var { _id } = await services.notifications.create(notificationDoc)
-          event.notificationId = _id
-        }
+        // if (event.notificationId) {
+        //   await services.notifications.update(
+        //     notificationDoc,
+        //     event.notificationId
+        //   )
+        // } else {
+        //   var { _id } = await services.notifications.create(notificationDoc)
+        //   event.notificationId = _id
+        // }
+        console.log('EVENT:', event)
         await updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {
@@ -1000,9 +1000,11 @@ class TemplateEvent extends Component {
   }
 }
 
-export default withServices(
-  TemplateEvent,
-  servicesUrl,
-  ['notifications'],
-  ['create', 'update']
-)
+// export default withServices(
+//   TemplateEvent,
+//   servicesUrl,
+//   ['notifications'],
+//   ['create', 'update']
+// )
+
+export default TemplateEvent
