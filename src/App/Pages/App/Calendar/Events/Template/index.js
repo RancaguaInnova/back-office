@@ -455,10 +455,10 @@ class TemplateEvent extends Component {
 
     if (this.props.type === 'create') {
       try {
-        if (notificationDoc) {
-          let { _id } = await services.notifications.create(notificationDoc)
-          event.notificationId = _id
-        }
+        // if (notificationDoc) {
+        //   let { _id } = await services.notifications.create(notificationDoc)
+        //   event.notificationId = _id
+        // }
         await this.props.createEvent({ event: event })
         this.onSuccessInsert()
       } catch (error) {
@@ -477,8 +477,7 @@ class TemplateEvent extends Component {
         //   var { _id } = await services.notifications.create(notificationDoc)
         //   event.notificationId = _id
         // }
-        console.log('EVENT:', event)
-        await updateEvent({ event })
+        await this.props.updateEvent({ event })
         this.onSuccessUpdate()
       } catch (error) {
         this.setState({ errorMessages: this.getValidationErrors(error) })
