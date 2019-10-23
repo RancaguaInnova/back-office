@@ -424,34 +424,32 @@ class TemplateEvent extends Component {
   }
 
   infoButton = () => {
-    let res = ''
-    if (this.state.locations.length < 1) {
-      res = 'Agregar  ticket al evento'
+    if (!this.state.locations.length) {
+      return 'Agregar  ticket al evento'
     } else {
-      res = 'Editar  ticket del evento'
+      return 'Editar  ticket del evento'
     }
-    return res
   }
 
   handleSubmit = async e => {
     e.preventDefault()
     let event = this.getEvent()
-    const { notifications } = this.state
-    const { services, createEvent, updateEvent } = this.props
+    // const { notifications } = this.state
+    // const { services, createEvent, updateEvent } = this.props
 
-    let notificationDoc = null
-    if (notifications.email.length || notifications.push.length) {
-      notificationDoc = {
-        type: 'events',
-        departmentId: event.departmentId,
-        subject: event.name,
-        body: event.description,
-        createdFor: event._id,
-        sendEmail: !!(notifications.email && notifications.email.length),
-        sendPush: !!(notifications.push && notifications.push.length),
-        schedule: notifications
-      }
-    }
+    // let notificationDoc = null
+    // if (notifications.email.length || notifications.push.length) {
+    //   notificationDoc = {
+    //     type: 'events',
+    //     departmentId: event.departmentId,
+    //     subject: event.name,
+    //     body: event.description,
+    //     createdFor: event._id,
+    //     sendEmail: !!(notifications.email && notifications.email.length),
+    //     sendPush: !!(notifications.push && notifications.push.length),
+    //     schedule: notifications
+    //   }
+    // }
 
     if (this.props.type === 'create') {
       try {
@@ -764,7 +762,7 @@ class TemplateEvent extends Component {
                 editable={false}
                 placeholder='Seleccione un departamento'
               />
-              <NotificationsSelector
+              {/* <NotificationsSelector
                 notificationId={this.state.notificationId}
                 theme='events'
                 notificationData={{
@@ -773,7 +771,7 @@ class TemplateEvent extends Component {
                   departmentId: this.state.departmentId
                 }}
                 handleNotifications={this.handleNotifications}
-              />
+              /> */}
 
               <div className='label'> </div>
               <Checkbox
