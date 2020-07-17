@@ -1,12 +1,13 @@
-import React from 'react'
-import withMutation from 'react-apollo-decorators/lib/withMutation'
-import gql from 'graphql-tag'
-import PropTypes from 'prop-types'
-import autobind from 'autobind-decorator'
-import styles from './styles.css'
-import Loading from 'orionsoft-parts/lib/components/Loading'
-import sleep from 'orionsoft-parts/lib/helpers/sleep'
-import setSession from 'App/helpers/auth/setSession'
+import setSession from 'App/helpers/auth/setSession';
+import autobind from 'autobind-decorator';
+import gql from 'graphql-tag';
+import Loading from 'orionsoft-parts/lib/components/Loading';
+import sleep from 'orionsoft-parts/lib/helpers/sleep';
+import PropTypes from 'prop-types';
+import React from 'react';
+import withMutation from 'react-apollo-decorators/lib/withMutation';
+
+import styles from './styles.css';
 
 @withMutation(gql`
   mutation verifyEmail($token: String) {
@@ -21,7 +22,7 @@ import setSession from 'App/helpers/auth/setSession'
 export default class VerifyEmail extends React.Component {
   static propTypes = {
     verifyEmail: PropTypes.func,
-    token: PropTypes.object,
+    token: PropTypes.string,
     onLogin: PropTypes.func
   }
 
@@ -45,7 +46,7 @@ export default class VerifyEmail extends React.Component {
       this.setState({ verified: true })
     } catch (error) {
       if (error.message.includes('Validation Error')) {
-        this.setState({ errorMessage: 'El código de verificación expiró' })
+        this.setState({ errorMessage: 'Su cuenta ya a sido verificada' })
       } else {
         this.setState({ errorMessage: error.message })
       }
