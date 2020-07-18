@@ -1,13 +1,11 @@
 import setSession from 'App/helpers/auth/setSession';
 import autobind from 'autobind-decorator';
 import gql from 'graphql-tag';
-import Loading from 'orionsoft-parts/lib/components/Loading';
 import sleep from 'orionsoft-parts/lib/helpers/sleep';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withMutation from 'react-apollo-decorators/lib/withMutation';
-
-import styles from './styles.css';
+import { Alert, Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 
 @withMutation(gql`
   mutation verifyEmail($token: String) {
@@ -57,23 +55,39 @@ export default class VerifyEmail extends React.Component {
   renderStatus() {
     if (!this.state.verified) {
       return (
-        <div className={styles.loading}>
-          <Loading size={40} />
-          <p>Se esta verificando tu email</p>
-        </div>
+        <Container fluid>
+          <Row>
+            <Col className='text-center'>
+              <Button variant='primary' disabled>
+                <Spinner as='span' animation='grow' size='sm' role='status' aria-hidden='true' />
+                verificando tu email...
+              </Button>{' '}
+            </Col>
+          </Row>
+        </Container>
       )
     } else {
       return (
-        <div className={styles.loading}>
-          <p>Tu cuenta ha sido verificada!</p>
-        </div>
+        <Container fluid>
+          <Row>
+            <Col className='text-center'>
+              <Alert variant={'info'}>
+                <p>Tu cuenta ha sido verificada!</p>
+              </Alert>
+            </Col>
+          </Row>
+        </Container>
       )
     }
   }
 
   render() {
     if (this.state.errorMessage) {
-      return <div className={styles.error}>{this.state.errorMessage}</div>
+      return (
+        <Alert variant={'info'} className='text-center'>
+          <p>{this.state.errorMessage}</p>
+        </Alert>
+      )
     }
     return <div>{this.renderStatus()}</div>
   }

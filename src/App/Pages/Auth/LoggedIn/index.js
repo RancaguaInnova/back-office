@@ -1,12 +1,14 @@
-import React from 'react'
-import styles from './styles.css'
-import Button from 'orionsoft-parts/lib/components/Button'
-import { withRouter } from 'react-router'
-import PropTypes from 'prop-types'
-import withMutation from 'react-apollo-decorators/lib/withMutation'
-import gql from 'graphql-tag'
-import autobind from 'autobind-decorator'
-import LogoutHelp from 'App/helpers/auth/logout'
+import LogoutHelp from 'App/helpers/auth/logout';
+import autobind from 'autobind-decorator';
+import gql from 'graphql-tag';
+import Button from 'orionsoft-parts/lib/components/Button';
+import PropTypes from 'prop-types';
+import React from 'react';
+import withMutation from 'react-apollo-decorators/lib/withMutation';
+import { withRouter } from 'react-router';
+
+import styles from './styles.css';
+
 @withRouter
 @withMutation(gql`
   mutation logout($sessionId: ID!) {
@@ -26,7 +28,12 @@ export default class Logout extends React.Component {
       await LogoutHelp()
       this.props.history.push('/login')
     } catch (error) {
-      console.log(error)
+      try {
+        await LogoutHelp()
+        console.log(error)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 

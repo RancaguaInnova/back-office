@@ -21,3 +21,23 @@
   background-size: cover;
   background-position: center;
 }
+
+footer a {
+  text-decoration: none;
+  color: #000;
+  font-size: 0.8rem;
+}
+.gorancaguadigital {
+  position: fixed;
+  bottom: 50px;
+  width: 100%;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.midle {
+  margin-top: 100px;
+}

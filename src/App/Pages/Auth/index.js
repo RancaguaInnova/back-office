@@ -1,15 +1,18 @@
-import React from 'react'
-import styles from './styles.css'
-import Logo from './Logo'
-import autobind from 'autobind-decorator'
-import PropTypes from 'prop-types'
-import Login from './Login'
-import Register from './Register'
-import VerifyEmail from './VerifyEmail'
-import Forgot from './Forgot'
-import Reset from './Reset'
-import Enroll from './Enroll'
-import { Route, Switch, withRouter } from 'react-router-dom'
+import autobind from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import OpenApp from 'react-open-app';
+import { Route, Switch, withRouter } from 'react-router-dom';
+
+import Enroll from './Enroll';
+import Forgot from './Forgot';
+import Login from './Login';
+import Logo from './Logo';
+import Register from './Register';
+import Reset from './Reset';
+import styles from './styles.css';
+import VerifyEmail from './VerifyEmail';
 
 @withRouter
 export default class Auth extends React.Component {
@@ -35,49 +38,68 @@ export default class Auth extends React.Component {
 
   renderLogo() {
     return (
-      <div className={styles.logo}>
-        <Logo color="black" isLoading={this.state.isLoading} />
-      </div>
+      <Container>
+        <Row>
+          <Col>
+            <Logo color='black' isLoading={this.state.isLoading} />
+          </Col>
+        </Row>
+      </Container>
     )
   }
 
   render() {
     const otherProps = { onLogin: this.onLogin }
+    const WEB = 'https://rancagua.cl'
+    const LINK = 'rancaguadigital'
+
     return (
-      <div
-        className={styles.container}
-        style={{ minHeight: window.innerHeight }}
-      >
-        <div className={styles.content}>
-          {this.renderLogo()}
-          <Switch>
-            <Route path="/login" render={() => <Login {...otherProps} />} />
-            <Route
-              path="/register"
-              render={() => <Register {...otherProps} />}
-            />
-            <Route
-              path="/verify-email/:token"
-              render={({ match }) => (
-                <VerifyEmail token={match.params.token} {...otherProps} />
-              )}
-            />
-            <Route path="/forgot" render={() => <Forgot {...otherProps} />} />
-            <Route
-              path="/reset/:token"
-              render={({ match }) => (
-                <Reset token={match.params.token} {...otherProps} />
-              )}
-            />
-            <Route
-              path="/enroll/:token"
-              render={({ match }) => (
-                <Enroll token={match.params.token} {...otherProps} />
-              )}
-            />
-          </Switch>
-        </div>
-        <div className={styles.photo} />
+      <div className=''>
+        <Container>
+          <Row>
+            <Col>{this.renderLogo()}</Col>
+          </Row>
+          <Row>
+            <Col className='midle d-flex justify-content-center'>
+              <Switch>
+                <Route path='/login' render={() => <Login {...otherProps} />} />
+                <Route path='/register' render={() => <Register {...otherProps} />} />
+                <Route
+                  path='/verify-email/:token'
+                  render={({ match }) => <VerifyEmail token={match.params.token} {...otherProps} />}
+                />
+                <Route path='/forgot' render={() => <Forgot {...otherProps} />} />
+                <Route
+                  path='/reset/:token'
+                  render={({ match }) => <Reset token={match.params.token} {...otherProps} />}
+                />
+                <Route
+                  path='/enroll/:token'
+                  render={({ match }) => <Enroll token={match.params.token} {...otherProps} />}
+                />
+              </Switch>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <div className={styles.photo} />
+            </Col>
+          </Row>
+          <Row className='text-center gorancaguadigital'>
+            <Col>
+              <OpenApp href={WEB} android={LINK} ios={LINK}>
+                Ir a Rancagua Digital
+              </OpenApp>
+            </Col>
+          </Row>
+        </Container>
+        <footer>
+          <Row>
+            <Col className='text-center p-2'>
+              <a href='mailto:contacto@smart.rancagua.cl'>&copy; desarrollo e innovación</a>
+            </Col>
+          </Row>
+        </footer>
       </div>
     )
   }

@@ -1,15 +1,14 @@
-import React from 'react'
-import styles from './styles.css'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Container } from 'react-bootstrap';
 
 export default class Logo extends React.Component {
   static propTypes = {}
 
-  render () {
+  render() {
     return (
-      <div className={styles.container}>
-        <Link to='/'>Rancagua Digital</Link>
-      </div>
+      <Container className='text-center mt-3'>
+        <img src='/assets/logo.png' className='img-fluid' />
+      </Container>
     )
   }
 }
