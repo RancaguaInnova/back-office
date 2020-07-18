@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import OpenApp from 'react-open-app';
 import { Route, Switch, withRouter } from 'react-router-dom';
 
@@ -85,15 +85,16 @@ export default class Auth extends React.Component {
               <div className={styles.photo} />
             </Col>
           </Row>
-          <Row className='text-center gorancaguadigital'>
-            <Col>
+        </Container>
+        <footer>
+          <Row>
+            <Col className='text-center p-2'>
+              {' '}
               <OpenApp href={WEB} android={LINK} ios={LINK}>
-                Ir a Rancagua Digital
+                <Button>Ir a Rancagua Digital</Button>{' '}
               </OpenApp>
             </Col>
           </Row>
-        </Container>
-        <footer>
           <Row>
             <Col className='text-center p-2'>
               <a href='mailto:contacto@smart.rancagua.cl'>&copy; desarrollo e innovación</a>

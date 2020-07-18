@@ -27,11 +27,14 @@ footer a {
   color: #000;
   font-size: 0.8rem;
 }
+
 .gorancaguadigital {
   position: fixed;
   bottom: 50px;
-  width: 100%;
+  text-align: center;
+
 }
+
 footer {
   position: fixed;
   bottom: 0;
