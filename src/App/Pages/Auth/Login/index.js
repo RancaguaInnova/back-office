@@ -52,10 +52,9 @@ export default class Login extends React.Component {
         <Button style={{ marginRight: 10 }} to='/register'>
           Crear Cuenta
         </Button>
-        {/*} <Button onClick={() => this.refs.form.submit()} primary loading={this.props.loading}>
+        <Button onClick={() => this.refs.form.submit()} primary loading={this.props.loading}>
           Iniciar Sesión
         </Button>
-        */}
       </div>
     )
   }
