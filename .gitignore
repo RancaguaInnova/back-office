@@ -10,3 +10,5 @@ src/googleApiKey.js
 yarn-error.log
 
 .env
+.idea/vcs.xml
+.idea/workspace.xml
