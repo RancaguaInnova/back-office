@@ -19,7 +19,7 @@ export default class Login extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func,
     userId: PropTypes.string,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
   }
 
   @autobind
@@ -34,25 +34,38 @@ export default class Login extends React.Component {
     }
     return (
       <div>
-        <AutoForm mutation='loginWithPassword' ref='form' onSuccess={this.onSuccess}>
-          <div className='label'>Email</div>
-          <Field fieldName='email' type={Text} fieldType='email' placeholder='Email' />
-          <div className='label'>Contraseña</div>
+        <AutoForm
+          mutation="loginWithPassword"
+          ref="form"
+          onSuccess={this.onSuccess}
+        >
+          <div className="label">Email</div>
           <Field
-            fieldName='password'
+            fieldName="email"
             type={Text}
-            fieldType='password'
-            placeholder='Ingresa tu contraseña'
+            fieldType="email"
+            placeholder="Email"
           />
-          <div className='description'>
-            <Link to='/forgot'>Olvidé mi contraseña</Link>
+          <div className="label">Contraseña</div>
+          <Field
+            fieldName="password"
+            type={Text}
+            fieldType="password"
+            placeholder="Ingresa tu contraseña"
+          />
+          <div className="description">
+            <Link to="/forgot">Olvidé mi contraseña</Link>
           </div>
         </AutoForm>
         <br />
-        <Button style={{ marginRight: 10 }} to='/register'>
+        <Button style={{ marginRight: 10 }} to="/register">
           Crear Cuenta
         </Button>
-        <Button onClick={() => this.refs.form.submit()} primary loading={this.props.loading}>
+        <Button
+          onClick={() => this.refs.form.submit()}
+          primary
+          loading={this.props.loading}
+        >
           Iniciar Sesión
         </Button>
       </div>

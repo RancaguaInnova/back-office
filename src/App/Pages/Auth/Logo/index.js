@@ -6,8 +6,8 @@ export default class Logo extends React.Component {
 
   render() {
     return (
-      <Container className='text-center mt-3'>
-        <img src='/assets/logo.png' className='img-fluid' />
+      <Container className="text-center mt-3">
+        <img src="/assets/logo.png" className="img-fluid" />
       </Container>
     )
   }

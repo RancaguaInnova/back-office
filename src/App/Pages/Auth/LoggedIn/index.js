@@ -19,7 +19,7 @@ export default class Logout extends React.Component {
   static propTypes = {
     history: PropTypes.object,
     userId: PropTypes.string,
-    logout: PropTypes.func
+    logout: PropTypes.func,
   }
   @autobind
   async logoutSession() {

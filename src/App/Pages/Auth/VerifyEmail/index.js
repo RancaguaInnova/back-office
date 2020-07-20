@@ -21,11 +21,11 @@ export default class VerifyEmail extends React.Component {
   static propTypes = {
     verifyEmail: PropTypes.func,
     token: PropTypes.string,
-    onLogin: PropTypes.func
+    onLogin: PropTypes.func,
   }
 
   state = {
-    verified: false
+    verified: false,
   }
 
   componentDidMount() {
@@ -37,7 +37,7 @@ export default class VerifyEmail extends React.Component {
     await sleep(2000)
     try {
       const { session } = await this.props.verifyEmail({
-        token: this.props.token
+        token: this.props.token,
       })
       setSession(session)
       // this.props.onLogin()
@@ -57,9 +57,15 @@ export default class VerifyEmail extends React.Component {
       return (
         <Container fluid>
           <Row>
-            <Col className='text-center'>
-              <Button variant='primary' disabled>
-                <Spinner as='span' animation='grow' size='sm' role='status' aria-hidden='true' />
+            <Col className="text-center">
+              <Button variant="primary" disabled>
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
                 verificando tu email...
               </Button>{' '}
             </Col>
@@ -70,7 +76,7 @@ export default class VerifyEmail extends React.Component {
       return (
         <Container fluid>
           <Row>
-            <Col className='text-center'>
+            <Col className="text-center">
               <Alert variant={'info'}>
                 <p>Tu cuenta ha sido verificada!</p>
               </Alert>
@@ -84,7 +90,7 @@ export default class VerifyEmail extends React.Component {
   render() {
     if (this.state.errorMessage) {
       return (
-        <Alert variant={'info'} className='text-center'>
+        <Alert variant={'info'} className="text-center">
           <p>{this.state.errorMessage}</p>
         </Alert>
       )

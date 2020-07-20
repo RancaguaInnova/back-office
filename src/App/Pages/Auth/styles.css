@@ -36,11 +36,14 @@ footer a {
 }
 
 footer {
-  position: fixed;
-  bottom: 0;
+  position: relative;
   width: 100%;
 }
 
 .midle {
   margin-top: 100px;
+}
+
+.contenedordata {
+  min-height: calc(100vh - 40px);
 }

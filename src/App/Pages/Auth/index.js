@@ -22,7 +22,7 @@ export default class Auth extends React.Component {
     location: PropTypes.object,
     history: PropTypes.object,
     match: PropTypes.object,
-    params: PropTypes.object
+    params: PropTypes.object,
   }
 
   @autobind
@@ -40,7 +40,7 @@ export default class Auth extends React.Component {
       <Container>
         <Row>
           <Col>
-            <Logo color='black' isLoading={this.state.isLoading} />
+            <Logo color="black" isLoading={this.state.isLoading} />
           </Col>
         </Row>
       </Container>
@@ -53,53 +53,65 @@ export default class Auth extends React.Component {
     const LINK = 'rancaguadigital'
 
     return (
-      <div className=''>
-        <Container>
-          <Row>
-            <Col>{this.renderLogo()}</Col>
-          </Row>
-          <Row>
-            <Col className='midle d-flex justify-content-center'>
-              <Switch>
-                <Route path='/login' render={() => <Login {...otherProps} />} />
-                <Route path='/register' render={() => <Register {...otherProps} />} />
-                <Route
-                  path='/verify-email/:token'
-                  render={({ match }) => <VerifyEmail token={match.params.token} {...otherProps} />}
-                />
-                <Route path='/forgot' render={() => <Forgot {...otherProps} />} />
-                <Route
-                  path='/reset/:token'
-                  render={({ match }) => <Reset token={match.params.token} {...otherProps} />}
-                />
-                <Route
-                  path='/enroll/:token'
-                  render={({ match }) => <Enroll token={match.params.token} {...otherProps} />}
-                />
-              </Switch>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <div className={styles.photo} />
-            </Col>
-          </Row>
-        </Container>
+      <div className="">
+        <div>
+          <Container className="contenedordata">
+            <Row>
+              <Col>{this.renderLogo()}</Col>
+            </Row>
+            <Row>
+              <Col className="midle d-flex justify-content-center">
+                <Switch>
+                  <Route
+                    path="/login"
+                    render={() => <Login {...otherProps} />}
+                  />
+                  <Route
+                    path="/register"
+                    render={() => <Register {...otherProps} />}
+                  />
+                  <Route
+                    path="/verify-email/:token"
+                    render={({ match }) => (
+                      <VerifyEmail token={match.params.token} {...otherProps} />
+                    )}
+                  />
+                  <Route
+                    path="/forgot"
+                    render={() => <Forgot {...otherProps} />}
+                  />
+                  <Route
+                    path="/reset/:token"
+                    render={({ match }) => (
+                      <Reset token={match.params.token} {...otherProps} />
+                    )}
+                  />
+                  <Route
+                    path="/enroll/:token"
+                    render={({ match }) => (
+                      <Enroll token={match.params.token} {...otherProps} />
+                    )}
+                  />
+                </Switch>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div className={styles.photo} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
         <footer>
-          {/* <Row>
-            <Col className='text-center p-2'>
-              {' '}
-              <OpenApp href={WEB} android={LINK} ios={LINK}>
-                <Button>Ir a Rancagua Digital</Button>{' '}
-              </OpenApp>
-            </Col>
-          </Row>
-          */}
-          <Row>
-            <Col className='text-center p-2'>
-              <a href='mailto:contacto@smart.rancagua.cl'>&copy; desarrollo e innovación</a>
-            </Col>
-          </Row>
+          <Container>
+            <Row>
+              <Col className="text-center p-2">
+                <a href="mailto:contacto@smart.rancagua.cl">
+                  &copy; desarrollo e innovación
+                </a>
+              </Col>
+            </Row>
+          </Container>
         </footer>
       </div>
     )
