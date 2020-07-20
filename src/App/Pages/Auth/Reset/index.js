@@ -1,13 +1,13 @@
-import AutoForm from 'App/components/AutoForm';
-import setSession from 'App/helpers/auth/setSession';
-import withUserId from 'App/helpers/auth/withUserId';
-import autobind from 'autobind-decorator';
-import Text from 'orionsoft-parts/lib/components/fields/Text';
-import withMessage from 'orionsoft-parts/lib/decorators/withMessage';
-import PropTypes from 'prop-types';
-import React from 'react';
-import {Alert, Button, Col, Container, Form, Row} from 'react-bootstrap';
-import {Field} from 'simple-react-form';
+import AutoForm from 'App/components/AutoForm'
+import setSession from 'App/helpers/auth/setSession'
+import withUserId from 'App/helpers/auth/withUserId'
+import autobind from 'autobind-decorator'
+import Text from 'orionsoft-parts/lib/components/fields/Text'
+import withMessage from 'orionsoft-parts/lib/decorators/withMessage'
+import PropTypes from 'prop-types'
+import React from 'react'
+import {Alert, Button, Col, Container, Form, Row} from 'react-bootstrap'
+import {Field} from 'simple-react-form'
 
 @withUserId
 @withMessage
@@ -16,12 +16,12 @@ export default class ResetPassword extends React.Component {
         showMessage: PropTypes.func,
         onLogin: PropTypes.func,
         userId: PropTypes.string,
-        token: PropTypes.string,
+        token: PropTypes.string
     }
     schema = {
         password: {
             type: String,
-            min: 8,
+            min: 8
         },
         confirm: {
             type: String,
@@ -29,11 +29,11 @@ export default class ResetPassword extends React.Component {
                 if (confirm !== password) {
                     return ' Contraseñas no coinciden'
                 }
-            },
+            }
         },
         token: {
-            type: String,
-        },
+            type: String
+        }
     }
 
     constructor(props) {
@@ -44,8 +44,6 @@ export default class ResetPassword extends React.Component {
     @autobind
     onSuccess(session) {
         setSession(session)
-        //this.props.showMessage('Tu contraseña ha sido cambiada exitosamente!')
-        //  this.props.onLogin()
         this.setState({susses: true})
     }
 
@@ -54,7 +52,7 @@ export default class ResetPassword extends React.Component {
         if (token === 'tokenNotFound') {
             this.setState({
                 error:
-                    'El link para restablecer su contraseña a expirado, para restablecer su contraseña vuelva a la aplicacion y realice nuevamente el proceso de restablecer contraseña',
+                    'El link para restablecer su contraseña a expirado, para restablecer su contraseña vuelva a la aplicacion y realice nuevamente el proceso de restablecer contraseña'
             })
         }
     }

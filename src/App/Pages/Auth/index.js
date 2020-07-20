@@ -1,17 +1,17 @@
-import autobind from 'autobind-decorator';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import autobind from 'autobind-decorator'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Col, Container, Row } from 'react-bootstrap'
+import { Route, Switch, withRouter } from 'react-router-dom'
 
-import Enroll from './Enroll';
-import Forgot from './Forgot';
-import Login from './Login';
-import Logo from './Logo';
-import Register from './Register';
-import Reset from './Reset';
-import styles from './styles.css';
-import VerifyEmail from './VerifyEmail';
+import Enroll from './Enroll'
+import Forgot from './Forgot'
+import Login from './Login'
+import Logo from './Logo'
+import Register from './Register'
+import Reset from './Reset'
+import styles from './styles.css'
+import VerifyEmail from './VerifyEmail'
 
 @withRouter
 export default class Auth extends React.Component {
@@ -22,7 +22,7 @@ export default class Auth extends React.Component {
     location: PropTypes.object,
     history: PropTypes.object,
     match: PropTypes.object,
-    params: PropTypes.object,
+    params: PropTypes.object
   }
 
   @autobind

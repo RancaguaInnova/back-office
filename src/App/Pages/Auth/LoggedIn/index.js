@@ -1,13 +1,12 @@
-import LogoutHelp from 'App/helpers/auth/logout';
-import autobind from 'autobind-decorator';
-import gql from 'graphql-tag';
-import Button from 'orionsoft-parts/lib/components/Button';
-import PropTypes from 'prop-types';
-import React from 'react';
-import withMutation from 'react-apollo-decorators/lib/withMutation';
-import { withRouter } from 'react-router';
-
-import styles from './styles.css';
+import LogoutHelp from 'App/helpers/auth/logout'
+import autobind from 'autobind-decorator'
+import gql from 'graphql-tag'
+import Button from 'orionsoft-parts/lib/components/Button'
+import PropTypes from 'prop-types'
+import React from 'react'
+import withMutation from 'react-apollo-decorators/lib/withMutation'
+import { withRouter } from 'react-router'
+import styles from './styles.css'
 
 @withRouter
 @withMutation(gql`

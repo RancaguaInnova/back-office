@@ -1,11 +1,11 @@
-import setSession from 'App/helpers/auth/setSession';
-import autobind from 'autobind-decorator';
-import gql from 'graphql-tag';
-import sleep from 'orionsoft-parts/lib/helpers/sleep';
-import PropTypes from 'prop-types';
-import React from 'react';
-import withMutation from 'react-apollo-decorators/lib/withMutation';
-import { Alert, Button, Col, Container, Row, Spinner } from 'react-bootstrap';
+import setSession from 'App/helpers/auth/setSession'
+import autobind from 'autobind-decorator'
+import gql from 'graphql-tag'
+import sleep from 'orionsoft-parts/lib/helpers/sleep'
+import PropTypes from 'prop-types'
+import React from 'react'
+import withMutation from 'react-apollo-decorators/lib/withMutation'
+import { Alert, Button, Col, Container, Row, Spinner } from 'react-bootstrap'
 
 @withMutation(gql`
   mutation verifyEmail($token: String) {
@@ -21,11 +21,11 @@ export default class VerifyEmail extends React.Component {
   static propTypes = {
     verifyEmail: PropTypes.func,
     token: PropTypes.string,
-    onLogin: PropTypes.func,
+    onLogin: PropTypes.func
   }
 
   state = {
-    verified: false,
+    verified: false
   }
 
   componentDidMount() {
@@ -37,7 +37,7 @@ export default class VerifyEmail extends React.Component {
     await sleep(2000)
     try {
       const { session } = await this.props.verifyEmail({
-        token: this.props.token,
+        token: this.props.token
       })
       setSession(session)
       // this.props.onLogin()

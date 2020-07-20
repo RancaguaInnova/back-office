@@ -1,19 +1,19 @@
-import AutoForm from 'App/components/AutoForm';
-import ObjectField from 'App/components/fields/ObjectField';
-import setSession from 'App/helpers/auth/setSession';
-import withUserId from 'App/helpers/auth/withUserId';
-import autobind from 'autobind-decorator';
-import gql from 'graphql-tag';
-import Button from 'orionsoft-parts/lib/components/Button';
-import Select from 'orionsoft-parts/lib/components/fields/Select';
-import Text from 'orionsoft-parts/lib/components/fields/Text';
-import PropTypes from 'prop-types';
-import React from 'react';
-import withGraphQL from 'react-apollo-decorators/lib/withGraphQL';
-import {Link} from 'react-router-dom';
-import {Field} from 'simple-react-form';
+import AutoForm from 'App/components/AutoForm'
+import ObjectField from 'App/components/fields/ObjectField'
+import setSession from 'App/helpers/auth/setSession'
+import withUserId from 'App/helpers/auth/withUserId'
+import autobind from 'autobind-decorator'
+import gql from 'graphql-tag'
+import Button from 'orionsoft-parts/lib/components/Button'
+import Select from 'orionsoft-parts/lib/components/fields/Select'
+import Text from 'orionsoft-parts/lib/components/fields/Text'
+import PropTypes from 'prop-types'
+import React from 'react'
+import withGraphQL from 'react-apollo-decorators/lib/withGraphQL'
+import {Link} from 'react-router-dom'
+import {Field} from 'simple-react-form'
 
-import LoggedIn from '../LoggedIn';
+import LoggedIn from '../LoggedIn'
 
 @withGraphQL(
     gql`
@@ -25,14 +25,14 @@ import LoggedIn from '../LoggedIn';
         }
       }
     }
-  `,
+  `
 )
 @withUserId
 export default class Register extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            options: [],
+            options: []
         }
     }
 
@@ -43,10 +43,10 @@ export default class Register extends React.Component {
             items: PropTypes.arrayOf(
                 PropTypes.shape({
                     _id: PropTypes.string,
-                    name: PropTypes.string,
-                }),
-            ),
-        }),
+                    name: PropTypes.string
+                })
+            )
+        })
     }
 
     componentDidMount() {
@@ -59,7 +59,7 @@ export default class Register extends React.Component {
         return departments.map((department) => {
             return {
                 label: department.name,
-                value: department._id,
+                value: department._id
             }
         })
     }

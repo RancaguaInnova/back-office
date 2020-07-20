@@ -1,18 +1,14 @@
-import { setSession } from '@orion-js/graphql-client';
-import AutoForm from 'App/components/AutoForm';
-import withUserId from 'App/helpers/auth/withUserId';
-import autobind from 'autobind-decorator';
-import Button from 'orionsoft-parts/lib/components/Button';
-import Text from 'orionsoft-parts/lib/components/fields/Text';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Field } from 'simple-react-form';
-
-import LoggedIn from '../LoggedIn';
-
-// import Translate from 'App/i18n'
-// import translate from 'App/i18n/translate'
+import { setSession } from '@orion-js/graphql-client'
+import AutoForm from 'App/components/AutoForm'
+import withUserId from 'App/helpers/auth/withUserId'
+import autobind from 'autobind-decorator'
+import Button from 'orionsoft-parts/lib/components/Button'
+import Text from 'orionsoft-parts/lib/components/fields/Text'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Field } from 'simple-react-form'
+import LoggedIn from '../LoggedIn'
 
 @withUserId
 export default class Login extends React.Component {
@@ -21,7 +17,6 @@ export default class Login extends React.Component {
     userId: PropTypes.string,
     loading: PropTypes.bool,
   }
-
   @autobind
   async onSuccess(session) {
     await setSession(session)

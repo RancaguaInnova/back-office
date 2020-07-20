@@ -1,5 +1,5 @@
-import React from 'react';
-import { Container } from 'react-bootstrap';
+import React from 'react'
+import { Container } from 'react-bootstrap'
 
 export default class Logo extends React.Component {
   static propTypes = {}
