@@ -1,8 +1,7 @@
 import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Col, Container, Row } from 'react-bootstrap';
-import OpenApp from 'react-open-app';
+import { Col, Container, Row } from 'react-bootstrap';
 import { Route, Switch, withRouter } from 'react-router-dom';
 
 import Enroll from './Enroll';
@@ -87,7 +86,7 @@ export default class Auth extends React.Component {
           </Row>
         </Container>
         <footer>
-          <Row>
+          {/* <Row>
             <Col className='text-center p-2'>
               {' '}
               <OpenApp href={WEB} android={LINK} ios={LINK}>
@@ -95,6 +94,7 @@ export default class Auth extends React.Component {
               </OpenApp>
             </Col>
           </Row>
+          */}
           <Row>
             <Col className='text-center p-2'>
               <a href='mailto:contacto@smart.rancagua.cl'>&copy; desarrollo e innovación</a>
