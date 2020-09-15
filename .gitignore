@@ -12,3 +12,6 @@ yarn-error.log
 .env
 .idea/vcs.xml
 .idea/workspace.xml
+.idea/modules.xml
+.idea/back-office.iml
+*.xml
