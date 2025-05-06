@@ -73,7 +73,7 @@
     "react-loadable": "^5.3.1",
     "react-open-app": "^1.0.2",
     "react-places-autocomplete": "^7.2.1",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^7.5.2",
     "react-select": "^2.1.1",
     "react-stripe-elements": "^2.0.0",
     "react-tag-input": "^6.4.0",
